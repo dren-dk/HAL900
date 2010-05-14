@@ -8,15 +8,29 @@
 
 begin transaction;
 
+CREATE OR REPLACE FUNCTION update_updated()
+	RETURNS TRIGGER AS $$
+	BEGIN
+	   NEW.updated = now(); 
+	   RETURN NEW;
+	END;
+$$ language 'plpgsql';
+
+
 create table memberType (
        id integer primary key, 	
        created timestamp default now(),
+       updated timestamp default now(),
 
        memberType varchar(50),
        monthlyFee numeric(10,2),
 
        doorAccess boolean,
 );
+CREATE TRIGGER update_updated BEFORE UPDATE
+        ON memberType FOR EACH ROW EXECUTE PROCEDURE 
+        update_updated();
+
 
 insert into memberType (id, memberType, monthlyFee, doorAccess) 
        values (1, "Betalende medlem", 150, 1);
@@ -26,6 +40,7 @@ insert into memberType (id, memberType, monthlyFee, doorAccess)
 create table member (
        id serial primary key, 	
        created timestamp default now(),
+       updated timestamp default now(),
 
        username varchar(50) unique,
        email varchar(50) unique,
@@ -38,12 +53,21 @@ create table member (
        doorAccess boolean,  
        adminAccess boolean /* Admin access via the web interface */
 );
+CREATE TRIGGER update_updated BEFORE UPDATE
+        ON member FOR EACH ROW EXECUTE PROCEDURE 
+        update_updated();
 
 create table accountType (
        id integer primary key,
        created timestamp default now(),
+       updated timestamp default now(),
+
        typeName varchar(50),
 );
+CREATE TRIGGER update_updated BEFORE UPDATE
+        ON accountType FOR EACH ROW EXECUTE PROCEDURE 
+        update_updated();
+
 insert into accountType (id, typeName) values (1, 'Main organizational account');
 insert into accountType (id, typeName) values (2, 'Personal dues and purchases');
 insert into accountType (id, typeName) values (3, 'Loans');
@@ -51,16 +75,23 @@ insert into accountType (id, typeName) values (3, 'Loans');
 create table account (
        id serial primary key,
        created timestamp default now(),
+       updated timestamp default now(),
+
        owner_id integer references member(id),
        type_id integer references accountType(id) not null,
        
        accountName varchar(50)
 );
+CREATE TRIGGER update_updated BEFORE UPDATE
+        ON account FOR EACH ROW EXECUTE PROCEDURE 
+        update_updated();
+
 insert into account (type_id, accountName) values (1, 'OSAA kassebeholdning');
 
 create table accountTransaction (
        id serial primary key,
        created timestamp default now(),
+       updated timestamp default now(),
 
        source_account_id integer not null references account(id),
        target_account_id integer not null references account(id),
@@ -70,19 +101,29 @@ create table accountTransaction (
 
        comment varchar(50),
 }
+CREATE TRIGGER update_updated BEFORE UPDATE
+        ON accountTransaction FOR EACH ROW EXECUTE PROCEDURE 
+        update_updated();
 
 
 create table bankBatch (
        id serial primary key,
        created timestamp default now(),
+       updated timestamp default now(),
+
        member_id integer references member(id),
 
        rawCsv varchar,
 );
+CREATE TRIGGER update_updated BEFORE UPDATE
+        ON bankBatch FOR EACH ROW EXECUTE PROCEDURE 
+        update_updated();
 
 create table bankTransaction (
        id serial primary key,
        created timestamp default now(),
+       updated timestamp default now(),
+
        member_id integer references member(id),
        bankBatch_id integer references bankBatch(id) not null,
        
@@ -93,5 +134,19 @@ create table bankTransaction (
        transaction_id integer references accountTransaction(id),
        userComment varchar(100), /* Info from the administrators about it */
 );
+CREATE TRIGGER update_updated BEFORE UPDATE
+        ON bankTransaction FOR EACH ROW EXECUTE PROCEDURE 
+        update_updated();
+
+create table webSession (
+       id varchar(20) primary key,
+       created timestamp default now(),
+       updated timestamp default now(),
+
+       dataBlob varchar,
+);
+CREATE TRIGGER update_updated BEFORE UPDATE
+        ON webSession FOR EACH ROW EXECUTE PROCEDURE 
+        update_updated();
 
 commit;

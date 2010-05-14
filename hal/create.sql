@@ -8,6 +8,8 @@
 
 begin transaction;
 
+create language 'plpgsql';
+
 CREATE OR REPLACE FUNCTION update_updated()
 	RETURNS TRIGGER AS $$
 	BEGIN
@@ -25,7 +27,7 @@ create table memberType (
        memberType varchar(50),
        monthlyFee numeric(10,2),
 
-       doorAccess boolean,
+       doorAccess boolean
 );
 CREATE TRIGGER update_updated BEFORE UPDATE
         ON memberType FOR EACH ROW EXECUTE PROCEDURE 
@@ -33,9 +35,9 @@ CREATE TRIGGER update_updated BEFORE UPDATE
 
 
 insert into memberType (id, memberType, monthlyFee, doorAccess) 
-       values (1, "Betalende medlem", 150, 1);
+       values (1, 'Betalende medlem', 150, true);
 insert into memberType (id, memberType, monthlyFee, doorAccess) 
-       values (2, "Gratis-medlem", 0, 0);
+       values (2, 'Gratis-medlem', 0, false);
 
 create table member (
        id serial primary key, 	
@@ -62,15 +64,18 @@ create table accountType (
        created timestamp default now(),
        updated timestamp default now(),
 
-       typeName varchar(50),
+       typeName varchar(50)
 );
 CREATE TRIGGER update_updated BEFORE UPDATE
         ON accountType FOR EACH ROW EXECUTE PROCEDURE 
         update_updated();
 
-insert into accountType (id, typeName) values (1, 'Main organizational account');
-insert into accountType (id, typeName) values (2, 'Personal dues and purchases');
-insert into accountType (id, typeName) values (3, 'Loans');
+insert into accountType (id, typeName) 
+       values (1, 'Main organizational account');
+insert into accountType (id, typeName) 
+       values (2, 'Personal dues and purchases');
+insert into accountType (id, typeName) 
+       values (3, 'Loans');
 
 create table account (
        id serial primary key,
@@ -99,8 +104,8 @@ create table accountTransaction (
 
        amount numeric(10,2) check (amount > 0),
 
-       comment varchar(50),
-}
+       comment varchar(50)
+);
 CREATE TRIGGER update_updated BEFORE UPDATE
         ON accountTransaction FOR EACH ROW EXECUTE PROCEDURE 
         update_updated();
@@ -113,7 +118,7 @@ create table bankBatch (
 
        member_id integer references member(id),
 
-       rawCsv varchar,
+       rawCsv varchar
 );
 CREATE TRIGGER update_updated BEFORE UPDATE
         ON bankBatch FOR EACH ROW EXECUTE PROCEDURE 
@@ -132,7 +137,7 @@ create table bankTransaction (
        amount numeric(10,2),
 
        transaction_id integer references accountTransaction(id),
-       userComment varchar(100), /* Info from the administrators about it */
+       userComment varchar(100)
 );
 CREATE TRIGGER update_updated BEFORE UPDATE
         ON bankTransaction FOR EACH ROW EXECUTE PROCEDURE 
@@ -143,7 +148,7 @@ create table webSession (
        created timestamp default now(),
        updated timestamp default now(),
 
-       dataBlob varchar,
+       dataBlob varchar
 );
 CREATE TRIGGER update_updated BEFORE UPDATE
         ON webSession FOR EACH ROW EXECUTE PROCEDURE 

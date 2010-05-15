@@ -8,12 +8,14 @@ use Apache2::SizeLimit;
 use APR::Table ();
 use Data::Dumper;
 use CGI;
+use CGI::Cookie;
 use Time::HiRes qw(gettimeofday);
 #use HTTP::BrowserDetect;
 
 use HAL;
 use HAL::Pages;
 use HAL::Layout;
+use HAL::Session;
 
 sub loadDir {
     my $d = shift;
@@ -65,11 +67,34 @@ sub dispatchRequest($) {
     my $handler = shift @uri || ''; 
     $p->{path} = \@uri;
 
+
+    # Cookie setting.
+    my $internal = undef;
+
+    if (my $cookie_str = $r->headers_in->get('Cookie')) {
+	my %cookies = parse CGI::Cookie($cookie_str);
+	loadSession($cookies{SID}->value) if $cookies{SID};
+    }
+
+    if (!getSessionID) {
+	newSession();		
+	$r->headers_out->set('P3P', 'CP="CAO ADM OUR IND PHY ONL PUR NAV DEM CNT STA"');
+	$r->headers_out->set('MSIE', 'Sucks the goats balls!');    
+	$r->headers_out->set("Set-Cookie", new CGI::Cookie(-name=>'SID', -value=>getSessionID, -path=>'/'));
+
+	if ($r->uri ne '/hal/nocookie') {
+	    l "Redirecting away from ".$r->uri;
+
+	    getSession()->{wanted} = $r->uri;
+	    $internal = outputGoto('/hal/nocookie');
+	}
+    }
+
+    # Call the actual handler.
     my $t0 = gettimeofday;
-    my $res = callHandler($r,$q,$p);
+    my $res = $internal || callHandler($r,$q,$p);
     my $time = int(1000*(gettimeofday-$t0));
-    
-#       print STDERR Dumper $res;
+
     if (ref($res) eq 'HASH') {
 	$res->{code} ||= Apache2::Const::OK;
 	$res->{mime} ||= 'text/html';
@@ -85,7 +110,7 @@ sub dispatchRequest($) {
 	    }
 	    
 	} elsif ($res->{goto}) {                        
-	    print STDERR "Bouncing user to: $res->{goto}\n";
+	    l "Bouncing user to: $res->{goto}\n";
 	    $r->headers_out->set(Location => $res->{goto});
 	    $r->status(Apache2::Const::REDIRECT);  
 	    return Apache2::Const::REDIRECT;
@@ -116,12 +141,16 @@ sub handler {
 	return dispatchRequest($r);
     };
     if ($@) {
+	dbRollback;
 	$r->content_type('text/plain');
 	print "Something went wrong, please examine the error log for details\n\n";
 	print $@ if testMode;
 	
 	print STDERR "Something went wrong:\n";
 	print STDERR $@;
+    } else {
+	storeSession if getSessionID; 
+	dbCommit;
     }
     
     return Apache2::Const::OK;

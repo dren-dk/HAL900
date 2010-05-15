@@ -2,10 +2,27 @@
 package HAL::Pages;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(l addHandler callHandler outputGoto outputRaw outputNotFound outputHtml);
+@EXPORT = qw(l db dbCommit dbRollback addHandler callHandler outputGoto outputRaw outputNotFound outputHtml);
 use strict;
 use warnings;
 use Data::Dumper;
+use HAL::DB;
+
+my $db;
+sub db {
+    $db = new HAL::DB unless $db;
+    return $db;
+}
+
+sub dbCommit {
+    $db->dbh->commit if $db;
+    $db = undef;
+}
+
+sub dbRollback {
+    $db->dbh->rollback if $db;
+    $db = undef;
+}
 
 sub l {
     push @_, "\n", unless @_[@_-1] =~ /\n$/;
@@ -30,6 +47,7 @@ sub callHandler($$$) {
 
     for my $h (@handlers) {
 	if (my @match = $r->uri =~ m/$h->{regexp}/) {
+#	    l "Found handler: $h->{regexp} for ".$r->{uri};
 	    return $h->{handler}->($r,$q,$p, @match);
 	}
     }

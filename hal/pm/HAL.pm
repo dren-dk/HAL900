@@ -5,6 +5,7 @@ require Exporter;
 @EXPORT = qw(setTestMode testMode HALRoot setHALRoot);
 
 use strict;
+use warnings;
 
 my $testMode = 0;
 sub setTestMode($) {

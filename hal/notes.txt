@@ -1,13 +1,15 @@
 TODO:
 
-Create database
-Create mod_perl bootstrap
-Session management
+Done: Create database
+Done: Create mod_perl bootstrap
+Done: Session management
+
+Register user
+Edit self
 
 Login page
 Admin: Import csv
 
-Register user
 Confirm email to continue
 
 Admin: Categorize bank transactions -> turn into actual transactions

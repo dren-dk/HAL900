@@ -49,7 +49,7 @@ sub htmlPageWithMenu($$$) {
     }
     $opt->{title} ||= ''; # No title?
 
-    my $logo = '<img src="/hal/hal-100.png" alt="HAL 900"/>';
+    my $logo = '<img src="/hal-static/hal-100.jpeg" alt="HAL 900" title="What are you doing, Dave?"/>';
     $logo = qq'<a href="/hal/" id="logo" title="Back to the front page">$logo</a>' unless $opt->{dontLinkLogo};
     
     my $feed = '';

@@ -2,7 +2,7 @@
 package HAL;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(setTestMode testMode HALRoot setHALRoot);
+@EXPORT = qw(setTestMode testMode HALRoot setHALRoot emailSalt setEmailSalt);
 
 use strict;
 use warnings;
@@ -26,5 +26,13 @@ sub HALRoot() {
     return $HALRoot ? $HALRoot : setHALRoot($FindBin::Bin);
 }
 
+my $emailSalt = "secret";
+sub emailSalt() {
+    return $emailSalt;
+}
+
+sub setEmailSalt($) {
+    $emailSalt=shift;
+}
 
 42;

@@ -6,6 +6,7 @@ require Exporter;
 use strict;
 use warnings;
 use POSIX;
+use utf8;
 
 sub htmlPage($$;$) {
     my ($title, $body, $opt) = @_;
@@ -28,6 +29,7 @@ sub htmlPage($$;$) {
          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>$title</title>$headers
   <style type="text/css">\@import "/hal-static/style.css";</style>
 </head><body>

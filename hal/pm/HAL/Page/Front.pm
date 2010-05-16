@@ -2,8 +2,17 @@
 package HAL::Page::Front;
 use strict;
 use warnings;
+use utf8;
+
+use HTML::Entities;
+use Email::Valid;
+use Digest::SHA qw(sha1_hex);
+
+use HAL;
 use HAL::Pages;
 use HAL::Session;
+use HAL::Util;
+use HAL::Email;
 
 sub outputFrontPage($$$;$) {
     my ($cur, $title, $body, $feed) = @_;
@@ -48,8 +57,15 @@ sub outputFrontPage($$$;$) {
 sub index {
     my ($r,$q,$p) = @_;
 
-    return outputFrontPage("index", "Front page", 
-			   "<p>Velkommen til HAL:900, OSAAs medlemsdatabase som holder styr på medlemmer, økonomi og adgangskontrol.</p>");
+    my $content = "<p>Velkommen til HAL:900, OSAAs medlemsdatabase som holder styr på medlemmer, økonomi og adgangskontrol.</p>";
+
+    open T, ">/tmp/text.html";
+    binmode(T, ':utf8' );
+    print T "This is ".(utf8::is_utf8($content)?'Unicode':'not unicode')."\n";
+    print T $content;
+    close T;
+
+    return outputFrontPage("index", "Velkommen", $content);
 }
 
 sub notFound {
@@ -80,7 +96,7 @@ sub textInput {
     my ($title, $lead, $name, $p) = @_;
 
     my $v = $p->{$name} || '';
-    my $e = entity_encode($v);
+    my $e = encode_entities($v);
     return qq'
 <h4>$title</h4>
 <p class="lead">$lead</p>
@@ -90,14 +106,40 @@ sub textInput {
 
 sub newUser {
     my ($r,$q,$p) = @_;
-    
-    
 
-    my $form = qq'
-<form method="POST" target="/hal/new">
+    my $error = '';
+    if ($p->{email}) {
+
+	if (eval { Email::Valid->address(-address => $p->{email},-mxcheck => 1) }) {
+
+	    my $ue = escape_url($p->{email});
+	    my $key = sha1_hex($p->{email}.emailSalt());	    
+	    
+	    my $email = sendmail('register@openspaceaarhus.dk', $p->{email},
+				 'Fortsæt Open Space Aarhus registreringen',
+"Klik her for at fortsætte registreringen som medlem af Open Space Aarhus:
+https://openspaceaarhus.dk/hal/continue?email=$ue&key=$key&ex=42
+
+Hvis det ikke er dig der har startet oprettelsen af et medlemsskab hos OSAA,
+så kan du enten ignorere denne mail eller sende os en mail på: dave\@osaa.dk
+"
+		);
+
+	    return outputFrontPage("new", "Opret nyt medlemsskab", 
+				   "<p>Tak, vi har nu sendt en mail til ".encode_entities($p->{email}).
+				   " med et link til resten af registreringen.</p>");
+	} else {
+	    $error = 'Mail adressen virker ikke.';	    
+	}
+    }
+   
+    my $form = qq'<form method="POST" action="/hal/new">';
+    $form .= textInput("Email", "Din email adresse", 'email', $p);
+    $form .= qq'<p class="error">$error</p>' if $error;
+
+    $form .= '
 <input type="submit" value="Videre">
-</form>
-    ';
+</form>';
 
     return outputFrontPage("new", "Opret nyt medlemsskab", $form);
 }

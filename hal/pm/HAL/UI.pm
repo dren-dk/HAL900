@@ -1,4 +1,7 @@
 package HAL::UI;
+use strict;
+use warnings;
+use utf8;
 
 use Apache2::RequestRec ();
 use Apache2::RequestIO ();
@@ -40,7 +43,13 @@ sub loadDir {
     }
 }
 
-sub bootStrap() {
+sub bootStrap($) {
+    my ($p) = @_;
+
+    setTestMode($p->{test});
+    setHALRoot($p->{root});
+    setEmailSalt($p->{salt}||'secret');
+
     loadDir(HALRoot().'/pm/HAL/Page');
 }
 
@@ -101,7 +110,7 @@ sub dispatchRequest($) {
 	$res->{type} ||= 'menu';
 	
 	if ($res->{type} eq 'menu') {
-	    $res->{mime} = 'text/html';
+	    $res->{mime} = 'text/html; charset=UTF-8';
 	    $res->{content} = htmlPageWithMenu($res->{opt}, $res->{items}, $res->{body});
 	    
 	} elsif ($res->{type} eq 'raw') {                       
@@ -120,6 +129,7 @@ sub dispatchRequest($) {
 	}
 	
 	$r->content_type($res->{mime});
+	binmode(STDOUT, ':utf8' );
 	print $res->{content};
 	$r->status($res->{code}) if $res->{code};  
 	return $res->{code};

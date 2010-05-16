@@ -2,11 +2,12 @@
 package HAL::Pages;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(l db dbCommit dbRollback addHandler callHandler outputGoto outputRaw outputNotFound outputHtml);
+@EXPORT = qw(l db dbCommit dbRollback addHandler callHandler outputGoto outputRaw outputNotFound outputHtml textInput formInput areaInput);
 use strict;
 use warnings;
 use Data::Dumper;
 use HAL::DB;
+use HTML::Entities;
 
 my $db;
 sub db {
@@ -94,5 +95,52 @@ sub outputHtml($$) {
 qq'<html><head><title>$title</title></head>
 <body><h1>$title</h1>$body</body></html>');     
 }
+
+sub textInput {
+    my ($title, $lead, $name, $p, $validator) = @_;
+
+    my $v = $p->{$name} || '';
+
+    my $error = '';
+    if (defined $p->{$name} and $validator) {
+	$error = $validator->($v,$p,$name);
+	if ($error) {
+	    $error = qq'<p class="error">$error</p>';
+	}
+    }
+
+    my $e = encode_entities($v);
+    return qq'
+<h4>$title</h4>
+<p class="lead">$lead</p>
+<input type="text" name="$name" size="50" value="$e">
+$error
+';
+}
+
+sub areaInput {
+    my ($title, $lead, $name, $p, $validator) = @_;
+
+    my $v = $p->{$name} || '';
+
+    my $error = '';
+    if (defined $p->{$name} and $validator) {
+	$error = $validator->($v,$p,$name);
+	if ($error) {
+	    $error = qq'<p class="error">$error</p>';
+	}
+    }
+
+    my $e = encode_entities($v);
+    return qq'
+<h4>$title</h4>
+<p class="lead">$lead</p>
+<textarea name="$name" cols="50" rows="4">
+$e
+</textarea>
+$error
+';
+}
+
 
 42;

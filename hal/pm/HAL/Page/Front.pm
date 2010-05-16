@@ -59,12 +59,6 @@ sub index {
 
     my $content = "<p>Velkommen til HAL:900, OSAAs medlemsdatabase som holder styr på medlemmer, økonomi og adgangskontrol.</p>";
 
-    open T, ">/tmp/text.html";
-    binmode(T, ':utf8' );
-    print T "This is ".(utf8::is_utf8($content)?'Unicode':'not unicode')."\n";
-    print T $content;
-    close T;
-
     return outputFrontPage("index", "Velkommen", $content);
 }
 
@@ -92,18 +86,6 @@ sub noCookie {
       "<p>You seem to have turned off cookie support, fix it KTHXBAI.</p>");
 }
 
-sub textInput {
-    my ($title, $lead, $name, $p) = @_;
-
-    my $v = $p->{$name} || '';
-    my $e = encode_entities($v);
-    return qq'
-<h4>$title</h4>
-<p class="lead">$lead</p>
-<input type="text" name="$name" size="50" value="$e">
-';
-}
-
 sub newUser {
     my ($r,$q,$p) = @_;
 
@@ -118,7 +100,7 @@ sub newUser {
 	    my $email = sendmail('register@openspaceaarhus.dk', $p->{email},
 				 'Fortsæt Open Space Aarhus registreringen',
 "Klik her for at fortsætte registreringen som medlem af Open Space Aarhus:
-https://openspaceaarhus.dk/hal/continue?email=$ue&key=$key&ex=42
+https://openspaceaarhus.dk/hal/create?email=$ue&key=$key&ex=42
 
 Hvis det ikke er dig der har startet oprettelsen af et medlemsskab hos OSAA,
 så kan du enten ignorere denne mail eller sende os en mail på: dave\@osaa.dk

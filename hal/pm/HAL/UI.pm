@@ -14,6 +14,7 @@ use CGI;
 use CGI::Cookie;
 use Time::HiRes qw(gettimeofday);
 #use HTTP::BrowserDetect;
+use Encode;
 
 use HAL;
 use HAL::Pages;
@@ -67,7 +68,7 @@ sub dispatchRequest($) {
     
     my $p = {};
     for my $n ($q->param) {
-	$p->{$n} = $q->param($n);
+	$p->{$n} = Encode::decode_utf8($q->param($n));
     }
     for my $i (0..@uri-1) {
 	$p->{"p$i"} = $uri[$i];
@@ -92,9 +93,9 @@ sub dispatchRequest($) {
 	$r->headers_out->set("Set-Cookie", new CGI::Cookie(-name=>'SID', -value=>getSessionID, -path=>'/'));
 
 	if ($r->uri ne '/hal/nocookie') {
-	    l "Redirecting away from ".$r->uri;
+	    l "Redirecting away from uri to get cookie: ".$r->unparsed_uri;
 
-	    getSession()->{wanted} = $r->uri;
+	    getSession()->{wanted} = $r->unparsed_uri;
 	    $internal = outputGoto('/hal/nocookie');
 	}
     }

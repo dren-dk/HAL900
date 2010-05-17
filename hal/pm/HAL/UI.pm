@@ -100,6 +100,11 @@ sub dispatchRequest($) {
 	}
     }
 
+    if (!$internal and !canAccess($r->uri)) {
+	getSession()->{wanted} = $r->unparsed_uri;
+	$internal = outputGoto('/hal/login');
+    }
+
     # Call the actual handler.
     my $t0 = gettimeofday;
     my $res = $internal || callHandler($r,$q,$p);
@@ -120,7 +125,7 @@ sub dispatchRequest($) {
 	    }
 	    
 	} elsif ($res->{goto}) {                        
-	    l "Bouncing user to: $res->{goto}\n";
+#	    l "Bouncing user to: $res->{goto}\n";
 	    $r->headers_out->set(Location => $res->{goto});
 	    $r->status(Apache2::Const::REDIRECT);  
 	    return Apache2::Const::REDIRECT;

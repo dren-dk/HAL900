@@ -50,6 +50,7 @@ sub dbh($) {
     return $cachedDbh = DBI->connect("dbi:Pg:dbname=hal;port=5433",
 				     'hal', 'hal900', {
 					 AutoCommit => $self->{autocommit},
+					 pg_enable_utf8=>1,
 				     }) or confess "Unable to connect to the database";
 }
 

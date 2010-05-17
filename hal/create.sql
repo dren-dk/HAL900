@@ -44,9 +44,11 @@ create table member (
        created timestamp default now(),
        updated timestamp default now(),
 
+       membertype_id integer references membertype(id),
+
        username varchar(50) unique,
        email varchar(50) unique,
-       passwd varchar(50), /* sha1 of "$id-$password" */       
+       passwd varchar(100), /* sha256 - reverse that! */
 
        phone varchar(20),
        realname varchar(50),

@@ -2,7 +2,7 @@
 package HAL::Session;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(loadSession storeSession newSession getSession getSessionID);
+@EXPORT = qw(loadSession storeSession newSession getSession getSessionID ensureAdmin ensureLogin ensureDoor canAccess loginSession logoutSession isLoggedIn isAdmin);
 
 use strict;
 use warnings;
@@ -70,3 +70,65 @@ sub newSession() {
     %session = ();
     db->sql("insert into websession (id, datablob) values (?, '')", $sessionID);
 }
+
+my %secure;
+sub ensureLogin($) {
+    my ($rx) = @_;
+    $secure{qr/$rx/} = 'login';
+}
+
+sub ensureAdmin($) {
+    my ($rx) = @_;
+    $secure{qr/$rx/} = 'admin';    
+}
+
+sub ensureDoor($) {
+    my ($rx) = @_;
+    $secure{qr/$rx/} = 'door';    
+}
+
+sub canAccess($) {
+    my ($uri) = @_;
+
+    for my $s (keys %secure) {
+	if ($uri =~ m/$s/) {
+
+	    return 0 unless $session{member_id};
+	    return 2 if index($session{access}||'', $secure{$s}) >= 0;
+	    return 0;
+	}
+    }
+    return 1;
+}
+
+sub isLoggedIn() {
+    return $session{member_id};    
+}
+
+sub isAdmin() {
+    return 2 if index($session{access}||'', 'admin') >= 0;   
+}
+
+sub loginSession($) {
+    my ($member_id) = @_;
+
+    my $ares = db->sql("select id, doorAccess, adminAccess, realname from member where id=?", $member_id);
+    my ($id, $door, $admin, $name) = $ares->fetchrow_array;
+    $ares->finish;
+
+    die "Invalid member_id passed to loginSession: $member_id" unless $id and $id == $member_id;
+
+    $session{member_id} = $id;
+    $session{access} = 'login';
+    $session{access} .= ',door' if $door;
+    $session{access} .= ',admin' if $admin;
+    $session{name} = $name;
+}
+
+sub logoutSession() {
+    delete $session{access};
+    delete $session{member_id};
+    delete $session{name};
+}
+
+37;

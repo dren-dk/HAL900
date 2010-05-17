@@ -2,7 +2,7 @@
 package HAL::Pages;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(l db dbCommit dbRollback addHandler callHandler outputGoto outputRaw outputNotFound outputHtml textInput formInput areaInput);
+@EXPORT = qw(l db dbCommit dbRollback addHandler callHandler outputGoto outputRaw outputNotFound outputHtml textInput formInput areaInput passwdInput2 passwdInput radioInput);
 use strict;
 use warnings;
 use Data::Dumper;
@@ -45,7 +45,7 @@ sub addHandler($$;$) {
 
 sub callHandler($$$) {
     my ($r, $q, $p) = @_;
-
+    
     for my $h (@handlers) {
 	if (my @match = $r->uri =~ m/$h->{regexp}/) {
 #	    l "Found handler: $h->{regexp} for ".$r->{uri};
@@ -118,6 +118,28 @@ $error
 ';
 }
 
+sub passwdInput {
+    my ($title, $lead, $name, $p, $validator) = @_;
+
+    my $v = $p->{$name} || '';
+
+    my $error = '';
+    if (defined $p->{$name} and $validator) {
+	$error = $validator->($v,$p,$name);
+	if ($error) {
+	    $error = qq'<p class="error">$error</p>';
+	}
+    }
+
+    my $e = encode_entities($v);
+    return qq'
+<h4>$title</h4>
+<p class="lead">$lead</p>
+<input type="password" name="$name" size="50" value="">
+$error
+';
+}
+
 sub areaInput {
     my ($title, $lead, $name, $p, $validator) = @_;
 
@@ -138,6 +160,56 @@ sub areaInput {
 <textarea name="$name" cols="50" rows="4">
 $e
 </textarea>
+$error
+';
+}
+
+sub passwdInput2 {
+    my ($title, $lead, $name, $p, $validator) = @_;
+
+    my $v = $p->{$name} || '';
+
+    my $error = '';
+    if (defined $p->{$name} and $validator) {
+	$error = $validator->($v,$p,$name);
+	if ($error) {
+	    $error = qq'<p class="error">$error</p>';
+	}
+    }
+
+    my $e = encode_entities($v);
+    return qq'
+<h4>$title</h4>
+<p class="lead">$lead</p>
+<input type="password" name="$name" size="20" value=""><input type="password" name="${name}_confirm" size="20" value="">
+$error
+';
+}
+
+sub radioInput {
+    my ($title, $lead, $name, $p, $validator, @options) = @_;
+
+    my $v = $p->{$name} || '';
+
+    my $error = '';
+    if (defined $p->{"${name}_check"} and $validator) {
+	$error = $validator->($v,$p,$name);
+	if ($error) {
+	    $error = qq'<p class="error">$error</p>';
+	}
+    }
+
+    my $buttons = join '<br>', map {
+	my $checked = $_->{key} eq $v ? ' checked' : '';
+	qq'<input type="radio" name="$name" value="$_->{key}"$checked>$_->{name}</input>'
+    } @options;
+
+    my $e = encode_entities($v);
+    return qq'
+<h4>$title</h4>
+<p class="lead">$lead</p>
+<input type="hidden" name="${name}_check" value="1">
+$buttons
 $error
 ';
 }

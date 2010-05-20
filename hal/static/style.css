@@ -89,6 +89,7 @@
 
 body {
  background-color: #000;
+ font-family: sans-serif;
 }
 
 #main { 
@@ -534,4 +535,29 @@ div.prev-popper:hover div.prev-popper-content {
 
   background-color: #fff;
   border:2px solid #000;  
+}
+
+
+div.floaty {
+    float: left;
+    width: 20em;
+    border-width: 1px;
+    border-color: #999999;
+    font-size: 13px;
+    left-padding: 10px;
+}
+
+div.floaty h2 {
+    font-size: 14px;
+}
+
+#logout {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  width: 20em;
+  padding: 5px;
+  font-size: 10px;
+  background-color: white;
+  color: black;  
 }

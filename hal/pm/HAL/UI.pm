@@ -7,6 +7,7 @@ use Apache2::RequestRec ();
 use Apache2::RequestIO ();
 use Apache2::Const -compile => qw(OK NOT_FOUND REDIRECT);
 use Apache2::SizeLimit;
+use Apache2::Connection;
 
 use APR::Table ();
 use Data::Dumper;
@@ -57,7 +58,9 @@ sub bootStrap($) {
 
 sub dispatchRequest($) {
     my ($r) = @_;
-    
+
+    setCurrentIP($r->connection->remote_ip());
+
     Apache2::SizeLimit::setmax(300000, $r);
     
     my $q = CGI->new($r);
@@ -86,7 +89,12 @@ sub dispatchRequest($) {
 	loadSession($cookies{SID}->value) if $cookies{SID};
     }
 
-    if (!getSessionID) {
+    if (getSessionID) {
+	if (isLoggedIn) {
+	    setCurrentUser("id:".getSession->{member_id});
+	}
+
+    } else {
 	newSession();		
 	$r->headers_out->set('P3P', 'CP="CAO ADM OUR IND PHY ONL PUR NAV DEM CNT STA"');
 	$r->headers_out->set('MSIE', 'Sucks the goats balls!');    

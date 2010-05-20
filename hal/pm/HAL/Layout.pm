@@ -7,6 +7,7 @@ use strict;
 use warnings;
 use POSIX;
 use utf8;
+use HAL::Session;
 
 sub htmlPage($$;$) {
     my ($title, $body, $opt) = @_;
@@ -64,8 +65,13 @@ sub htmlPageWithMenu($$$) {
 </ul>
         </span></span></div>
 ';
-#  <li class="feeditem"><a href="$opt->{feed}/feed.atom" title="Subscribe to the newsfeed using Atom">Atom feed</a></li>
     }
+
+    if (isLoggedIn()) {
+	my $name = getSession->{name};
+	$feed .= qq'<div id="logout"><strong>Bruger: </strong><a href="/hal/account/">$name</a> - [<a href="/hal/account/logout">Log af</a>]</div>';
+    }
+
     my $title;
     my $titleHtml = '';
     my $titleClass = '';

@@ -125,10 +125,10 @@ sub newUser {
 
 	    my $key = sha1_hex($p->{email}.emailSalt());	    
 	    
-	    my $email = sendmail('register@openspaceaarhus.dk', $p->{email},
+	    my $email = sendmail('register@hal.osaa.dk', $p->{email},
 				 'Fortsæt Open Space Aarhus registreringen',
 "Klik her for at fortsætte registreringen som medlem af Open Space Aarhus:
-https://openspaceaarhus.dk/hal/create?email=$ue&key=$key&ex=42
+https://hal.osaa.dk/hal/create?email=$ue&key=$key&ex=42
 
 Hvis det ikke er dig der har startet oprettelsen af et medlemsskab hos OSAA,
 så kan du enten ignorere denne mail eller sende os en mail på: dave\@osaa.dk
@@ -203,6 +203,12 @@ sub loginUser($$$) {
 	    } else {
 		sleep(1+rand(10));
 		$form .= "<p>Hmm, enten er der ingen bruger med det navn, eller også er koden forkert, prøv igen.</p>";
+		if ($id) {
+		    l "Failed login, wrong password for user id $id: $p->{username}";
+
+		} else {
+		    l "Failed login, wrong user id: $p->{username}";
+		}
 	    }
 	}	    
 
@@ -215,11 +221,11 @@ sub loginUser($$$) {
 	    my $key = sha1_hex($p->{username}.$passwd);
 	    my $ue = escape_url($p->{username});
     
-	    my $email = sendmail('passwordreset@openspaceaarhus.dk', $p->{username},
+	    my $email = sendmail('passwordreset@hal.osaa.dk', $p->{username},
 				 'Nyt password til Open Space Aarhus medlemsdatabasen',
 "En eller anden, måske dig, har bedt om at du skal have tilsendt et nyt password,
 hvis du ønsker at få et nyt password kan du få dit gamle password nulstillet her:
-https://openspaceaarhus.dk/hal/reset?email=$ue&key=$key&ex=43
+https://hal.osaa.dk/hal/reset?email=$ue&key=$key&ex=43
 
 Hvis det ikke er dig der har glemt dit password kan du roligt ignorere denne mail,
 din konto er ikke blevet ændret.
@@ -231,6 +237,7 @@ din konto er ikke blevet ændret.
 	} else {
 	    sleep(1+rand(10));
 	    $form .= "<p>Hmm, der ser ikke ud til at være en bruger med den email adresse, prøv igen.</p>";
+	    l "Failed password reset, wrong user id: $p->{username}";
 	}
     }
     

@@ -2,7 +2,7 @@
 package HAL::Pages;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(l db dbCommit dbRollback addHandler callHandler outputGoto outputRaw outputNotFound outputHtml textInput formInput areaInput passwdInput2 passwdInput radioInput);
+@EXPORT = qw(l db dbCommit dbRollback addHandler callHandler outputGoto outputRaw outputNotFound outputHtml textInput formInput areaInput passwdInput2 passwdInput radioInput setCurrentIP setCurrentUser);
 use strict;
 use warnings;
 use Data::Dumper;
@@ -25,9 +25,22 @@ sub dbRollback {
     $db = undef;
 }
 
+my $currentUser = '';
+my $currentIP = '';
+sub setCurrentIP {
+    $currentIP = shift;
+    $currentUser = '';
+}
+
+sub setCurrentUser {
+    $currentUser = shift;
+}
+
 sub l {
     push @_, "\n", unless @_[@_-1] =~ /\n$/;
-    print STDERR 'HAL ', scalar(localtime), ' ', @_;
+    my $id = $currentIP;
+    $id = "$id($currentUser)" if $currentUser;
+    print STDERR 'HAL ', scalar(localtime),' ', $id,' ' , @_;
 }
 
 my @handlers;

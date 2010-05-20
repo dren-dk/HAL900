@@ -4,6 +4,8 @@
  psql -U hal < create.sql
 
  ... or pg_restore -d hal -U hal -c latest.pg 
+
+Also remember: sudo apt-get install libemail-valid-perl
 */
 
 begin transaction;

@@ -72,20 +72,25 @@ sub indexPage {
     $smail =~ s/[\n\r]+/<br>/g;
 
     my $html = qq'
+<div class="floaty">
 <h2>Navn og adresse [<a href="/hal/account/details">Ret</a>]</h2>
 <p>$realname<br>
 $smail<br>
-</p>
-<p>
 Tlf. $phone
 </p>
+</div>
 
+<div class="floaty">
 <h2>Email [<a href="/hal/account/email">Ret</a>]</h2>
 <p>$email</p>
+</div>
 
+<div class="floaty">
 <h2>Medlems type [<a href="/hal/account/type">Ret</a>]</h2>
 <p>$memberType ($monthlyFee kr/måned)</p>
+</div>
 
+<div class="floaty">
 <h2>Privilegier</h2>
 <ul>
 ';
@@ -96,7 +101,7 @@ Tlf. $phone
 	   ? '<li>Du kan ikke låse døren til lokalerne op, kontakt <a href="mailto:kasseren@osaa.dk">kasseren@osaa.dk</a></li>'
 	   : '<li>Du kan ikke låse døren til lokalerne op, <a href="/hal/account/type">opgrader til betalende medlem</a></li>';
     $html .= $adminAccess ? '<li>Du kan administrere systemet</li>' : '';
-    $html .= "</ul>\n";
+    $html .= "</ul></div>\n";
 
     return outputAccountPage('index', 'Oversigt', $html);
 }
@@ -108,10 +113,148 @@ sub logoutPage {
     return outputGoto('/hal/');
 }
 
+sub emailPage {
+    my ($r,$q,$p) = @_;
+
+    my $html = '';
+
+    $html = qq'<form method="POST" action="/hal/account/email">';
+
+    my $errors = 0;
+
+    $html .= textInput("Email",
+		       "Indtast din nye email adresse, vi sender en mail til adressen med et link du skal klikke på for at fortsætte.",
+		       'email', $p, sub {
+	my ($v,$p,$name) = @_;
+	if (length($v)<2) {
+	    $errors++;
+	    return "Din email adresse kan da umuligt være så kort";
+	}
+
+	my $res = db->sql("select count(*) from member where email = ?", $p->{email});
+	my ($inuse) = $res->fetchrow_array;
+	$res->finish;
+	my $ue = escape_url($p->{email});
+
+	if ($inuse) {
+	    $errors++;
+	    return qq'Mail adressen er allerede i brug.';
+
+	} elsif (!eval { Email::Valid->address(-address => $p->{email},-mxcheck => 1) }) {
+	    $errors++;
+	    return qq'Mail adressen er ugyldig, prøv igen.';	    
+	}	
+
+	return "";
+    });
+
+    $html .= '
+<hr>
+<input type="submit" name="gogogo" value="Skift til denne email adresse!">
+</form>';
+
+    if ($p->{gogogo}) {
+	if ($errors) {
+	    $errors = "en" if $errors == 1;
+	    $html .= "<p>Hovsa, der er $errors fejl!</p>";
+
+	} else {
+	    my $uRes = (db->sql('select username,email,passwd from member where id=?', getSession->{member_id}));
+	    my ($userName, $oldMail, $passwd) = $uRes->fetchrow_array;
+	    $uRes->finish;
+
+	    my $key = sha1_hex($p->{email}.$passwd);
+	    my $ue = escape_url($p->{email});
+	    my $uu = escape_url($userName);
+    
+	    my $email = sendmail('changeemail@hal.osaa.dk', $p->{username},
+				 'Skift af email for dit Open Space Aarhus medlemsskab',
+"En eller anden, måske dig, har bedt om at skifte din email adresse fra $oldMail til $p->{email}.
+Hvis du ønsker at skifte til den nye adresse klik her:
+https://hal.osaa.dk/hal/account/confirmemail?user=$uu&email=$ue&key=$key&ex=44
+
+Hvis det ikke er dig der har bedt om at få denne mail kan du roligt ignorere denne mail,
+hvis du er medlem af OSAA er din konto er ikke blevet ændret.
+"
+		);
+	    l "Email-change: $oldMail -> $p->{email}: https://hal.osaa.dk/hal/account/confirmemail?user=$uu&email=$ue&key=$key&ex=44";
+
+	    sendmail('changeemail@hal.osaa.dk', $p->{username},
+				 'Skift af email for dit Open Space Aarhus medlemsskab',
+"En eller anden, måske dig, har bedt om at skifte din email adresse fra $oldMail til $p->{email}.
+
+Hvis det ikke er dig der har bedt om at skifte mail adresse, så har nogen fået adgang til din
+konto og du bør logge ind og skifte dit password, lige nu.
+
+Når du har skiftet dit password så kontakt bestyrelsen\@osaa.dk for at få undersøgt problemet.
+"
+		);
+	    
+	    $html .= "<p>Nu er der blevet sent en mail til dig med et link i, klik på linket for at skifte email adresse.</p>";	    
+	}
+    }
+
+    return outputAccountPage('email', 'Skift email', $html);
+}
+
+sub emailConfirmPage {
+    my ($r,$q,$p) = @_;
+
+    my $uRes = (db->sql('select id,email,passwd from member where username=?', $p->{user}));
+    my ($id, $oldMail, $passwd) = $uRes->fetchrow_array;
+    $uRes->finish;
+
+    if ($id != getSession->{member_id}) {
+	logoutSession();
+	getSession()->{wanted} = $r->unparsed_uri;
+	return outputGoto("/hal/login");
+    }
+
+    my $key = sha1_hex($p->{email}.$passwd);
+    if ($key ne $p->{key}) {
+	l "Invalid key for email change from $oldMail to $p->{email}";
+	return outputGoto("/hal/account");	
+    } elsif ($p->{gogogo} and $p->{doit}) {
+
+	if (db->sql('update member set email=? where id=?', $p->{email}, $id)) {
+	    
+	    return outputGoto('/hal/account/');
+	} else {
+	    
+	    return outputGoto('/hal/account/');
+	    l "Failed to change email address";
+	}	
+    }
+    
+    my $html = '<form method="POST" action="/hal/account/confirmemail">';
+
+    $html .= encode_hidden({
+	 email=>$p->{email},
+	 key=>$p->{key},
+	 user=>$p->{user},	 
+    });
+
+    $html .= qq'
+<p>
+For at skifte din mail adresse sæt kryds her og tryk skift min mail knappen.
+</p>
+
+<input type="checkbox" value="18" name="doit">Skift min email adresse fra $oldMail til <strong>$p->{email}</strong>
+
+<hr>
+<input type="submit" name="gogogo" value="Skift til denne email adresse!">
+</form>';
+
+    return outputAccountPage('email', 'Skift email', $html);
+}
+
+
 BEGIN {
     ensureLogin(qr'^/hal/account');
     addHandler(qr'^/hal/account/?$', \&indexPage);
-    addHandler(qr'^/hal/account/logout?$', \&logoutPage);
+    addHandler(qr'^/hal/account/logout$', \&logoutPage);
+    addHandler(qr'^/hal/account/email$', \&emailPage);
+    addHandler(qr'^/hal/account/confirmemail$', \&emailConfirmPage);
 }
 
 42;

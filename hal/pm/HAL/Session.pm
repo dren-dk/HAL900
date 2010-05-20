@@ -102,10 +102,12 @@ sub canAccess($) {
 }
 
 sub isLoggedIn() {
+    return 0 unless $sessionID;
     return $session{member_id};    
 }
 
 sub isAdmin() {
+    return 0 unless $sessionID;
     return 2 if index($session{access}||'', 'admin') >= 0;   
 }
 

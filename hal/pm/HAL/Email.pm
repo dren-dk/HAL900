@@ -17,7 +17,7 @@ sub sendmail {
     my ($from, $to, $subject, $mail, $id) = @_;
     my $sender = '';
     if ($id) {
-	$sender = "bouncer-$id\@openspaceaarhus.dk";
+	$sender = "bouncer-$id\@hal.osaa.dk";
     } else {
 	$id = 'none';
 	$sender = $from;

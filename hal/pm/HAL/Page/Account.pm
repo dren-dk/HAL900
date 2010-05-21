@@ -248,12 +248,86 @@ For at skifte din mail adresse sæt kryds her og tryk skift min mail knappen.
     return outputAccountPage('email', 'Skift email', $html);
 }
 
+sub passwdPage {
+    my ($r,$q,$p) = @_;
+
+    my $uRes = (db->sql('select passwd,username from member where id=?', getSession->{member_id}));
+    my ($passwd, $username) = $uRes->fetchrow_array;
+    $uRes->finish;
+
+    my $key = sha1_hex($passwd);
+
+    my $form = qq'
+<p>Denne side kan skifte dit password, hvis du ikke ønsker at skifte dit password skal du blot forlade siden.</p>
+<form method="POST" action="/hal/account/passwd">';
+    $form .= encode_hidden({
+	 key=>$key,
+    });
+
+    my $errors = 0;
+    $form .= passwdInput2("Password",
+		       "Dit password som skal give dig adgang til dette system.",
+		       'passwd', $p, sub {
+	my ($v,$p,$name) = @_;
+	if (length($v)<6) {
+	    $errors++;
+	    return "Dit password skal være mindst 6 tegn langt";
+	}
+	if ($v !~ /[A-ZÆØÅ]/) {
+	    $errors++;
+	    return "Dit password skal indeholde mindst et stort bogstav";
+	}
+	if ($v !~ /[a-zæøå]/) {
+	    $errors++;
+	    return "Dit password skal indeholde mindst et lille bogstav";
+	}
+	if ($v !~ /\d/) {
+	    $errors++;
+	    return "Dit password skal indeholde mindst et tal";
+	}
+	if (index(lc($v), lc($username)) >= 0) {
+	    $errors++;
+	    return "Dit password må ikke indeholde dit brugernavn";
+	}
+	if (index(lc($v), 'osaa') >= 0) {
+	    $errors++;
+	    return "Dit password må ikke indeholde osaa";
+	}
+	if ($v ne $p->{"${name}_confirm"}) {
+	    $errors++;
+	    return "De to passwords skal være ens";
+	}
+
+	return "";
+    });
+
+    $form .= '
+<hr>
+<input type="submit" name="gogogo" value="Skift mit password!">
+</form>';
+
+    if ($p->{gogogo} and $key eq $p->{key}) {
+	if ($errors) {
+	    $errors = "en" if $errors == 1;
+	    $form .= "<p>Hovsa, der er $errors fejl!</p>";
+	} else {
+	    if (db->sql('update member set passwd=? where id=?', passwordHash($p->{passwd}), getSession->{member_id})) {
+		$form = "<p>Dit password er blevet skiftet.</p>";
+	    } else {
+		$form .= "<p>Hovsa, noget gik galt, prøv igen.</p>";		
+	    }
+	}	    
+    }
+
+    return outputAccountPage('passwd', 'Skift Password', $form);
+}
 
 BEGIN {
     ensureLogin(qr'^/hal/account');
     addHandler(qr'^/hal/account/?$', \&indexPage);
     addHandler(qr'^/hal/account/logout$', \&logoutPage);
     addHandler(qr'^/hal/account/email$', \&emailPage);
+    addHandler(qr'^/hal/account/passwd$', \&passwdPage);
     addHandler(qr'^/hal/account/confirmemail$', \&emailConfirmPage);
 }
 

@@ -33,6 +33,7 @@ sub htmlPage($$;$) {
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>$title</title>$headers
   <style type="text/css">\@import "/hal-static/style.css";</style>
+  <link rel="shortcut icon" href="/hal-static/hal-100.jpeg"> 
 </head><body>
 $body
 </body></html>';

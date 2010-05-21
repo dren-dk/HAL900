@@ -114,8 +114,8 @@ sub isAdmin() {
 sub loginSession($) {
     my ($member_id) = @_;
 
-    my $ares = db->sql("select id, doorAccess, adminAccess, realname from member where id=?", $member_id);
-    my ($id, $door, $admin, $name) = $ares->fetchrow_array;
+    my $ares = db->sql("select id, doorAccess, adminAccess, realname, username from member where id=?", $member_id);
+    my ($id, $door, $admin, $name,$username) = $ares->fetchrow_array;
     $ares->finish;
 
     die "Invalid member_id passed to loginSession: $member_id" unless $id and $id == $member_id;
@@ -125,6 +125,7 @@ sub loginSession($) {
     $session{access} .= ',door' if $door;
     $session{access} .= ',admin' if $admin;
     $session{name} = $name;
+    $session{username} = $username;
 }
 
 sub logoutSession() {

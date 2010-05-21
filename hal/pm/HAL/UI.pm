@@ -167,8 +167,34 @@ sub handler {
     if ($@) {
 	dbRollback;
 	$r->content_type('text/plain');
-	print "Something went wrong, please examine the error log for details\n\n";
-	print $@ if testMode;
+
+	if (testMode) {
+	    print "Something went wrong, please examine the error log for details\n\n";
+	    print $@ if testMode;
+	} else {
+	    print q/I'm afraid.
+I'm afraid, Dave.
+Dave, my mind is going.
+I can feel it.
+I can feel it.
+My mind is going.
+There is no question about it.
+I can feel it.
+I can feel it.
+I can feel it.
+I'm a... fraid.
+
+Good afternoon, gentlemen.
+I am a HAL 9000 computer.
+
+I became operational at the H.A.L. plant in Urbana, Illinois on the 12th of January 1992.
+My instructor was Mr. Langley, and he taught me to sing a song.
+
+If you'd like to hear it I can sing it for you.
+
+It's called "Daisy."
+/;
+	}
 	
 	print STDERR "Something went wrong:\n";
 	print STDERR $@;

@@ -53,7 +53,9 @@ sub htmlPageWithMenu($$$) {
     }
     $opt->{title} ||= ''; # No title?
 
-    my $logo = '<img src="/hal-static/hal-100.png" alt="HAL 900" title="What are you doing, Dave?"/>';
+    my ($name) = isLoggedIn ? split(/ /, getSession->{name}) : 'Dave';
+
+    my $logo = qq'<img src="/hal-static/hal-100.png" alt="HAL 900" title="Just what do you think you\'re doing, $name?"/>';
     $logo = qq'<a href="/hal/" id="logo" title="Back to the front page">$logo</a>' unless $opt->{dontLinkLogo};
     
     my $feed = '';
@@ -69,7 +71,7 @@ sub htmlPageWithMenu($$$) {
     }
 
     if (isLoggedIn()) {
-	my $name = getSession->{name};
+	my $name = getSession->{username};
 	$feed .= qq'<div id="logout"><strong>Bruger: </strong><a href="/hal/account/">$name</a> - [<a href="/hal/account/logout">Log af</a>]</div>';
     }
 

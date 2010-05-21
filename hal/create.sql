@@ -88,6 +88,7 @@ create table account (
 
        owner_id integer references member(id),
        type_id integer references accountType(id) not null,
+       warningLevel numeric(10,2),
        
        accountName varchar(50)
 );

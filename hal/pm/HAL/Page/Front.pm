@@ -86,11 +86,8 @@ sub mainIndexPage {
 sub notFound {
     my ($r,$q,$p) = @_;
 
-    my $name = 'Dave';    
-    # If logged in find first name.
-
     return outputFrontPage("404", "Not found", 
-      "<p>Sorry $name, I can't do that, the page you are looking for is not here.</p>");
+      "<p>The page you are looking does not exist, it can only be attributable to human error.</p>");
 }
 
 sub noCookie {

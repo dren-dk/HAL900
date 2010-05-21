@@ -5,7 +5,9 @@
 
  ... or pg_restore -d hal -U hal -c latest.pg 
 
-Also remember: sudo apt-get install libemail-valid-perl
+Also remember:
+ sudo apt-get install libemail-valid-perl libapache2-request-perl 
+ sudo a2enmod apreq
 */
 
 begin transaction;
@@ -121,8 +123,6 @@ create table bankBatch (
        created timestamp default now(),
        updated timestamp default now(),
 
-       member_id integer references member(id),
-
        rawCsv varchar
 );
 CREATE TRIGGER update_updated BEFORE UPDATE
@@ -137,12 +137,15 @@ create table bankTransaction (
        member_id integer references member(id),
        bankBatch_id integer references bankBatch(id) not null,
        
-       bankDate date,
-       bankComment varchar(50),
-       amount numeric(10,2),
+       bankDate varchar(15) not null,
+       bankComment varchar(100) not null,
+       amount numeric(10,2) not null,
+       bankSum numeric(10,2) not null,
 
        transaction_id integer references accountTransaction(id),
-       userComment varchar(100)
+       userComment varchar(100),
+
+       unique (bankDate, bankComment, amount, bankSum)
 );
 CREATE TRIGGER update_updated BEFORE UPDATE
         ON bankTransaction FOR EACH ROW EXECUTE PROCEDURE 

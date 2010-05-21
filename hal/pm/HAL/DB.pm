@@ -78,4 +78,17 @@ sub sql {
     }
 }
 
+sub getID {
+    my $self = shift;
+    my $table = shift;
+    $table =~ s/[^a-zA-Z0-9_]//g;
+
+    my $idRes = $self->sql("select currval(pg_get_serial_sequence('$table', 'id'))") or die "Failed to get id from insert into $table";
+    my ($id) = $idRes->fetchrow_array;
+    $idRes->finish;
+
+    return $id;
+}
+
+
 1;

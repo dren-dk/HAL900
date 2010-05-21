@@ -106,7 +106,7 @@ sub createUser {
 	    $errors++;
 	    return "Dit fulde navn kan umuligt være mindre end 4 tegn langt.";
 	}
-	if ($v =~ /[\d\@]/) {
+	if ($v !~ /^[a-zA-ZæøåÆØÅ \.-]+$/) {
 	    $errors++;
 	    return "Æh, hvad?";
 	}
@@ -118,8 +118,8 @@ sub createUser {
 	return "";
     });
     
-    $p->{smail} ||= '';
-    $p->{smail} =~ s/\s+$//s;
+    $p->{snailmail} ||= '';
+    $p->{snailmail} =~ s/\s+$//s;
     $form .= areaInput("Snailmail", "Din post adresse, incl. gade, husnummer, by og postnummer", 'snailmail', $p, sub {
 	my ($v,$p,$name) = @_;
 	if (length($v)<4) {

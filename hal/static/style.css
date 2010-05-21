@@ -88,8 +88,10 @@
 /********************************************************************************/
 
 body {
- background-color: #000;
  font-family: sans-serif;
+ background-color: #d0dfe8;
+ background-image: url(/hal-static/bg.png);
+ background-repeat: repeat-x;
 }
 
 #main { 

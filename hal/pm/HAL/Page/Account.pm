@@ -27,7 +27,7 @@ sub outputAccountPage($$$;$) {
 	{
 	    link=>"/hal/account/email",
 	    name=>'email',
-	    title=>'Skift email',
+	    title=>'Skift Email',
 	},
 	{
 	    link=>"/hal/account/passwd",
@@ -42,7 +42,7 @@ sub outputAccountPage($$$;$) {
 	{
 	    link=>"/hal/account/details",
 	    name=>'details',
-	    title=>'Ret adresse',
+	    title=>'Ret Detaljer',
 	},
 	);
     
@@ -74,8 +74,10 @@ sub indexPage {
 
     my $html = qq'
 <div class="floaty">
-<h2>Navn og adresse [<a href="/hal/account/details">Ret</a>]</h2>
-<p>$realname<br>
+<h2>Detaljer [<a href="/hal/account/details">Ret</a>]</h2>
+<p>
+<strong>ID:</strong> $username<br>
+$realname<br>
 $smail<br>
 Tlf. $phone
 </p>
@@ -99,7 +101,7 @@ Tlf. $phone
     $html .= $doorAccess 
 	? '<li>Du kan låse døren til lokalerne op</li>' 
 	: $memberDoorAccess 
-	   ? '<li>Du kan ikke låse døren til lokalerne op, kontakt <a href="mailto:kasseren@osaa.dk">kasseren@osaa.dk</a></li>'
+	   ? '<li>Du kan ikke låse døren til lokalerne op, kontakt <a href="mailto:kassereren@osaa.dk">kassereren@osaa.dk</a></li>'
 	   : '<li>Du kan ikke låse døren til lokalerne op, <a href="/hal/account/type">opgrader til betalende medlem</a></li>';
     $html .= $adminAccess ? '<li>Du kan administrere systemet</li>' : '';
     $html .= "</ul></div>\n";
@@ -377,6 +379,114 @@ sub typePage {
     return outputAccountPage('type', 'Skift Medlemstype', $form);
 }
 
+sub detailsPage {
+    my ($r,$q,$p) = @_;
+
+    my $form = '<form method="POST" action="/hal/account/details">';
+
+    my $uRes = (db->sql('select username,realname, smail, phone from member where id=?', getSession->{member_id}));
+    my ($username, $realname, $smail, $phone) = $uRes->fetchrow_array;
+    $uRes->finish;
+    
+    my $errors = 0;
+
+    $p->{username} ||= $username;
+    $form .= textInput("Bruger navn",
+		       "Dit bruger navn i dette system, vælg gerne det samme som i andre systemer (F.eks. Wiki og Wordpress)",
+		       'username', $p, sub {
+	my ($v,$p,$name) = @_;
+	if (length($v)<2) {
+	    $errors++;
+	    return "Dit brugernavn skal være mindst 2 tegn langt";
+	}
+	if ($v !~ /^[A-Za-z0-9\.-]+$/) {
+	    $errors++;
+	    return "Dit brugernavn må kun bestå af: A-Z, a-z, 0-9 samt tegnene . og -";
+	}
+
+	if (lc($v) ne lc($username)) {
+	    my $res = db->sql("select count(*) from member where lower(username)=?", lc($v));
+	    my ($inuse) = $res->fetchrow_array;
+	    $res->finish;
+	    
+	    if ($inuse) {
+		$errors++;
+		return "Det valgte brugernavn er allerede i brug, vælg et andet.";
+	    }
+	}
+	return "";
+    });
+    
+    $p->{name} ||= $realname;
+    $form .= textInput("Fuldt navn", "Dit rigtige navn, incl. efternavn", 'name', $p, sub {
+	my ($v,$p,$name) = @_;
+	if (length($v)<4) {
+	    $errors++;
+	    return "Dit fulde navn kan umuligt være mindre end 4 tegn langt.";
+	}
+	if ($v !~ /^[a-zA-ZæøåÆØÅ \.-]+$/) {
+	    $errors++;
+	    return "Æh, hvad?";
+	}
+	if ($v !~ / /) {
+	    $errors++;
+	    return "Også efternavnet, tak.";
+	}
+
+	return "";
+    });
+    
+    $p->{snailmail} ||= $smail;
+    $p->{snailmail} =~ s/\s+$//s;
+    $form .= areaInput("Snailmail", "Din post adresse, incl. gade, husnummer, by og postnummer", 'snailmail', $p, sub {
+	my ($v,$p,$name) = @_;
+	if (length($v)<4) {
+	    $errors++;
+	    return "Din adresse kan umuligt være mindre end 4 tegn lang.";
+	}
+	my @lines = split /\s*\n\s*/, $v;
+	if (@lines < 2) {
+	    $errors++;
+	    return "Skriv venligst post adressen som den normalt står på et brev.";
+	}
+
+	return "";
+    });
+    
+    $p->{phone} ||= $phone;
+    $form .= textInput("Telefon nummer", "Dit telefon nummer som du helst vil ringes op på", 'phone', $p, sub {
+	my ($v,$p,$name) = @_;
+	$v =~ s/[^+\d]+//g;
+	if (length($v)<8) {
+	    $errors++;
+	    return "Dit telefon nummer kan umuligt være kortere end 4 tal langt.";
+	}
+	return "";
+    });
+
+    $form .= '
+<hr>
+<input type="submit" name="gogogo" value="Gem mine oplysninger">
+</form>';
+
+    if ($p->{gogogo}) {
+	if ($errors) {
+	    $errors = "en" if $errors == 1;
+	    $form .= "<p>Hovsa, der er $errors fejl!</p>";
+	} else {
+	    if (db->sql('update member set username=?, realname=?, smail=?, phone=? where id=?',
+			               $p->{username}, $p->{name}, $p->{snailmail}, $p->{phone}, getSession->{member_id})) {
+		l "Updated: username=$p->{username}, name=$p->{name}, snailmail=$p->{snailmail}, phone=$p->{phone}";
+		return outputGoto('/hal/account');
+	    } else {
+		$form .= "<p>Hovsa, noget gik galt, prøv igen.</p>";		
+	    }
+	}	    
+    }
+
+    return outputAccountPage('details', 'Ret bruger oplysninger', $form);
+}
+
 BEGIN {
     ensureLogin(qr'^/hal/account');
     addHandler(qr'^/hal/account/?$', \&indexPage);
@@ -384,6 +494,7 @@ BEGIN {
     addHandler(qr'^/hal/account/email$', \&emailPage);
     addHandler(qr'^/hal/account/passwd$', \&passwdPage);
     addHandler(qr'^/hal/account/type$', \&typePage);
+    addHandler(qr'^/hal/account/details$', \&detailsPage);
     addHandler(qr'^/hal/account/confirmemail$', \&emailConfirmPage);
 }
 

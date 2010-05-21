@@ -33,7 +33,7 @@ sub htmlPage($$;$) {
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>$title</title>$headers
   <style type="text/css">\@import "/hal-static/style.css";</style>
-  <link rel="shortcut icon" href="/hal-static/hal-100.jpeg"> 
+  <link rel="shortcut icon" href="/hal-static/hal-100.png"> 
 </head><body>
 $body
 </body></html>';
@@ -53,7 +53,7 @@ sub htmlPageWithMenu($$$) {
     }
     $opt->{title} ||= ''; # No title?
 
-    my $logo = '<img src="/hal-static/hal-100.jpeg" alt="HAL 900" title="What are you doing, Dave?"/>';
+    my $logo = '<img src="/hal-static/hal-100.png" alt="HAL 900" title="What are you doing, Dave?"/>';
     $logo = qq'<a href="/hal/" id="logo" title="Back to the front page">$logo</a>' unless $opt->{dontLinkLogo};
     
     my $feed = '';

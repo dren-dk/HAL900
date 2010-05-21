@@ -157,10 +157,12 @@ sub createUser {
 
     $form .= radioInput("Medlems type", "Vælg den type medlemsskab du ønsker", 'membertype', $p, sub {
 	my ($v,$p,$name) = @_;
-	return "Vælg venligst hvilken type medlemsskab du ønsker" unless $v;
+	unless ($v) {
+	    $errors++;
+	    return "Vælg venligst hvilken type medlemsskab du ønsker";
+	}
 	return "";
     }, @types);
-
 
     $form .= '
 <hr>

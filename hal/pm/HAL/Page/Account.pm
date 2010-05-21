@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use utf8;
 
+use Data::Dumper;
 use HTML::Entities;
 use Email::Valid;
 use Digest::SHA qw(sha1_hex);
@@ -322,12 +323,67 @@ sub passwdPage {
     return outputAccountPage('passwd', 'Skift Password', $form);
 }
 
+sub typePage {
+    my ($r,$q,$p) = @_;
+
+    my $form = '<form method="POST" action="/hal/account/type">';
+
+    my $uRes = (db->sql('select membertype_id from member where id=?', getSession->{member_id}));
+    my ($membertype_id) = $uRes->fetchrow_array;
+    $uRes->finish;
+    
+    my @types;
+    my $typesRes = db->sql('select id, memberType, monthlyFee, doorAccess from memberType order by id');
+    while (my ($id, $memberType, $monthlyFee, $doorAccess) = $typesRes->fetchrow_array) {
+	push @types, {
+	    key=>$id,
+	    name=>"$memberType ($monthlyFee kr/måned) ".($doorAccess ? '- Inkluderer nøgle til lokalerne' : '- Uden nøgle til lokalerne'),
+	}
+    }
+    $typesRes->finish;
+    
+    $p->{membertype} ||= $membertype_id;
+
+    my $errors = 0;
+    $form .= radioInput("Medlems type", "Vælg den type medlemsskab du ønsker", 'membertype', $p, sub {
+	my ($v,$p,$name) = @_;
+	unless ($v) {
+	    $errors++;
+	    return "Vælg venligst hvilken type medlemsskab du ønsker";
+	}
+	return "";
+    }, @types);
+
+    $form .= '
+<hr>
+<input type="submit" name="gogogo" value="Skift min medlemstype!">
+</form>';
+
+    if ($p->{gogogo}) {
+	if ($errors) {
+	    $errors = "en" if $errors == 1;
+	    $form .= "<p>Hovsa, der er $errors fejl!</p>";
+	} else {
+	    if (db->sql('update member set membertype_id=? where id=?',
+			$p->{membertype}, getSession->{member_id})) {
+		
+		return outputGoto('/hal/account');
+	    } else {
+		$form .= "<p>Hovsa, noget gik galt, prøv igen.</p>";		
+	    }
+	}	    
+    }
+
+    return outputAccountPage('type', 'Skift Medlemstype', $form);
+}
+
 BEGIN {
     ensureLogin(qr'^/hal/account');
     addHandler(qr'^/hal/account/?$', \&indexPage);
     addHandler(qr'^/hal/account/logout$', \&logoutPage);
     addHandler(qr'^/hal/account/email$', \&emailPage);
     addHandler(qr'^/hal/account/passwd$', \&passwdPage);
+    addHandler(qr'^/hal/account/type$', \&typePage);
     addHandler(qr'^/hal/account/confirmemail$', \&emailConfirmPage);
 }
 

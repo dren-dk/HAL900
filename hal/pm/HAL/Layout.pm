@@ -20,7 +20,14 @@ sub htmlPage($$;$) {
 	}
     }
 
-    $headers .= qq'<META HTTP-EQUIV="Refresh" CONTENT="30">' if $opt->{autorefresh};
+    my $now = time;    
+
+    $headers .= qq'\n  <META HTTP-EQUIV="Refresh" CONTENT="30">' if $opt->{autorefresh};
+    $headers .= qq'\n  <script type="text/javascript" src="/hal-static/$opt->{js}?now=$now"></script>' if $opt->{js};
+    my $onload = '';
+    if ($opt->{onload}) {
+	$onload = qq' onload="$opt->{onload}"';
+    }
     
     $title .= " @ ".scalar strftime("%a, %d  %b  %Y  %H:%M:%S  %Z", localtime(time));
     
@@ -30,11 +37,12 @@ sub htmlPage($$;$) {
          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1"/>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>$title</title>$headers
+  <title>$title</title>
   <style type="text/css">\@import "/hal-static/style.css";</style>
-  <link rel="shortcut icon" href="/hal-static/hal-100.png"> 
-</head><body>
+  <link rel="shortcut icon" href="/hal-static/hal-100.png"/>$headers
+</head><body$onload>
 $body
 </body></html>';
 }

@@ -77,11 +77,13 @@ CREATE TRIGGER update_updated BEFORE UPDATE
         update_updated();
 
 insert into accountType (id, typeName) 
-       values (1, 'Main organizational account');
+       values (1, 'Bank kontoen');
 insert into accountType (id, typeName) 
-       values (2, 'Personal dues and purchases');
+       values (2, 'Kontingent og køb');
 insert into accountType (id, typeName) 
-       values (3, 'Loans');
+       values (3, 'Lån');
+insert into accountType (id, typeName) 
+       values (4, 'Andre konti');
 
 create table account (
        id serial primary key,

@@ -39,6 +39,14 @@
   .error {color:red;}
   hr {border-width:0px;height:2px;background:black;}
 
+  table {
+      border-spacing: 0px;
+  } 
+
+  td.numeric {
+      text-align: right;
+  }
+
   tr.odd td {background-color:#eeeeee;}
   tr.even td {background-color:#ffffff;}
   

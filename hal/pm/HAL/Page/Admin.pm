@@ -342,12 +342,168 @@ $load
     return outputAdminPage('consolidate', 'Konsolider poster', $html);
 }
 
+sub selector {
+    return join ' - ', map {
+	$_->{current} ? "<strong>$_->{title}</strong>" : qq'<a href="$_->{href}">$_->{title}</a>'
+    } @_;
+}
+
+sub accountsPage {
+    my ($r,$q,$p, $type_id) = @_;
+    $type_id ||= 0;
+
+    my $rest = db->sql("select id, typename from accounttype order by id") 
+	or die "Failed to get list of account types";    
+    my @types;
+    my $title = 'Konti';
+    while (my ($id, $typename) = $rest->fetchrow_array) {
+	push @types, {
+	    href=>"/hal/admin/accounts/$id",
+	    title=>$typename,
+	    current=>$id==$type_id,
+	};
+	$title = "Konti : $typename" if $id==$type_id;
+    }
+    $rest->finish;
+
+    my $html = '<p>Konto type: '.selector(@types).'</p>';
+    if ($type_id) {
+	$html .= qq'
+<table>
+<tr><th>Konto ID</th><th>Konto navn</th><th>Ejer</th><th>Saldo</th></tr>
+';
+	my $ar = db->sql("select account.id, accountName, owner_id, realname ".
+			 "from account left outer join member on (owner_id=member.id) ".
+			 "where type_id=? order by account.id",
+			 $type_id);		
+	my $count = 0;
+	while (my ($id, $accountName, $owner_id, $owner) = $ar->fetchrow_array) {
+	    my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
+
+	    my $ol = 'n/a';
+	    if ($owner_id) {
+		$ol = qq'<a href="/hal/admin/members/$owner_id">$owner</a>';
+	    }
+	    
+	    my $inr = db->sql("select sum(amount) from accountTransaction where target_account_id=?", $id);		
+	    my ($in) = $inr->fetchrow_array;
+	    $inr->finish;
+
+	    my $outr = db->sql("select sum(amount) from accountTransaction where source_account_id=?", $id);		
+	    my ($out) = $outr->fetchrow_array;
+	    $outr->finish;
+
+	    my $saldo = $in//0-$out//0;
+	    
+	    $html .= qq' <tr $class><td><a href="/hal/admin/accounts/$type_id/$id">$id</a></td>'.
+		qq'<td>$accountName</td><td>$ol</td><td>$saldo</td></tr>\n';
+	}
+	$ar->finish;
+
+	$html .= "</table>\n";
+
+	if ($type_id > 1) {
+	    $html .= qq'<p><a href="/hal/admin/accounts/$type_id/create">Lav ny konto af denne type</a></p>\n';
+	}
+    }
+
+    return outputAdminPage('accounts', $title, $html);
+}
+
+sub transactionsPage {
+    my ($r,$q,$p, $bleh_type_id, $account_id) = @_;
+
+    my $ar = db->sql("select account.id, type_id, accountName, owner_id, realname ".
+		     "from account left outer join member on (owner_id=member.id) ".
+		     "where account.id=?", $account_id);		
+    my ($id, $type_id, $accountName, $owner_id, $owner) = $ar->fetchrow_array;
+    $ar->finish;
+    return outputGoto("/hal/admin/accounts/$type_id") unless $id;
+
+    my $rest = db->sql("select id, typename from accounttype order by id") 
+	or die "Failed to get list of account types";    
+    my @types;
+    while (my ($id, $typename) = $rest->fetchrow_array) {
+	push @types, {
+	    href=>"/hal/admin/accounts/$id",
+	    title=>$id == $type_id ? "<strong>$typename</strong>" : $typename,
+	};
+    }
+    $rest->finish;
+    
+    
+    my $html = '<p>Tilbage til: '.selector(@types).'</p>';
+
+    $html .= qq'<p>';
+    if ($owner_id) {
+	$html .= qq'Denne konto er ejet af <a href="/hal/admin/members/$owner_id">$owner</a>';
+    } else {
+	$html .= "Denne konto er ejet af foreningen.";
+    }
+    $html .= '</p>';
+
+    my @table;
+    my $tx = db->sql("select t.id, t.created, source_account_id, sa.accountName, target_account_id, ta.accountName, amount, comment ".
+		     "from accountTransaction t ".
+		     "inner join account sa on (t.source_account_id = sa.id) ".
+		     "inner join account ta on (t.target_account_id = ta.id) ".
+		     "where target_account_id=? or source_account_id=? ".
+		     "order by t.id", $id, $id);
+    my $sum = 0;
+    my $sumIn = 0;
+    my $sumOut = 0;
+    while (my ($tid, $created, $source_id, $source, $target_id, $target, $amount, $comment) = $tx->fetchrow_array) {
+	my $other = $source_id == $id 
+	    ? qq'<a href="/hal/admin/accounts/$type_id/$target_id">$target</a>'
+	    : qq'<a href="/hal/admin/accounts/$type_id/$source_id">$source</a>';
+	my $in = 0;
+	my $out = 0;
+
+	if ($source_id == $id) {
+	    $out = $amount;
+	    $sum -= $amount;
+	    $sumOut += $amount;
+	} else {
+	    $in = $amount;
+	    $sum += $amount;
+	    $sumIn += $amount;
+	}
+	push @table, [$tid, $created, $comment, $other, $in, $out, $sum];
+    }
+    $tx->finish;
+    push @table, ["","", "Totaler", "", $sumIn, $sumOut, $sum];
+
+    $html .= "<table><th>ID</th><th>Dato</th><th>Transaktion</th><th>Fra/Til konto</th><th>Ind</th><th>Ud</th><th>Saldo</th>\n";
+    my $count = 0;
+    for my $r (reverse @table) {
+	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
+	$html .= qq'<tr $class>'.join('', map {"<td>$_</td>"} @$r).qq'</tr>\n';
+    }
+    $html .= "</table>";
+    
+    return outputAdminPage('transactions', "Transaktioner for $accountName", $html);
+}
+
+
+sub createAccountPage {
+    my ($r,$q,$p, $type_id) = @_;
+    my $html = '';
+
+
+    return outputAdminPage('newaccount', "Opretter konto", $html);
+}
+
+
 BEGIN {
     ensureAdmin(qr'^/hal/admin');
     addHandler(qr'^/hal/admin/?$', \&indexPage);
     addHandler(qr'^/hal/admin/load/?$', \&loadPage);
     addHandler(qr'^/hal/admin/consolidate/?$', \&consolidatePage);
     addHandler(qr'^/hal/admin/consolidate/dirty$', \&dirtyData);
+    addHandler(qr'^/hal/admin/accounts/?$', \&accountsPage);
+    addHandler(qr'^/hal/admin/accounts/(\d+)$', \&accountsPage);
+    addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)$', \&transactionsPage);
+    addHandler(qr'^/hal/admin/accounts/(\d+)/create$', \&createAccountPage);
 }
 
 12;

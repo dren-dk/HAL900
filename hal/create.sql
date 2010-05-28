@@ -100,7 +100,7 @@ CREATE TRIGGER update_updated BEFORE UPDATE
         ON account FOR EACH ROW EXECUTE PROCEDURE 
         update_updated();
 
-insert into account (type_id, accountName) values (1, 'OSAA kassebeholdning');
+insert into account (type_id, accountName) values (1, 'OSAAs bankkonto i Nordea');
 
 create table accountTransaction (
        id serial primary key,

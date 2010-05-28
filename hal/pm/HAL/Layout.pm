@@ -20,7 +20,7 @@ sub htmlPage($$;$) {
 	}
     }
 
-    my $now = time;    
+    my $now = '1';    
 
     $headers .= qq'\n  <META HTTP-EQUIV="Refresh" CONTENT="30">' if $opt->{autorefresh};
     $headers .= qq'\n  <script type="text/javascript" src="/hal-static/$opt->{js}?now=$now"></script>' if $opt->{js};

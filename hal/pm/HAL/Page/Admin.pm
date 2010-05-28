@@ -84,19 +84,19 @@ sub indexPage {
 sub loadPage {
     my ($r,$q,$p) = @_;
 
-    my $msg = '<p class="lead">Vælg den csv fil Nordeas Konto-kig exporterede.</p>';
+    my $msg = '<p class="lead">Vælg den csv fil <a href="https://www.netbank.nordea.dk/netbank/index_bu.jsp">Nordeas Konto-kig</a> exporterede.</p>';
 
     if ($p->{gogo}) {
 	my $f = $q->upload('uploadfile');
 	my $data = join('', <$f>);
 	utf8::upgrade($data);
 
-	l "Upgraded:\n$data\n";
+#	l "Upgraded:\n$data\n";
 	
 	db->sql('insert into bankBatch (rawCsv) values (?)', $data) or die "Failed to store the csv: $data";
 	my $batchID = db->getID('bankBatch');
 
-	l "Got file: $data\n";
+#	l "Got file: $data\n";
 
 	my @txn;
 	for my $line (split /\n/, $data) {
@@ -210,10 +210,13 @@ sub consolidatePage {
     }
     $rest->finish;
 
+    my $html = '';
+
+    my $load = '';
 
     my $res = db->sql("select id,bankDate, bankComment, amount, userComment from bankTransaction where transaction_id is null order by id") 
 	or die "Failed to get unconsolidated transactions";
-    my $html = '
+    $html .= '
 
 <form method="post" action="/hal/admin/consolidate">
 
@@ -228,7 +231,7 @@ sub consolidatePage {
 	my $t = $txn{$id};
 
 	my $ev = encode_entities($userComment||'');
-	my $uc = qq'<input id="comment_$id" type="text" size="30" value="$ev"/>';
+	my $uc = qq'<input id="comment_$id" type="text" size="10" value="$ev"/>';
 	my $sc = qq'<select id="type_$id" onchange="changetype($id)">\n';
 	$sc .= qq'  <option value="0">Unknown</option>\n';
 	for my $type (@types) {
@@ -239,17 +242,48 @@ sub consolidatePage {
 	$sc .= qq'<select id="account_$id">\n';
 	$sc .= qq'  <option value="0">Unknown</option>\n';
 	$sc .= "</select>\n";
-	$html .= qq'<tr $class><td>$bankDate</td><td>$bankComment</td><td class="numeric">$amount</td><td>$sc</td><td>$uc</td></tr>';
+	$html .= qq'<tr $class><td>$bankDate</td><td>$bankComment</td>'.
+	         qq'<td class="numeric">$amount</td><td>$sc</td><td>$uc</td></tr>';
+
+	$bankComment =~ s/[^a-zA-ZæøåÆØÅ0-9\.\@-]+/ /g;
+	$load .= qq' txn($id,"$bankComment");\n';
     }
     $res->finish;
         
-    $html .= '
+    my %seen;    
+    my $atres = db->sql("select owner_id, id, type_id, accountName from account")
+	or die "Failed to get unconsolidated transactions";
+    while (my ($owner_id, $id, $type_id, $accountName) = $atres->fetchrow_array) {
+	$load .= qq' account($id, $type_id, "$accountName");\n';
+	$seen{$owner_id}{$type_id} = $id if $owner_id;
+    }
+    $atres->finish;
+
+    my $mres = db->sql("select id, email, realname from member")
+	or die "Failed to get unconsolidated transactions";
+    while (my ($id, $email, $name) = $mres->fetchrow_array) {
+	for my $type (2,3) {
+	    my $aid = $seen{$id}{$type} || -$id;
+	    $load .= qq' dude($aid, $type, "$email", "$name");\n';
+	    if ($aid < 0) { # Add fake account.
+		$load .= qq' account($aid, $type, "New: $name");\n';
+	    }
+	}
+    }
+    $mres->finish;
+
+    
+    $html .= qq'
 </table>
 
 <br/>
 <input type="submit" value="Gem alt"/>
 
 </form>
+
+<script type="text/javascript">
+$load
+</script>
 ';
     return outputAdminPage('consolidate', 'Konsolider poster', $html);
 }

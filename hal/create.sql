@@ -113,7 +113,7 @@ create table accountTransaction (
 
        amount numeric(10,2) check (amount > 0),
 
-       comment varchar(50)
+       comment varchar(150)
 );
 CREATE TRIGGER update_updated BEFORE UPDATE
         ON accountTransaction FOR EACH ROW EXECUTE PROCEDURE 

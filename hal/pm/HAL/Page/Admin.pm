@@ -210,8 +210,59 @@ sub consolidatePage {
     }
     $rest->finish;
 
-    my $html = '';
+    if ($p->{gogogo}) {
+	my $res = db->sql("select id, amount, userComment, bankDate, bankComment from bankTransaction where transaction_id is null") 
+	    or die "Failed to get unconsolidated transactions";
 
+	while (my ($id, $amount, $userComment, $bankDate, $bankComment) = $res->fetchrow_array) {
+	    my $comment = $p->{"comment_$id"} // '';
+	    if ($comment ne ($userComment // '')) {
+		db->sql("update bankTransaction where set userComment=? where id=?", $id, $comment) 
+		    or die "Failed to update comment on $id to $comment";
+	    }
+#	    l "Looking at: $id ".Dumper($p);
+	    my $type_id    = $p->{"type_$id"} or next;
+	    my $account_id = $p->{"account_$id"} or next;
+#	    l "Looking at: $type_id $account_id";
+	    
+	    if ($account_id < 0) {
+		my $dude_id = -$account_id;
+		my $ar = db->sql("select id from account where owner_id=? and type_id=?",
+		    $dude_id, $type_id);
+		($account_id) = $ar->fetchrow_array;
+		$ar->finish;
+		
+		unless ($account_id) {
+		    my $dr = db->sql("select realname, email from member where id=?", $dude_id);
+		    my ($name, $email) = $dr->fetchrow_array or die "Invalid member id: $dude_id";
+		    $dr->finish;
+
+		    db->sql('insert into account (owner_id, type_id, accountName) values (?,?,?)',
+			    $dude_id, $type_id, $name) or die "Failed to store the new account";
+		    $account_id = db->getID('account') or die "Failed to get new account id";
+		    l "Created account $account_id for $dude_id type: $type_id";
+		}
+	    }
+
+	    my @accounts = ($account_id, 1);
+	    if ($amount < 0) {
+		$amount *= -1;
+		@accounts = reverse @accounts;
+	    }
+
+	    db->sql('insert into accountTransaction (source_account_id, target_account_id, amount, comment) values (?, ?, ?, ?)',
+		    @accounts, $amount, "$bankDate: $bankComment"
+		) or die "Failed to insert transaction ".join(',', @accounts, $amount, "$bankDate: $bankComment");
+	    my $transaction_id = db->getID('accountTransaction') or die "Failed to get new transaction id";
+	    db->sql("update bankTransaction set transaction_id=? where id=?", $transaction_id, $id)
+		or die "Failed to update bankTransaction to set transaction_id=$transaction_id for $id";
+	}
+
+	$res->finish;
+    }
+
+
+    my $html = '';
     my $load = '';
 
     my $res = db->sql("select id,bankDate, bankComment, amount, userComment from bankTransaction where transaction_id is null order by id") 
@@ -231,27 +282,28 @@ sub consolidatePage {
 	my $t = $txn{$id};
 
 	my $ev = encode_entities($userComment||'');
-	my $uc = qq'<input id="comment_$id" type="text" size="10" value="$ev"/>';
-	my $sc = qq'<select id="type_$id" onchange="changetype($id)">\n';
+	my $uc = qq'<input name="comment_$id" id="comment_$id" type="text" size="10" value="$ev"/>';
+	my $sc = qq'<select name="type_$id" id="type_$id" onchange="changetype($id)">\n';
 	$sc .= qq'  <option value="0">Unknown</option>\n';
 	for my $type (@types) {
 	    $sc .= qq'  <option value="$type->{id}">$type->{name}</option>\n';
 	}
 	$sc .= "</select>\n";
 
-	$sc .= qq'<select id="account_$id">\n';
+	$sc .= qq'<select name="account_$id" id="account_$id">\n';
 	$sc .= qq'  <option value="0">Unknown</option>\n';
 	$sc .= "</select>\n";
 	$html .= qq'<tr $class><td>$bankDate</td><td>$bankComment</td>'.
 	         qq'<td class="numeric">$amount</td><td>$sc</td><td>$uc</td></tr>';
 
 	$bankComment =~ s/[^a-zA-ZæøåÆØÅ0-9\.\@-]+/ /g;
+	$bankComment = lc($bankComment);
 	$load .= qq' txn($id,"$bankComment");\n';
     }
     $res->finish;
         
     my %seen;    
-    my $atres = db->sql("select owner_id, id, type_id, accountName from account")
+    my $atres = db->sql("select owner_id, id, type_id, accountName from account order by accountName")
 	or die "Failed to get unconsolidated transactions";
     while (my ($owner_id, $id, $type_id, $accountName) = $atres->fetchrow_array) {
 	$load .= qq' account($id, $type_id, "$accountName");\n';
@@ -259,15 +311,17 @@ sub consolidatePage {
     }
     $atres->finish;
 
-    my $mres = db->sql("select id, email, realname from member")
+    my $mres = db->sql("select id, email, realname from member order by realname")
 	or die "Failed to get unconsolidated transactions";
     while (my ($id, $email, $name) = $mres->fetchrow_array) {
 	for my $type (2,3) {
 	    my $aid = $seen{$id}{$type} || -$id;
-	    $load .= qq' dude($aid, $type, "$email", "$name");\n';
 	    if ($aid < 0) { # Add fake account.
-		$load .= qq' account($aid, $type, "New: $name");\n';
+		$load .= qq' account($aid, $type, "[$name <$email>]");\n';
 	    }
+	    $name = lc($name);
+	    $email = lc($email);
+	    $load .= qq' dude($aid, $type, "$email", "$name");\n';
 	}
     }
     $mres->finish;
@@ -277,7 +331,7 @@ sub consolidatePage {
 </table>
 
 <br/>
-<input type="submit" value="Gem alt"/>
+<input type="submit" name="gogogo" value="Gem alt"/>
 
 </form>
 

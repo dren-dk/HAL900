@@ -1,0 +1,42 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin);
+
+use lib "$Bin/pm";
+
+use HAL::DB;
+
+my $db = new HAL::DB;
+
+sub clean {
+    my $s = shift;
+    $s =~ s/,/ /g;
+    return $s;
+}
+
+while (my $line = <>) {
+    chomp $line;
+    
+    $line =~ s/,"([^"]+)",/','.clean($1).','/ge;
+
+    my ($ts, $name, $email, $type) = split /,/, $line;
+    next if $ts eq 'Tidsstempel';
+    next unless $type and $email and $name;
+    
+    my $t = $type eq 'Fuldgyldigt medlem til 150 - pr. måned' ? 1 : 2;
+
+    my $cr = $db->sql("select count(*) from member where email=?", $email);
+    my ($exists) = $cr->fetchrow_array;
+    $cr->finish;
+
+
+    unless ($exists) {
+	$db->sql("insert into member (email, realname, membertype_id) values (?,?,?)", 
+		$email, $name, $t)
+	    or die "Failed to insert $email, $name, $type";
+    }	
+}
+
+$db->dbh->commit;
+

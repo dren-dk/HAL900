@@ -169,35 +169,6 @@ $msg
     return outputAdminPage('load', 'Load poster', $html);
 }
 
-sub xmlElement {
-    my ($name, $attr) = @_;
-    return "<$name ".join(" ", map {qq'$_="'.encode_entities($attr->{$_}).'"'} sort keys %$attr)."/>";
-}
-
-sub dirtyData {
-    my ($r,$q,$p) = @_;
-
-    my $res = db->sql("select id,bankDate, bankComment, amount, userComment from bankTransaction where transaction_id is null order by id") 
-	or die "Failed to get unconsolidated transactions";
-
-    my $xml = '<dirty>
-';
-    while (my ($id, $bankDate, $bankComment, $amount, $userComment) = $res->fetchrow_array) {
-	$xml .= " ".xmlElement('txn', {
-	    id=>$id,
-	    bankDate => $bankDate,
-	    bankComment => $bankComment,
-	    amount => $amount,
-	    userComment => $userComment,
-	})."\n";
-    }
-    $res->finish;
-    $xml .= "</dirty>
-";
-    
-    return outputRaw('text/xml', $xml);
-}
-
 sub consolidatePage {
     my ($r,$q,$p) = @_;
 
@@ -484,7 +455,6 @@ sub transactionsPage {
     return outputAdminPage('transactions', "Transaktioner for $accountName", $html);
 }
 
-
 sub createAccountPage {
     my ($r,$q,$p, $type_id) = @_;
     my $html = '';
@@ -499,7 +469,6 @@ BEGIN {
     addHandler(qr'^/hal/admin/?$', \&indexPage);
     addHandler(qr'^/hal/admin/load/?$', \&loadPage);
     addHandler(qr'^/hal/admin/consolidate/?$', \&consolidatePage);
-    addHandler(qr'^/hal/admin/consolidate/dirty$', \&dirtyData);
     addHandler(qr'^/hal/admin/accounts/?$', \&accountsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)$', \&accountsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)$', \&transactionsPage);

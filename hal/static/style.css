@@ -571,3 +571,23 @@ div.floaty h2 {
   background-color: white;
   color: black;  
 }
+
+
+div.hits {
+    background-color: white;
+    border: thin solid black;
+    width: 26em;    
+/*    height: 10em;*/
+    overflow-y: auto;
+    overflow-x: hide;
+    z-index: 100;
+    position: absolute;
+}
+
+div.selected {
+    background-color: lightblue;
+}
+
+div.notselected {
+    background-color: white;
+}

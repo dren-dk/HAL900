@@ -2,12 +2,13 @@
 package HAL::Pages;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(l db dbCommit dbRollback addHandler callHandler outputGoto outputRaw outputNotFound outputHtml textInput formInput areaInput passwdInput2 passwdInput radioInput setCurrentIP setCurrentUser);
+@EXPORT = qw(l db dbCommit dbRollback addHandler callHandler outputGoto outputRaw outputNotFound outputHtml textInput areaInput passwdInput2 passwdInput radioInput memberInput setCurrentIP setCurrentUser);
 use strict;
 use warnings;
 use Data::Dumper;
 use HAL::DB;
 use HTML::Entities;
+use HAL::TypeAhead;
 
 my $db;
 sub db {
@@ -226,6 +227,26 @@ $buttons
 $error
 ';
 }
+
+sub memberInput {
+    my ($title, $lead, $name, $p, $validator) = @_;
+
+    my $v = $p->{$name} || '';
+
+    my $error = '';
+    if (defined $p->{$name} and $validator) {
+	$error = $validator->($v,$p,$name);
+	if ($error) {
+	    $error = qq'<p class="error">$error</p>';
+	}
+    }
+
+    return qq'
+<h4>$title</h4>
+<p class="lead">$lead</p>
+'.typeAhead($name, $v, 'member').$error;
+}
+
 
 
 42;

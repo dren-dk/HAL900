@@ -14,6 +14,7 @@ use HAL::Pages;
 use HAL::Session;
 use HAL::Util;
 use HAL::Email;
+use HAL::TypeAhead;
 
 sub outputAdminPage($$$;$) {
     my ($cur, $title, $body, $feed) = @_;
@@ -458,7 +459,18 @@ sub transactionsPage {
 sub createAccountPage {
     my ($r,$q,$p, $type_id) = @_;
     my $html = '';
+    
+    $html .= qq'<form method="post" action="/hal/admin/$type_id/create">';
 
+    $html .= memberInput('Ejer', 'Vælg ejeren af kontoen, hvis den ikke er ejet af foreningen',
+			 'owner_id', $p);
+    $html .= memberInput('Ejer1', 'Vælg ejeren af kontoen, hvis den ikke er ejet af foreningen1',
+			 'owner_id1', $p);
+
+#    $html .= typeAhead('member_id', '', 'member');
+#    $html .= typeAhead('hest_member_id', '', 'member');
+
+    $html .= qq'</form>';
 
     return outputAdminPage('newaccount', "Opretter konto", $html);
 }

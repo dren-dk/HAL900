@@ -46,34 +46,41 @@ sub dirtyData {
     return outputRaw('text/xml', $xml);
 }
 
-
 sub memberSearch {
     my ($r,$q,$p) = @_;
 
+    my $id = $p->{id} || '';
+    $id =~ s/\D+//g;
     my $needle = lc($p->{needle} || '');
 
-    return outputRaw('text/xml', '<members hint="moar!"/>') unless length($needle) > 1;
+    return outputRaw('text/xml', '<hits hint="moar!"/>') unless $id or length($needle) > 1;
 
     my $xml;
     my $writer = new XML::Writer(OUTPUT => \$xml, NEWLINES => 1);
 
-    $needle = "\%$needle\%";
-    my $res = db->sql("select id, realname, username, email from member ".
-		      "where lower(email) like ? or lower(username) like ? or lower(realname) like ?",
-		      $needle, $needle, $needle) 
-	or die "Failed to search member list";
+    my $like = "\%$needle\%";
+    
+    my $res;
 
-    $writer->startTag('members');
+    if ($id) {
+	$res = db->sql("select id, realname, username, email from member where id=?", $id) 
+	    or die "Failed to search member list for id=$id";
+    } else {
+	$res = db->sql("select id, realname, username, email from member ".
+		       "where lower(email) like ? or lower(username) like ? or lower(realname) like ?",
+		       $like, $like, $like) 
+	    or die "Failed to search member list";
+    }
+
+    $writer->startTag('hits', needle=>$needle, id=>$id);
     while (my ($id, $realname, $username, $email) = $res->fetchrow_array) {
-	$writer->emptyTag("member", 
-			  id=>$id,
-			  realname=>$realname,
-			  username=>(defined $username ? $username :''),
-			  email=>$email,
-	    );
+
+	my $aka = (defined $username ? " aka. $username" :'');
+
+	$writer->emptyTag("hit", id=>$id, text=>"$realname$aka &lt;$email&gt;");
     }
     $res->finish;
-    $writer->endTag('members');
+    $writer->endTag('hits');
     $writer->end();
     
     return outputRaw('text/xml', $xml);

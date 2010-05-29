@@ -23,7 +23,7 @@ sub outputAdminPage($$$;$) {
 	{
 	    link=>"/hal/admin/",
 	    name=>'index',
-	    title=>'Hoved konti',
+	    title=>'Admin',
 	},
 	{
 	    link=>"/hal/admin/members",
@@ -44,7 +44,7 @@ sub outputAdminPage($$$;$) {
 	{
 	    link=>"/hal/admin/accounts",
 	    name=>'accounts',
-	    title=>'Accounts',
+	    title=>'Konti',
 	},
 	);
     
@@ -189,7 +189,7 @@ sub consolidatePage {
 	while (my ($id, $amount, $userComment, $bankDate, $bankComment) = $res->fetchrow_array) {
 	    my $comment = $p->{"comment_$id"} // '';
 	    if ($comment ne ($userComment // '')) {
-		db->sql("update bankTransaction where set userComment=? where id=?", $id, $comment) 
+		db->sql("update bankTransaction set userComment=? where id=?", $comment, $id) 
 		    or die "Failed to update comment on $id to $comment";
 	    }
 #	    l "Looking at: $id ".Dumper($p);

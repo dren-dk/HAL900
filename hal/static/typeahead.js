@@ -59,17 +59,35 @@ function taBlur(id,type) {
 var hitsDiv = null;
 var hits;
 var currentHit = -1;
+var currentID = null;
+
+function taSelect(index, done) {
+
+    var oldHit = currentHit;
+    currentHit = index;
+    if (oldHit >= 0) {
+	hitsDiv.childNodes[oldHit].setAttribute("class", "notselected");
+    }
+    hitsDiv.childNodes[currentHit].setAttribute("class", "selected");
+
+    var input = document.getElementById(currentID);
+    var output= document.getElementById(currentID+"-id");
+    output.value = hits[currentHit].getAttribute("id");
+    input.value = hits[currentHit].getAttribute("text");
+}
+
+
 var timer = 0;
 function taKey(id,type,event) {
-    //log("Key "+id+" "+event.keyCode);
+    log("Key "+id+" "+event.keyCode);
 
     if (hitsDiv != null && hits != null && hits.length > 0) {
 
-	if (event.keyCode == 13) {
+	if (event.keyCode == 13 || event.keyCode == 9) {
 	    if (currentHit >= 0 && currentHit < hits.length) {
 		log("Picked index: "+currentHit);
 		var input = document.getElementById(id);
-		var output= document.getElementById(id+"-value");
+		var output= document.getElementById(id+"-id");
 		output.value = hits[currentHit].getAttribute("id");
 		input.value = hits[currentHit].getAttribute("text");
 	    }
@@ -112,6 +130,7 @@ var currentSearch = '';
 var currentReq = null;
 var currentInput = null;
 function search(id,type) {
+    currentID = id;
     //log("Search "+id);
     
     currentInput  = document.getElementById(id);
@@ -153,7 +172,9 @@ function handleSearchResult() {
 	    var member = hits[i];
 	    
 	    var hd = document.createElement("div");
-	    //	    hd.setAttribute("class", "hit");
+	    hd.setAttribute("class", "notselected");
+	    hd.setAttribute("onmouseover", "taSelect("+i+", false)");
+	    hd.setAttribute("onmouseclick",     "taSelect("+i+", true)");
 	    hitsDiv.appendChild(hd);
 	    hd.innerHTML = member.getAttribute("text");
 	}

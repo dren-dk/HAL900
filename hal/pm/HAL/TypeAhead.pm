@@ -15,6 +15,6 @@ sub typeAhead {
     my $id = $fieldName.'_ta';
     my $ed = encode_entities($default);
     my $events = qq!onblur="taBlur('$id','$search')" onkeypress="taKey('$id', '$search', event)"!;
-    return qq!<input type="input" size="50" name="$fieldName" id="$id" $events/>!.
-	qq!<input type="hidden" name="$fieldName-value" id="$id-value" value="$ed"/>!;
+    return qq!<input type="input" size="50" name="$fieldName" id="$id" autocomplete="off" $events/>!.
+	qq!<input type="hidden" name="$fieldName-id" id="$id-id" value="$ed"/>!;
 }

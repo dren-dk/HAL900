@@ -311,6 +311,11 @@ sub consolidatePage {
 $load
 </script>
 ';
+
+    if ($count == 0) {
+	$html = "<p>Der er ingen udestående bank transaktioner.</p>";	
+    }
+
     return outputAdminPage('consolidate', 'Konsolider poster', $html);
 }
 
@@ -365,7 +370,7 @@ sub accountsPage {
 	    my ($out) = $outr->fetchrow_array;
 	    $outr->finish;
 
-	    my $saldo = $in//0-$out//0;
+	    my $saldo = ($in//0)-($out//0);
 	    
 	    $html .= qq' <tr $class><td><a href="/hal/admin/accounts/$type_id/$id">$id</a></td>'.
 		qq'<td>$accountName</td><td>$ol</td><td>$saldo</td></tr>\n';
@@ -458,23 +463,76 @@ sub transactionsPage {
 
 sub createAccountPage {
     my ($r,$q,$p, $type_id) = @_;
-    my $html = '';
-    
-    $html .= qq'<form method="post" action="/hal/admin/$type_id/create">';
+
+    my $rest = db->sql("select typename from accounttype where id=?", $type_id) 
+	or die "Failed to get account type name for $type_id";    
+    my ($typename) = $rest->fetchrow_array;
+    $rest->finish;    
+    die "Invalid type_id=$type_id" unless $typename;
+
+    my $html = qq'<p>Opretter en konto af typen: $typename</p>';
+    my $errors = 0;
+    $html .= qq'<form method="post" action="/hal/admin/accounts/$type_id/create">';
+
+    $html .= textInput("Navn", 'Indtast det navn som konten skal have', 'accountname', $p, sub {
+	my ($v,$p,$name) = @_;
+	if (length($v)<2) {
+	    $errors++;
+	    return "Konto navnet skal være længere";
+	}
+    });
 
     $html .= memberInput('Ejer', 'Vælg ejeren af kontoen, hvis den ikke er ejet af foreningen',
-			 'owner_id', $p);
-    $html .= memberInput('Ejer1', 'Vælg ejeren af kontoen, hvis den ikke er ejet af foreningen1',
-			 'owner_id1', $p);
+			 'owner', $p);
 
-#    $html .= typeAhead('member_id', '', 'member');
-#    $html .= typeAhead('hest_member_id', '', 'member');
+    $html .= qq'<hr><input type="submit" name="gogogo" value="Opret konto"></form>';
 
-    $html .= qq'</form>';
+    if ($p->{gogogo}) {
+	if ($errors) {
+	    $html .= "<p>Fix fejlen og prøv igen.</p>";
+	} else {
+	    my $owner_id = $p->{"owner-id"} ? $p->{"owner-id"} : undef;
+
+	    db->sql('insert into account (owner_id, type_id, accountName) values (?,?,?)',
+		   $owner_id, $type_id, $p->{accountname})
+		or die "Failed to store the new account";
+	    my $account_id = db->getID('account') or die "Failed to get new account id";
+	    l "Created account $account_id type: $type_id: $p->{accountname}";
+
+	    return outputGoto("/hal/admin/accounts/$type_id/$account_id");	    
+	}	
+    }
 
     return outputAdminPage('newaccount', "Opretter konto", $html);
 }
 
+
+sub membersPage {
+    my ($r,$q,$p) = @_;
+
+    my $html = '';
+
+    $html .= qq'<table><tr><th>ID</th><th>Bruger</th><th>Navn</th><th>email</th><th>Telefon</th><th>Type</th></tr>';
+
+    my $mr = db->sql("select member.id,username,realname,email,phone,memberType ".
+		     "from member inner join membertype on (membertype_id=membertype.id) ".
+		     "order by realname")
+	or die "Failed to fetch member list";
+    my $count = 0;
+    while (my ($id, $realname, $username, $email, $phone, $memberType) = $mr->fetchrow_array) {
+	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
+	$html .= qq'<tr $class><td><a href="/hal/admin/members/$id">$id</a></td>'.
+	    join('', map {
+		"<td>".encode_entities($_||'')."</td>"
+		 } ($realname,$username,$email,$phone,$memberType)).'</tr>';
+    }
+    $mr->finish;
+
+
+    $html.= "</table>";    
+
+    return outputAdminPage('members', "Medlemmer", $html);
+}
 
 BEGIN {
     ensureAdmin(qr'^/hal/admin');
@@ -485,6 +543,7 @@ BEGIN {
     addHandler(qr'^/hal/admin/accounts/(\d+)$', \&accountsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)$', \&transactionsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)/create$', \&createAccountPage);
+    addHandler(qr'^/hal/admin/members/?$', \&membersPage);
 }
 
 12;

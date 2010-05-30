@@ -3,15 +3,12 @@ TODO:
 Done: Create database
 Done: Create mod_perl bootstrap
 Done: Session management
+Done: Register user
+Done: Edit self
+Done: Login page
+Done: Admin: Import csv
+Done: Confirm email to continue
+Done: Admin: Categorize bank transactions -> turn into actual transactions
 
-Register user
-Edit self
-
-Login page
-Admin: Import csv
-
-Confirm email to continue
-
-Admin: Categorize bank transactions -> turn into actual transactions
-
+Admin: List and edit members (door access)
 Admin: Edit 

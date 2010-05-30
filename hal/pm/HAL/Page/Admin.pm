@@ -519,19 +519,133 @@ sub membersPage {
 		     "order by realname")
 	or die "Failed to fetch member list";
     my $count = 0;
-    while (my ($id, $realname, $username, $email, $phone, $memberType) = $mr->fetchrow_array) {
+    while (my ($id, $username, $realname, $email, $phone, $memberType) = $mr->fetchrow_array) {
 	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
 	$html .= qq'<tr $class><td><a href="/hal/admin/members/$id">$id</a></td>'.
 	    join('', map {
 		"<td>".encode_entities($_||'')."</td>"
-		 } ($realname,$username,$email,$phone,$memberType)).'</tr>';
+		 } ($username,$realname,$email,$phone,$memberType)).'</tr>';
     }
     $mr->finish;
-
 
     $html.= "</table>";    
 
     return outputAdminPage('members', "Medlemmer", $html);
+}
+
+sub memberPage {
+    my ($r,$q,$p,$member_id) = @_;
+
+    my $html = '';
+
+    my @types;
+    my $typesRes = db->sql('select id, memberType, monthlyFee, doorAccess from memberType order by id');
+    while (my ($id, $memberType, $monthlyFee, $doorAccess) = $typesRes->fetchrow_array) {
+	push @types, {
+	    key=>$id,
+	    name=>"$memberType ($monthlyFee kr/måned) ".($doorAccess ? '- Inkluderer nøgle til lokalerne' : '- Uden nøgle til lokalerne'),
+	}
+    }
+    $typesRes->finish;
+    
+    my $mr = db->sql("select username,realname,email,phone,smail,memberType_id,dooraccess,adminaccess ".
+		     "from member where id=?", $member_id) or die "Failed to fetch member $member_id";
+    my ($username, $realname, $email, $phone, $smail, $membertype_id, $doorAccess, $adminAccess)
+	= $mr->fetchrow_array;
+    $mr->finish;
+
+    $realname //= '';
+    $username //= '';
+    $phone //= '';
+    $smail //= '';
+
+    $p->{membertype} ||= $membertype_id;
+    $html .= qq'
+<div class="floaty">
+<h2>Detaljer</h2>
+<p>
+<strong>ID:</strong> $username<br>
+$realname<br>
+$smail<br>
+Tlf. $phone
+</p>
+<h2>Email</h2>
+<p>$email</p>
+</div>
+
+
+<form method="post" action="/hal/admin/members/$member_id">
+';
+    my $errors = 0;
+    
+    $html .= '<div class="floaty">';
+    $html .= radioInput("Medlems type", "", 'membertype', $p, sub {
+	my ($v,$p,$name) = @_;
+	unless ($v) {
+	    $errors++;
+	    return "Vælg venligst medlemsskab";
+	}
+	return "";
+    }, @types);
+    $html .= "</div>\n";
+
+    if ($p->{gogogo}) {
+	$p->{dooraccess} //= 0;
+	$p->{adminaccess} //= 0;
+    } else {
+	$p->{dooraccess} = $doorAccess;
+	$p->{adminaccess} = $adminAccess;
+    }
+
+    $html .= '<div class="floaty">';
+    $html .= "<h2>Privilegier</h2>";
+    my $dac = $p->{dooraccess} ? ' checked="1"' : '';
+    $html .= qq'<input type="checkbox" name="dooraccess" value="1"$dac>Adgang til at låse døren op.</input><br/>';
+    my $aac = $p->{adminaccess} ? ' checked="1"' : '';
+    $html .= qq'<input type="checkbox" name="adminaccess" value="1"$aac>Administrator.</input><br/>';
+    $html .= qq'<hr><input style="clear: both" type="submit" name="gogogo" value="Gem ændringer">';
+    $html .= "</div></form>\n";
+
+    if ($p->{gogogo}) {
+	db->sql("update member set dooraccess=?, adminaccess=?, membertype_id=? where id=?",
+		$p->{dooraccess}, $p->{adminaccess}, $p->{membertype}, $member_id)
+	    or die "Failed to update member: $p->{dooraccess}, $p->{adminaccess}, $p->{membertype}, $member_id";
+    }
+
+    my $ar = db->sql("select account.id, accountName, typeName, type_id ".
+		     "from account inner join accounttype on (type_id=accounttype.id) ".
+		     "where owner_id=? order by accounttype.id",
+		     $member_id)
+	or die "Failed to look up accounts owned by the user";
+
+    my $table = qq'<table><tr><th>ID</th><th>Type</th><th>Navn</th><th>Saldo</th></tr>\n';	
+    my $count = 0;
+    while (my ($account_id, $accountName, $typeName, $type_id) = $ar->fetchrow_array) {
+	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
+	
+	my $inr = db->sql("select sum(amount) from accountTransaction where target_account_id=?", $account_id);
+	my ($in) = $inr->fetchrow_array;
+	$inr->finish;
+	
+	my $outr = db->sql("select sum(amount) from accountTransaction where source_account_id=?", $account_id);
+	my ($out) = $outr->fetchrow_array;
+	$outr->finish;
+	
+	my $saldo = ($in//0)-($out//0);
+	    
+	$table .= qq' <tr $class><td><a href="/hal/admin/accounts/$type_id/$account_id">$account_id</a></td>'.
+	    qq'<td>$typeName</td><td>$accountName</td><td>$saldo</td></tr>\n';	
+    }
+    $table .= "</table>";
+    $ar->finish;
+
+    if ($count) {
+	$html .= $table;
+    } else {
+	$html .= "<p>Denne bruger har ingen konto</p>";
+    }
+
+    return outputAdminPage('member', "Medlemmer", $html);
 }
 
 BEGIN {
@@ -544,6 +658,7 @@ BEGIN {
     addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)$', \&transactionsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)/create$', \&createAccountPage);
     addHandler(qr'^/hal/admin/members/?$', \&membersPage);
+    addHandler(qr'^/hal/admin/members/(\d+)?$', \&memberPage);
 }
 
 12;

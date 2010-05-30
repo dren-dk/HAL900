@@ -561,6 +561,12 @@ div.floaty h2 {
     font-size: 14px;
 }
 
+div.floaty h4 {
+    font-size: 14px;
+    margin-top: 3em;  	 
+    background-color:#eeeeee;
+}
+
 #logout {
   position: absolute;
   top: 20px;

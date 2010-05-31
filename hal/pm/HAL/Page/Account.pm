@@ -73,6 +73,8 @@ sub indexPage {
     $smail =~ s/[\n\r]+/<br>/g;
 
     my $html = qq'
+<table style="width: 100%"><tr><td>
+
 <div class="floaty">
 <h2>Detaljer [<a href="/hal/account/details">Ret</a>]</h2>
 <p>
@@ -105,6 +107,51 @@ Tlf. $phone
 	   : '<li>Du kan ikke låse døren til lokalerne op, <a href="/hal/account/type">opgrader til betalende medlem</a></li>';
     $html .= $adminAccess ? '<li>Du kan administrere systemet</li>' : '';
     $html .= "</ul></div>\n";
+    $html .= "<td></tr></table> <!-- Yes I'm using a table for layout, so sue me! -->";
+
+    if ($monthlyFee > 0) {
+	$html .= "<h2>Kontingent</h2>
+<p>Dit kontingent er $monthlyFee kr pr. måned. Betalingen foregår ved at lave en bankoverførsel med din email adresse (<strong>$email</strong>) i kommentarfeltet, så vi har pengene senest den første i hver måned.</p><p>Open Space Aarhus’ kontooplysninger er: <strong>Reg.nr.: 1982 Konto nr.: 0741891514</strong></p>
+<p>Det er muligt, og meget værdsat af foreningen, at betale forud.</p>";
+    }
+    
+    my $ar = db->sql("select account.id, accountName, typeName, type_id ".
+		     "from account inner join accounttype on (type_id=accounttype.id) ".
+		     "where owner_id=? order by accounttype.id",
+		     getSession->{member_id})
+	or die "Failed to look up accounts owned by the user";
+
+    while (my ($account_id, $accountName, $typeName, $type_id) = $ar->fetchrow_array) {
+	my @table;
+	my $tx = db->sql("select t.id, t.created, source_account_id, sa.accountName, target_account_id, ta.accountName, amount, comment ".
+			 "from accountTransaction t ".
+			 "inner join account sa on (t.source_account_id = sa.id) ".
+			 "inner join account ta on (t.target_account_id = ta.id) ".
+			 "where target_account_id=? or source_account_id=? ".
+			 "order by t.id desc", $account_id, $account_id);
+	my $sum = 0;
+	my $sumIn = 0;
+	my $sumOut = 0;
+	while (my ($tid, $created, $source_id, $source, $target_id, $target, $amount, $comment) = $tx->fetchrow_array) {
+	    my $other  = $source_id == $account_id ? $target : $source;
+	    my $delta  = $source_id == $account_id ? $amount : -$amount;
+
+	    $sum += $delta;
+
+	    push @table, [$tid, $created, $comment, $other, $delta, $sum];
+	}
+	$tx->finish;
+
+	$html .= qq'<h2>$typeName: $accountName - Saldo: $sum</h2>';
+	$html .= "<table><th>ID</th><th>Dato</th><th>Transaktion</th><th>Fra/Til konto</th><th>Beløb</th><th>Saldo</th>\n";
+	my $count = 0;
+	for my $r (reverse @table) {
+	    my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
+	    $html .= qq'<tr $class>'.join('', map {"<td>$_</td>"} @$r).qq'</tr>\n';
+	}
+	$html .= "</table>";
+    }
+    $ar->finish;
 
     return outputAccountPage('index', 'Oversigt', $html);
 }

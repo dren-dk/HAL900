@@ -538,6 +538,8 @@ sub memberPage {
 
     my $html = '';
 
+    $html .= '<table style="width: 100%"><tr><td>';
+
     my @types;
     my $typesRes = db->sql('select id, memberType, monthlyFee, doorAccess from memberType order by id');
     while (my ($id, $memberType, $monthlyFee, $doorAccess) = $typesRes->fetchrow_array) {
@@ -618,7 +620,7 @@ Tlf. $phone
 		     $member_id)
 	or die "Failed to look up accounts owned by the user";
 
-    my $table = qq'<table><tr><th>ID</th><th>Type</th><th>Navn</th><th>Saldo</th></tr>\n';	
+    my $table = qq'<h2>Konti</h2><table><tr><th>ID</th><th>Type</th><th>Navn</th><th>Saldo</th></tr>\n';	
     my $count = 0;
     while (my ($account_id, $accountName, $typeName, $type_id) = $ar->fetchrow_array) {
 	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
@@ -638,6 +640,7 @@ Tlf. $phone
     }
     $table .= "</table>";
     $ar->finish;
+    $html .= "<td></tr></table> <!-- Yes I'm using a table for layout, so sue me! -->";
 
     if ($count) {
 	$html .= $table;

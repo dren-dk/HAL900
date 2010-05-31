@@ -26,12 +26,11 @@ sub createUser {
     }
 
 
-    my $res = db->sql("select count(*) from member where email = ?", $p->{email});
-    my ($inuse) = $res->fetchrow_array;
+    my $res = db->sql("select id, realname, membertype_id, passwd from member where email = ?", $p->{email});
+    my ($member_id, $realname, $membertype_id, $passwd) = $res->fetchrow_array;
     $res->finish;
-    return outputGoto("/hal/login?username=".escape_url($p->{email})) if $inuse;
+    return outputGoto("/hal/login?username=".escape_url($p->{email})) if $passwd;
 
- 
     my $form = qq'<form method="POST" action="/hal/create">';
     $form .= encode_hidden({
 	 email=>$email,
@@ -99,29 +98,32 @@ sub createUser {
 
 	return "";
     });
-    
-    $form .= textInput("Fuldt navn", "Dit rigtige navn, incl. efternavn", 'name', $p, sub {
-	my ($v,$p,$name) = @_;
-	if (length($v)<4) {
-	    $errors++;
-	    return "Dit fulde navn kan umuligt være mindre end 4 tegn langt.";
-	}
-	if ($v !~ /^[a-zA-ZæøåÆØÅ \.-]+$/) {
-	    $errors++;
-	    return "Æh, hvad?";
-	}
-	if ($v !~ / /) {
-	    $errors++;
-	    return "Også efternavnet, tak.";
-	}
 
-	return "";
-    });
+    unless ($member_id) {
+	$form .= textInput("Fuldt navn", "Dit rigtige navn, incl. efternavn", 'name', $p, sub {
+	    my ($v,$p,$name) = @_;
+	    if (length($v)<4) {
+		$errors++;
+		return "Dit fulde navn kan umuligt være mindre end 4 tegn langt.";
+	    }
+	    if ($v !~ /^[a-zA-ZæøåÆØÅ \.-]+$/) {
+		$errors++;
+		return "Æh, hvad?";
+	    }
+	    if ($v !~ / /) {
+		$errors++;
+		return "Også efternavnet, tak.";
+	    }
+
+	    return "";
+	});
+    }
     
     $p->{snailmail} ||= '';
     $p->{snailmail} =~ s/\s+$//s;
     $form .= areaInput("Snailmail", "Din post adresse, incl. gade, husnummer, by og postnummer", 'snailmail', $p, sub {
 	my ($v,$p,$name) = @_;
+	return '' unless $p->{gogogo};
 	if (length($v)<4) {
 	    $errors++;
 	    return "Din adresse kan umuligt være mindre end 4 tegn lang.";
@@ -145,24 +147,26 @@ sub createUser {
 	return "";
     });
 
-    my @types;
-    my $typesRes = db->sql('select id, memberType, monthlyFee, doorAccess from memberType order by id');
-    while (my ($id, $memberType, $monthlyFee, $doorAccess) = $typesRes->fetchrow_array) {
-	push @types, {
-	    key=>$id,
-	    name=>"$memberType ($monthlyFee kr/måned) ".($doorAccess ? '- Inkluderer nøgle til lokalerne' : '- Uden nøgle til lokalerne'),
+    unless ($member_id) {
+	my @types;
+	my $typesRes = db->sql('select id, memberType, monthlyFee, doorAccess from memberType order by id');
+	while (my ($id, $memberType, $monthlyFee, $doorAccess) = $typesRes->fetchrow_array) {
+	    push @types, {
+		key=>$id,
+		name=>"$memberType ($monthlyFee kr/måned) ".($doorAccess ? '- Inkluderer nøgle til lokalerne' : '- Uden nøgle til lokalerne'),
+	    }
 	}
+	$typesRes->finish;
+	
+	$form .= radioInput("Medlems type", "Vælg den type medlemsskab du ønsker", 'membertype', $p, sub {
+	    my ($v,$p,$name) = @_;
+	    unless ($v) {
+		$errors++;
+		return "Vælg venligst hvilken type medlemsskab du ønsker";
+	    }
+	    return "";
+         }, @types);
     }
-    $typesRes->finish;
-
-    $form .= radioInput("Medlems type", "Vælg den type medlemsskab du ønsker", 'membertype', $p, sub {
-	my ($v,$p,$name) = @_;
-	unless ($v) {
-	    $errors++;
-	    return "Vælg venligst hvilken type medlemsskab du ønsker";
-	}
-	return "";
-    }, @types);
 
     $form .= '
 <hr>
@@ -174,7 +178,16 @@ sub createUser {
 	    $errors = "en" if $errors == 1;
 	    $form .= "<p>Hovsa, der er $errors fejl!</p>";
 	} else {
-	    if (db->sql('insert into member (membertype_id, username, email, passwd, phone, realname, smail) values (?,?,?,?,?,?,?)',
+	    
+	    if ($member_id) {
+		db->sql('update member set username=?, passwd=?, phone=?, smail=? where id=?',
+			$p->{username}, passwordHash($p->{passwd}), $p->{phone}, $p->{snailmail}, $member_id)
+		    or die "Failed to update user with new personal details";
+
+		loginSession($member_id);
+		return outputGoto('/hal/account');
+
+	    } elsif (db->sql('insert into member (membertype_id, username, email, passwd, phone, realname, smail) values (?,?,?,?,?,?,?)',
 			$p->{membertype}, $p->{username}, $p->{email},
 			passwordHash($p->{passwd}), $p->{phone}, $p->{name}, $p->{snailmail})) {
 		

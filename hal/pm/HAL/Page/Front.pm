@@ -110,7 +110,7 @@ sub newUser {
     my $error = '';
     if ($p->{email}) {
 
-	my $res = db->sql("select count(*) from member where email = ?", $p->{email});
+	my $res = db->sql("select passwd from member where email = ?", $p->{email});
 	my ($inuse) = $res->fetchrow_array;
 	$res->finish;
 	my $ue = escape_url($p->{email});
@@ -121,14 +121,13 @@ sub newUser {
 	} elsif (eval { Email::Valid->address(-address => $p->{email},-mxcheck => 1) }) {
 
 	    my $key = sha1_hex($p->{email}.emailSalt());	    
-	    
 	    my $email = sendmail('register@hal.osaa.dk', $p->{email},
 				 'Fortsæt Open Space Aarhus registreringen',
 "Klik her for at fortsætte registreringen som medlem af Open Space Aarhus:
 https://hal.osaa.dk/hal/create?email=$ue&key=$key&ex=42
 
 Hvis det ikke er dig der har startet oprettelsen af et medlemsskab hos OSAA,
-så kan du enten ignorere denne mail eller sende os en mail på: dave\@osaa.dk
+så kan du enten ignorere denne mail eller sende os en mail på: bestyrelsen\@osaa.dk
 "
 		);
 
@@ -187,7 +186,10 @@ sub loginUser($$$) {
 	    my ($id, $hash) = $uRes->fetchrow_array;
 	    $uRes->finish;
 
-	    if ($id and passwordVerify($hash, $p->{passwd})) {
+	    if (!$p->{passwd}) {
+		$form .= "<p>Brugeren med denne email adresse har ikke valgt et password, vi har sendt dig en mail med et link i, som du skal bruge for at fortsætte, check din inbox og spam folder.</p>";
+
+	    } elsif ($id and passwordVerify($hash, $p->{passwd})) {
 
 		loginSession($id);
 		if (getSession->{wanted}) {

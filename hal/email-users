@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use HTML::Entities;
+use Email::Valid;
+use Digest::SHA qw(sha1_hex);
+
+use lib "$Bin/pm";
+
+use HAL;
+use HAL::DB;
+use HAL::Util;
+use HAL::Email;
+
+my $db = new HAL::DB;
+
+my $nu = $db->sql("select email from member where passwd is null") or die "Urgh";
+while (my ($email) = $nu->fetchrow_array) {
+
+    my $ue = escape_url($email);
+    my $key = sha1_hex($email.'345klj56kl');	    
+    my $url = "https://hal.osaa.dk/hal/create?email=$ue&key=$key&ex=37";
+    print "$url\n";
+    next;
+
+    my $email = sendmail('register@hal.osaa.dk', 
+			 'dren.dk@gmail.com',
+			 #$email,
+			 'Fortsæt Open Space Aarhus registreringen',
+			 "Klik her for at fortsætte registreringen som medlem af Open Space Aarhus:
+$url
+
+Hvis det ikke er dig der har startet oprettelsen af et medlemsskab hos OSAA,
+så kan du enten ignorere denne mail eller sende os en mail på: bestyrelsen\@osaa.dk
+"
+	);
+}
+$nu->finish;
+
+

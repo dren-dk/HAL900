@@ -1,15 +1,3 @@
-/*
- createuser -s -d -U postgres -P hal
- createdb -U hal hal
- psql -U hal < create.sql
-
- ... or pg_restore -d hal -U hal -c latest.pg 
-
-Also remember:
- sudo apt-get install libemail-valid-perl libapache2-request-perl libxml-writer-perl
- sudo a2enmod apreq
-*/
-
 begin transaction;
 
 create language 'plpgsql';

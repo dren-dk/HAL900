@@ -2,7 +2,7 @@
 package HAL::Session;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(loadSession storeSession newSession getSession getSessionID ensureAdmin ensureLogin ensureDoor canAccess loginSession logoutSession isLoggedIn isAdmin);
+@EXPORT = qw(loadSession storeSession newSession getSession getSessionID ensureAdmin ensureLogin ensureDoor canAccess loginSession logoutSession isLoggedIn isAdmin clearSession);
 
 use strict;
 use warnings;
@@ -132,6 +132,11 @@ sub logoutSession() {
     delete $session{access};
     delete $session{member_id};
     delete $session{name};
+}
+
+sub clearSession() {
+    %session = ();
+    $sessionID = undef;
 }
 
 37;

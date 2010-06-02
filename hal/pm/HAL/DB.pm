@@ -47,7 +47,7 @@ sub dbh($) {
     
     $cachedLastUse = time;
     $cachedPid = $$;
-    return $cachedDbh = DBI->connect("dbi:Pg:dbname=hal;port=5433",
+    return $cachedDbh = DBI->connect("dbi:Pg:dbname=hal;port=5432",
 				     'hal', 'hal900', {
 					 AutoCommit => $self->{autocommit},
 					 pg_enable_utf8=>1,

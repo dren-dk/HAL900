@@ -83,6 +83,7 @@ sub dispatchRequest($) {
 
     # Cookie setting.
     my $internal = undef;
+    clearSession();
 
     if (my $cookie_str = $r->headers_in->get('Cookie')) {
 	my %cookies = parse CGI::Cookie($cookie_str);

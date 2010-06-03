@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use POSIX;
+use FindBin qw($Bin);
+
+my $root = "$Bin/backups";
+
+my $ts = strftime("%A-%H", localtime);
+my $fn = "hal.$ts.pg";
+mkdir "$root";
+mkdir "$root/local";
+my $target = "$root/local/$fn";
+
+system("pg_dump", '--format=c', '--username=hal', 'hal', "--file=$target")
+        and die "Failed to back up $target";
+
+mkdir "$root/remote";
+my $enc = "$root/remote/$fn.gpg";
+
+# TODO: encrypt with gpg for board members
+# TODO: rsync remote to web server.
+
+exit 0;

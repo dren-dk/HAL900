@@ -2,7 +2,7 @@
 package HAL;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(setTestMode testMode HALRoot setHALRoot emailSalt setEmailSalt);
+@EXPORT = qw(setTestMode testMode HALRoot setHALRoot emailSalt setEmailSalt setDBUrl getDBUrl);
 
 use strict;
 use warnings;
@@ -33,6 +33,15 @@ sub emailSalt() {
 
 sub setEmailSalt($) {
     $emailSalt=shift;
+}
+
+my $dbUrl;
+sub setDBUrl($) {
+    $dbUrl = shift;
+}
+
+sub getDBUrl() {
+    return $dbUrl;
 }
 
 42;

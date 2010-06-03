@@ -9,6 +9,7 @@ HAL::UI::bootStrap({
     root=>"/home/hal/hal",
     test=>1,
     salt=>'345klj56kl',
+    db=>'dbi:Pg:dbname=hal;port=5432'
 });
 
 1;

@@ -182,7 +182,7 @@ sub loginUser($$$) {
 	    $form .= "<p>Udfyld begge felter for at logge på!</p>";
 
 	} else {
-	    my $uRes = (db->sql('select id, passwd from member where email=? or username=?', $p->{username}, $p->{username}));
+	    my $uRes = (db->sql('select id, passwd from member where lower(email)=? or lower(username)=?', lc $p->{username}, lc $p->{username}));
 	    my ($id, $hash) = $uRes->fetchrow_array;
 	    $uRes->finish;
 

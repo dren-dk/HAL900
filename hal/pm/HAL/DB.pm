@@ -7,6 +7,7 @@ use Carp qw(confess cluck);
 use Storable qw(freeze thaw);
 use Data::Dumper;
 use MIME::Base64;
+use HAL;
 
 sub new($) {
         my $class = shift;
@@ -47,7 +48,7 @@ sub dbh($) {
     
     $cachedLastUse = time;
     $cachedPid = $$;
-    return $cachedDbh = DBI->connect("dbi:Pg:dbname=hal;port=5432",
+    return $cachedDbh = DBI->connect(getDBUrl(),
 				     'hal', 'hal900', {
 					 AutoCommit => $self->{autocommit},
 					 pg_enable_utf8=>1,

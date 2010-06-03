@@ -51,6 +51,7 @@ sub bootStrap($) {
     setTestMode($p->{test});
     setHALRoot($p->{root});
     setEmailSalt($p->{salt}||'secret');
+    setDBUrl($p->{db});
 
     loadDir(HALRoot().'/pm/HAL/Page');
 }

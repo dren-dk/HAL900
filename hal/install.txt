@@ -4,6 +4,7 @@ Create the database:
  psql -U hal < create.sql
 
 ... Or restore from backup:
+ gpg -o latest.pg -d latest.pg.gpg
  pg_restore -d hal -U hal -c latest.pg 
 
 Link to the config/apache-foo.conf file into /etc/apache2/sites-enabled

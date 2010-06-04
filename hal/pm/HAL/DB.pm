@@ -92,4 +92,33 @@ sub getID {
 }
 
 
+sub getAccountTypeBalance {
+    my ($self, $member_id, $accounttype_id) = @_;
+
+    my $ar = $self->sql("select id from account where owner_id=? and type_id=?",
+			$member_id, $accounttype_id);
+    my ($account_id) = $ar->fetchrow_array;
+    $ar->finish;
+
+    return undef unless $account_id;
+    return ($self->getAccountBalance($account_id), $account_id) if wantarray;
+    return  $self->getAccountBalance($account_id);
+}
+
+sub getAccountBalance {
+    my ($self, $account_id) = @_;
+
+    my $inr = $self->sql("select sum(amount) from accountTransaction where target_account_id=?",
+		      $account_id);		
+    my ($in) = $inr->fetchrow_array;
+    $inr->finish;
+
+    my $outr = $self->sql("select sum(amount) from accountTransaction where source_account_id=?", 
+		       $account_id);		
+    my ($out) = $outr->fetchrow_array;
+    $outr->finish;
+    
+    return ($in//0)-($out//0);
+}
+
 1;

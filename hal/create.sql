@@ -89,6 +89,7 @@ CREATE TRIGGER update_updated BEFORE UPDATE
         update_updated();
 
 insert into account (type_id, accountName) values (1, 'OSAAs bankkonto i Nordea');
+insert into account (type_id, id, accountName) values (4, 100001, 'OSAA kontingent');
 
 create table accountTransaction (
        id serial primary key,
@@ -100,6 +101,7 @@ create table accountTransaction (
        check (source_account_id <> target_account_id),
 
        amount numeric(10,2) check (amount > 0),
+       receiptSent timestamp,
 
        comment varchar(150)
 );
@@ -124,7 +126,6 @@ create table bankTransaction (
        created timestamp default now(),
        updated timestamp default now(),
 
-       member_id integer references member(id),
        bankBatch_id integer references bankBatch(id) not null,
        
        bankDate varchar(15) not null,

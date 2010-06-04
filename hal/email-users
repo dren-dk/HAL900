@@ -5,6 +5,7 @@ use FindBin qw($Bin);
 use HTML::Entities;
 use Email::Valid;
 use Digest::SHA qw(sha1_hex);
+use utf8;
 
 use lib "$Bin/pm";
 
@@ -13,26 +14,35 @@ use HAL::DB;
 use HAL::Util;
 use HAL::Email;
 
+setDBUrl('dbi:Pg:dbname=hal;port=5432');
+
 my $db = new HAL::DB;
 
-my $nu = $db->sql("select email from member where passwd is null") or die "Urgh";
-while (my ($email) = $nu->fetchrow_array) {
+my $nu = $db->sql("select id, email, realname from member where passwd is null") or die "Urgh";
+while (my ($id, $email, $realname) = $nu->fetchrow_array) {
+
+    my ($firstname) = split /\s+/, $realname;
 
     my $ue = escape_url($email);
     my $key = sha1_hex($email.'345klj56kl');	    
     my $url = "https://hal.osaa.dk/hal/create?email=$ue&key=$key&ex=37";
-    print "$url\n";
-    next;
 
-    my $email = sendmail('register@hal.osaa.dk', 
-			 'dren.dk@gmail.com',
-			 #$email,
+    next unless $id > 60;
+    print "$id\t$email\t$url\n";
+
+    next;
+    my $email = sendmail('OSAA <register@hal.osaa.dk>', 
+			 "$realname <dren.dk\@gmail.com>",
+			 #"$realname <$email>",
 			 'Fortsæt Open Space Aarhus registreringen',
-			 "Klik her for at fortsætte registreringen som medlem af Open Space Aarhus:
+"Hej, $firstname, du får denne mail fordi vi nu har fået vores rigtige medlemssystem op at stå.
+I det nye system kan du bla. se alle dine indbetalinger og ændre dine kontakt oplysninger.
+
+Klik her for at fortsætte registreringen som medlem af Open Space Aarhus:
 $url
 
-Hvis det ikke er dig der har startet oprettelsen af et medlemsskab hos OSAA,
-så kan du enten ignorere denne mail eller sende os en mail på: bestyrelsen\@osaa.dk
+-- 
+Med venlig hilsen HAL900, på vegne af OSAA.
 "
 	);
 }

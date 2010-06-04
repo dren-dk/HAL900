@@ -18,7 +18,11 @@ system("pg_dump", '--format=c', '--username=hal', 'hal', "--file=$target")
 mkdir "$root/remote";
 my $enc = "$root/remote/$fn.gpg";
 
-# TODO: encrypt with gpg for board members
+system("gpg --yes --output $enc -e -u HAL900 -r helle\@daimi.au.dk -r markus\@markuspetersen.dk -r ff\@nrvissing.net $target")
+    and die "Failed to encrypt $target to $enc";
+
 # TODO: rsync remote to web server.
+system("rsync -a $root/remote osaa.dk:backups")
+    and die "Failed to sync the $root/remote dir to osaa.dk:backups";
 
 exit 0;

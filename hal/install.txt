@@ -10,7 +10,7 @@ Create the database:
 Link to the config/apache-foo.conf file into /etc/apache2/sites-enabled
 
 Run: 
-sudo apt-get install libemail-valid-perl libapache2-request-perl libxml-writer-perl emacs atop ntp subversion postfix apache2-mpm-prefork libdbi-perl libdbd-pg-perl libmime-perl postfix
+sudo apt-get install libemail-valid-perl libapache2-request-perl libxml-writer-perl emacs atop ntp subversion postfix apache2-mpm-prefork libdbi-perl libdbd-pg-perl libmime-perl postfix libdatetime-perl
 sudo a2enmod apreq
 
 Trust local connections:

@@ -132,8 +132,8 @@ sub loadPage {
 	for my $t (@txn) {
 	    my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
 
-	    my $res = db->sql("select count(*) from bankTransaction where bankDate=? and bankComment=? and amount=? and bankSum=?",
-			      $t->{date}, $t->{text}, $t->{amount}, $t->{sum});
+	    my $res = db->sql("select count(*) from bankTransaction where bankDate=? and bankComment=? and amount=?",
+			      $t->{date}, $t->{text}, $t->{amount});
 	    my ($dup) = $res->fetchrow_array;
 	    $res->finish;
 

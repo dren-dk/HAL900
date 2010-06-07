@@ -12,7 +12,7 @@ use HAL::DB;
 
 my $db = new HAL::DB;
 
-setDBUrl('dbi:Pg:dbname=hal;port=5433');
+setDBUrl('dbi:Pg:dbname=hal;port=5432');
 
 my $now = DateTime->now;
 my ($year,$month) = ($now->year, $now->month);

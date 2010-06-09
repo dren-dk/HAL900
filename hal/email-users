@@ -27,7 +27,6 @@ while (my ($id, $email, $realname) = $nu->fetchrow_array) {
     my $key = sha1_hex($email.'345klj56kl');	    
     my $url = "https://hal.osaa.dk/hal/create?email=$ue&key=$key&ex=37";
 
-    next unless $id > 60;
     print "$id\t$email\t$url\n";
 
     next;

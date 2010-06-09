@@ -14,8 +14,6 @@ use HAL::DB;
 use HAL::Util;
 use HAL::Email;
 
-setDBUrl('dbi:Pg:dbname=hal;port=5432');
-
 my $db = new HAL::DB;
 
 my $nu = $db->sql("select id, email, realname from member where passwd is null") or die "Urgh";

@@ -12,8 +12,6 @@ use HAL::DB;
 
 my $db = new HAL::DB;
 
-setDBUrl('dbi:Pg:dbname=hal;port=5432');
-
 my $now = DateTime->now;
 my ($year,$month) = ($now->year, $now->month);
 my $lastDay = DateTime->last_day_of_month(year=>$year, month=>$month)->day;
@@ -97,5 +95,3 @@ while (my ($id, $hasAccess, $fee, $getsAccess, $membertype_id) = $mr->fetchrow_a
 $mr->finish;
 
 $db->dbh->commit;
-
-

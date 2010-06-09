@@ -2,46 +2,55 @@
 package HAL;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(setTestMode testMode HALRoot setHALRoot emailSalt setEmailSalt setDBUrl getDBUrl);
+@EXPORT = qw(testMode HALRoot emailSalt getDBUrl configureHAL);
 
 use strict;
 use warnings;
 
-my $testMode = 0;
-sub setTestMode($) {
-    $testMode = shift;
-}
+my $config;
 sub testMode() {
-    return $testMode;
-}
-
-my $HALRoot;
-sub setHALRoot($) {
-    $HALRoot = shift;
-    die "This is not a HALRoot: $HALRoot" unless -f "$HALRoot/pm/HAL.pm";
-    return $HALRoot;
+    return $config->{test};
 }
 
 sub HALRoot() {
-    return $HALRoot ? $HALRoot : setHALRoot($FindBin::Bin);
+    return $config->{root};
 }
-
-my $emailSalt = "secret";
 sub emailSalt() {
-    return $emailSalt;
-}
-
-sub setEmailSalt($) {
-    $emailSalt=shift;
-}
-
-my $dbUrl;
-sub setDBUrl($) {
-    $dbUrl = shift;
+    return $config->{salt};
 }
 
 sub getDBUrl() {
-    return $dbUrl;
+    return $config->{db};
 }
+
+sub configureHAL {
+    my $host = shift;
+    $host ||= `hostname`;
+    chomp $host;    
+
+    die "HOST environment variable not defined, cannot self-configure." unless $host;
+
+    my %CONFIG = (
+	panther=>{
+	    root=>"/home/ff/projects/osaa/hal",
+	    test=>1,
+	    salt=>'345klj56kl',
+	    db=>'dbi:Pg:dbname=hal;port=5433',
+	},
+	hal=>{
+	    root=>"/home/hal/hal",
+	    test=>0,
+	    salt=>'345klj56kl',
+	    db=>'dbi:Pg:dbname=hal;port=5432'	    
+	},
+    );
+    
+    $config = $CONFIG{$host} || die "HOST=$host is not found in \%CONFIG, cannot self-configure, fix pm/HAL.pm";
+}
+
+BEGIN {
+    configureHAL();
+}
+
 
 42;

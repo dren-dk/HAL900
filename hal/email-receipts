@@ -1,0 +1,70 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use HTML::Entities;
+use Email::Valid;
+use Digest::SHA qw(sha1_hex);
+use utf8;
+use Data::Dumper;
+
+use lib "$Bin/pm";
+
+use HAL;
+use HAL::DB;
+use HAL::Util;
+use HAL::Email;
+
+my $db = new HAL::DB;
+
+my $ar = $db->sql("select a.id, email, realname from member m join account a on (a.owner_id=m.id)") or die "Urgh";
+while (my ($account_id, $email, $realname) = $ar->fetchrow_array) {
+
+    my $nt = $db->sql("select a.created, source_account_id, target_account_id, s.accountName, t.accountName, amount, comment ".
+		      "from accounttransaction a ".
+		      "join account s on (a.source_account_id=s.id) ".
+		      "join account t on (a.target_account_id=t.id) ".
+		      "where ? in (source_account_id, target_account_id) and receiptSent is null",
+		      $account_id) or die "Urgh";
+
+    my @txn;
+    while (my ($ts,$source_account_id, $target_account_id, $targetName, $sourceName, $amount, $comment) 
+	   = $nt->fetchrow_array()) {
+	
+	if ($target_account_id == $account_id) {
+	    $amount *= -1;
+	}
+
+	push @txn, {
+	    ts => $ts,
+	    amount=>$amount,
+	    comment=>$comment,
+	};
+    }
+    $nt->finish;
+
+    next unless @txn;
+        
+    my ($firstname) = split /\s+/, $realname;
+
+    die "Not done yet";
+    
+    next;
+    my $email = sendmail('OSAA <register@hal.osaa.dk>', 
+			 "$realname <dren.dk\@gmail.com>",
+			 #"$realname <$email>",
+			 'Fortsæt Open Space Aarhus registreringen',
+"Hej, $firstname, du får denne mail fordi vi nu har fået vores rigtige medlemssystem op at stå.
+I det nye system kan du bla. se alle dine indbetalinger og ændre dine kontakt oplysninger.
+
+Klik her for at fortsætte registreringen som medlem af Open Space Aarhus:
+
+
+-- 
+Med venlig hilsen HAL900, på vegne af OSAA.
+"
+	);
+}
+$ar->finish;
+
+

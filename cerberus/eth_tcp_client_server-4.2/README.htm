@@ -1,0 +1,365 @@
+<h2>AVR web server and web client, stack 3rd generation</h2>
+The different examples and applications in this package are:
+<br>
+<ul>
+<li>test_OKworks.hex  -- Example for a basic web server<br><br>
+<li>basic_web_server_example.hex  -- Example for a web server<br><br>
+<li>test_readSiliconRev.hex -- Prints the chip revision of the ENC<br><br>
+<li>eth_rem_dev_tcp.hex (compiled from main.c) -- You can switch a relay  on or off a relay via a web-page or via a small udp application (see directory udpcom). The relay is connected via pin PD7. The default password is "secret".<br><br>
+<li>test0.hex -- microcontroller test, causes an LED on PIN PB1 to blink<br><br>
+<li>test_emailnotify.hex -- send email notifications when you connect PD6 to GND. You need a tuxgraphics microcontroller mail account to use this. There is a timeout of 3min to prevent too many mails.<br><br>
+<li>test_twitter.hex -- post a message on twitter. To trigger the posting of a message you connect PD6 to GND. You need a twitter account to use this. There is a timeout of 3min to prevent too many posts. Note that twitter ignores repeated identical posts.<br><br>
+<li>test_identi_ca.hex -- post a message on identi.ca. To trigger the sending of the message connect PD6 to GND. You need a identi.ca account to use this. There is a timeout of 3min to prevent too many posts.<br><br>
+<li>test_web_client.hex -- a web client that uploads data to <a href=http://tuxgraphics.org/cgi-bin/upld>http://tuxgraphics.org/cgi-bin/upld</a> when you ping it once.<br><br>
+</ul>
+<br>
+For more detailed documentation  see <a href="http://tuxgraphics.org/electronics/">http://tuxgraphics.org/electronics/</a>
+<br>
+<br>
+A description of the different source code files and their dependencies can found in <a href="WhatIsWhat.htm">WhatIsWhat.htm</a>
+<br>
+<br>
+All parts needed to build this AVR ethernet solution can be ordered from 
+<a href="http://shop.tuxgraphics.org/">http://shop.tuxgraphics.org/</a>.
+You can also order the email account which you need for the test_emailnotify
+application from the tuxgraphics online shop.
+<br>
+<br>
+<h2>Important Note</h2>
+The browser callback function has changed from revision 3.6 to 4.0
+an extra length paramter was added:<br>
+void browserresult_callback(uint8_t statuscode,uint16_t datapos, uint16_t len)
+
+<br>
+
+<pre>
+Copyright of the software and all diagrams: Guido Socher, tuxgraphics.org
+
+License for everything: GPL V2
+See http://www.gnu.org/licenses/gpl.html
+Other licenses are available on request.
+<hr>
+
+<b>!! READ THIS FIRST !!</b>
+---------------------
+! Edit the file C-file which you plan to compile and change the lines:
+! static uint8_t mymac[6] = {0x54,0x55,0x58,0x10,0x00,0x29};
+! static uint8_t myip[4] = {10,0,0,29};
+
+In case of the web client applications  (test_web_client.c and test_emailnotify.c)
+you will in addition need to edit the following lines:
+
+! // IP address of the web server to contact (IP of the first portion of the URL):
+! static uint8_t websrvip[4] = {77,37,2,152};
+! // The name of the virtual host which you want to contact at 
+! // websrvip (hostname of the first portion of the URL):
+! #define WEBSERVER_VHOST "tuxgraphics.org"
+! // Default gateway. The ip address of your DSL router. It can be set to the same as
+! // websrvip the case where there is no default GW to access the
+! // web server (=web server is on the same lan as this host)
+! static uint8_t gwip[4] = {10,0,0,2};
+! 
+
+Check the file "Makefile" and make sure the MCU is set correctly:
+
+! MCU=atmega168
+! DUDECPUTYPE=m168
+! or
+! MCU=atmega88
+! DUDECPUTYPE=m88
+! or
+! MCU=atmega328p
+! DUDECPUTYPE=m328p
+
+More information about Makefiles can be found at:
+http://tuxgraphics.org/electronics/200912/makefiles.shtml
+
+The code for only the web server fits into an atmega88 chip but
+a combined web client and web server needs a atmega168 or atmega328p.
+
+The ip_config.h is setup such that all functinallity used in the
+examples is enabeled. This makes the code much bigger than needed
+for a specific example such as (test_OKworks.c or main.c).
+
+To fit the web server only applications into an atmega88 you need to 
+compile web server only applications without linking the, in this case
+useless, client code:
+        Example for eth_rem_dev_tcp.hex:
+        Edit ip_config.h . Uncomment WWW_client  and UDP_client
+        Run
+        make eth_rem_dev_tcp.hex
+        to compile (you will see that the total size will be below 8kb)
+
+For the first device you build you will not need to change the mymac line.
+But you will probably need to change the IP address (myip). myip must be a
+free address from the address range in your home network.
+
+Example: you wlan router might have 192.168.1.1, your PC might have
+192.168.1.2. This means you could e.g use 192.168.1.10 and leave some
+room for more PCs. If you use DHCP then make sure that the address it not
+double allocated (exclude it from the DHCP range).
+
+You need an avr-gcc development environment in order to compile this.
+See http://tuxgraphics.org/electronics/200901/avr-gcc-linux.shtml
+
+To compile the final software use the command:
+make
+
+Note: windows users may use and modify the supplied winmake.bat to setup the
+environment correctly.
+
+The above command will compile the following hex files:
+basic_web_server_example.hex  test_OKworks.hex      test_readSiliconRev.hex
+eth_rem_dev_tcp.hex           test_emailnotify.hex  test_twitter.hex
+test0.hex                     test_identi_ca.hex    test_web_client.hex
+
+The command
+make load
+
+will execute the avrdude command to load the eth_rem_dev_tcp.hex software (remote relay
+switch on/off software, compiled from main.c).
+E.g something like: 
+   avrdude -p m88 -c stk500v2 -e -U flash:w:eth_rem_dev_tcp.hex
+
+To load any of the other software you can either execute the needed
+avrdude command manually or use the load targets defined in the Makefile
+which is load_ and then the name of the hex file without the .hex:
+e.g 
+make load_test_web_client
+
+<br>Note your programmer might interfer with the enc28j60!</b> For the avrusb500
+with 30cm cable you can normally leave the cable on. For all other programmers
+it is however saver to remove the programmer cable and power down/up the device.
+This is because the SPI interface is used for loading of the software and 
+communication to the enc28j60.
+
+To see a list of all possible build targets run the command:
+make help
+
+<b>
+Selecting the right clock source
+--------------------------------
+</b>
+Tuxgraphics hardware sold as of march 2007 is prepared to use the clock
+signal from the enc28j60. To use this you need to change the 
+low fuse byte once from 0x62 to 0x60:
+
+avrdude -p m88 -c stk500v2 -u -v -U lfuse:w:0x60:m
+or 
+avrdude -p m168 -c stk500v2 -u -v -U lfuse:w:0x60:m
+or 
+avrdude -p m328p -c stk500v2 -u -v -U lfuse:w:0x60:m
+
+or just type in your Linux shell:
+make fuse
+
+After programming the fuse settings of atmega168 and atmega88 should be:
+ low fuse:  0x60
+ high fuse: 0xdf
+ ext. fuse: 0x01
+
+For the atmega328p the hfuse and efuse bytes look slightly different.
+The idea is however the same. Just change the lfuse from factory default
+to 0x60. The fuse settings of the atmega328p are after programming
+should be as below (default factory settings for atmega328p, the
+efuse has some not used bits and is dependent on the chip revision):
+ lfuse reads as 0x60
+ hfuse reads as 0xD9
+ efuse reads as 0x07
+
+details of the lfuse bits:
+  CKDIV8 = 0
+  CKOUT  = 1
+  SUT1   = 1
+  SUT0   = 0
+  CKSEL3 = 0
+  CKSEL2 = 0
+  CKSEL1 = 0
+  CKSEL0 = 0
+
+If you are unsure what the current fuse setting are on the atmega
+then you can read the fuse settings with a command like:
+          avrdude -p m168 -c stk500v2 -v -q
+The result should be this (default factory settings for atmega168):
+          avrdude: safemode: lfuse reads as 62
+          avrdude: safemode: hfuse reads as DF
+          avrdude: safemode: efuse reads as 1
+
+The result should be this (default factory settings for atmega328p):
+          avrdude: safemode: lfuse reads as 62
+          avrdude: safemode: hfuse reads as D9
+          avrdude: safemode: efuse reads as 7
+
+<b>
+Compiling on non-Unix systems
+-----------------------------
+</b>
+Please use the provided Makefile !!!
+
+It will also work under Windows.
+
+Take a look at the supplied winmake.bat and winload.bat file. The bat script
+might be needed to set the environment correctly.
+
+A description of what makefiles are and how they work can be found at:
+http://tuxgraphics.org/electronics/200912/makefiles.shtml
+
+Edit the Makefile to make the needed adjustments at the top
+of the file.
+
+More information about Makefiles can be found at:
+http://tuxgraphics.org/electronics/200912/makefiles.shtml
+<b>
+Using test_twitter to send messages to twitter
+or using test_indenti_ca to send a message to indenti.ca
+----------------------------------------------
+</b>
+The twitter example is test_twitter.c  The identi.ca file
+is test_indenti_ca.c
+You need to edit the file.
+You need to change myip and gwip as described above and then
+change this:
+
+1) As of version 4.0 there is a small DNS resolver library
+See dnslkup.h
+IP addresses for twitter.com and identi.ca need no longer
+to be hardcoded.
+
+
+2) Username and password of your twitter account need to
+  be encoded in a special way. Go to 
+  <a href="http://tuxgraphics.org/~guido/javascript/base64-javascript.html">http://tuxgraphics.org/~guido/javascript/base64-javascript.html</a>
+  and enter "username:youpassword"
+  after that replace this "ZABcdefghijklmnop12345==" with your string:
+  #define BLOGGACCOUNT "Authorization: Basic ZABcdefghijklmnop12345=="
+
+  This base64-javascript encoder can also be found in the subdirectory "files".
+
+3) Scroll further down into the code and look for:
+
+  urlencode("Test of tuxgraphics eth board",&amp;(statusstr[7]);
+
+  This is the status update that the ethernet board will send.
+  You can change it. There is a 40 char limit but you could change the 
+  definition of statusstr.
+
+4) compile  with
+  make test_twitter
+or
+  make test_identi_ca
+  and download make test_twitter.hex to the board.
+ 
+5) Connect PD6 to GND and watch your profile on twitter/identi.ca
+
+
+<b>
+Using test_emailnotify to receive email notifications
+-----------------------------------------------------
+</b>
+To use this software you need to:
+
+1) order a microcontroller email account at shop.tuxgraphics.org
+
+2) edit test_emailnotify.c and search for the string gus123. Replace
+this string by the microcontroller email account ID that you received.
+Edit also the IP addresses as described at the beginning of this file.
+
+3) edit the Makefile and uncomment the line
+EMAIL=haveaccount
+
+4) run make to compile the software
+
+5) load the test_emailnotify.hex into the microccontroller
+
+6) Connect PD6 with GND for a moment and ... you will get an email sent to 
+the email address specified in your tuxgraphics microcontroller email account.
+The destination email address is specified in the email account
+and not in the test_emailnotify software to prevent SPAM and abuse.
+
+<b>
+UDP
+---
+</b>
+The programs test_readSiliconRev and eth_rem_dev_tcp (compiled from main.c) can
+also be used via UDP. All programs have a web interface.
+---------------------------------------------------------
+The test_readSiliconRev.c (compiles to load_readSiliconRev.hex) reads 
+the enc28j60 silicon revision and displays it. 
+You can use it as a base for a simple application
+where you want to just read data (e.g thermometer)
+
+make 
+make load_readSiliconRev
+
+Read via udp:
+udpcom ver 10.0.0.29
+
+will answer:
+II: data: ver, ip: 10.0.0.29 port: 1200
+OK: 10.0.0.29: ver=4
+
+Read via webbrowser:
+http://10.0.0.29
+
+will display a webpage with:
+ENC28J60 silicon rev is: 4
+
+Using the eth_rem_dev_tcp with UDP
+------------------------------
+The only supported useful function in this release is to switch on or
+of the transistor connected to PD7.
+The command to switch on is: t=1
+The command to switch off is: t=0
+Query the status: t=?
+
+The udpcom syntax is: udpcom password,X=Y IP-addr
+
+Here is an example:
+./udpcom/unix/udpcom secret,t=0 10.0.0.29
+II: data: secret,t=0, ip: 10.0.0.29 port: 1200
+OK: 10.0.0.29: t=0
+
+./udpcom/unix/udpcom secret,t=1 10.0.0.29
+II: data: secret,t=1, ip: 10.0.0.29 port: 1200
+OK: 10.0.0.29: t=1
+
+./udpcom/unix/udpcom secret,t=? 10.0.0.29
+II: data: secret,t=?, ip: 10.0.0.29 port: 1200
+OK: 10.0.0.29: t=1
+
+./udpcom/unix/udpcom secret,t=0 10.0.0.29
+II: data: secret,t=0, ip: 10.0.0.29 port: 1200
+OK: 10.0.0.29: t=0
+
+./udpcom/unix/udpcom secret,t=? 10.0.0.29
+II: data: secret,t=?, ip: 10.0.0.29 port: 1200
+OK: 10.0.0.29: t=0
+
+<b>
+Messages form a Network analyser
+--------------------------------
+</b>
+traffic_*.txt and traffic_*.cap files in the subdirectory "files" are
+decoded and binary messages from wireshark.
+
+
+<b>
+Revision history
+----------------
+</b>
+2009-05-05: version 3.2 -- first version of the new stack. 
+2009-05-18: version 3.3 -- get rid of avr_compat.h, add twitter and identi.ca, added a description of the files in WhatIsWhat.htm
+2009-06-02: version 3.4 -- added make target "main" to compile eth_rem_dev_tcp.hex
+                           updated delay functions.
+2009-06-21: version 3.5 -- added a smiley for the remote switch (main.c)
+2009-12-30: version 3.6 -- improvements to Makefile
+2010-02-26: version 4.0 -- added generic udp client code (from alarm system)
+                        -- added a generic TCP client interface
+                        -- add a length parameter to the browser callback
+                        -- added a dns resolver
+2010-03-13: version 4.1 -- clean-up code for enc28j60 B4 errata point 13
+2010-03-21: version 4.2 -- ping client code update
+                        -- arp refresh procedure uses now bit-maped flags
+
+</pre>
+vim:sw=8:ts=8:si:et

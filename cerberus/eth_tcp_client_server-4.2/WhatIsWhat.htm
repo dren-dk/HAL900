@@ -1,0 +1,113 @@
+  <h2>The different source code files and their dependencies</h2>The
+  actual TCP/IP stack and the driver for the ethernet chip consists
+  of the following files:<br>
+
+  <ul>
+    <li>enc28j60.c</li>
+
+    <li>enc28j60.h</li>
+
+    <li>ip_arp_udp_tcp.c</li>
+
+    <li>ip_arp_udp_tcp.h</li>
+
+    <li>ip_config.h</li>
+
+    <li>timeout.h</li>
+
+    <li>net.h</li>
+  </ul>The main file you have to interface from an application
+  point of view is ip_arp_udp_tcp.h. The ip_config.h allows you to
+  customize the stack and switch off features that you might not
+  need. This will keep the size always to the minimal. It is
+  recommended to use the Makefile for compiling the files and thus
+  keep track of the dependencies. Windows users might want to
+  customize winmake.bat which will then call the Makefile.<br>
+  <br>
+  The files websrv_help_functions.c and websrv_help_functions.h contain
+  useful helper function for parsing URLs or for
+  URL-encoding/decoding.<br>
+  <br>
+  The files dnslkup.c and dnslkup.h implement a tiny but very 
+  capable DNS resolver.
+  <br>
+  <br>
+  The following are examples for different uses of the stack:
+
+  <ul>
+    <li>main.c (compiles to eth_rem_dev_tcp.hex) -- a web server to switch on/off a relay
+    remotely<br>
+    <br></li>
+
+    <li>basic_web_server_example.c -- a basic web server
+    example. A good starting point to build your own application.<br>
+    <br></li>
+
+    <li>test_readSiliconRev.c --  a very basic web server
+    example that reads the chip revision of the ethernet chip
+    and displays it on a web page.<br>
+    <br></li>
+
+    <li>test_OKworks.c -- a very basic web server
+    example. Just prints "OK works".<br>
+    <br></li>
+
+    <li>test_web_client.c -- a web client (=web browser) that
+    uploads data to <a href=
+    "http://tuxgraphics.org/cgi-bin/upld">http://tuxgraphics.org/cgi-bin/upld</a>
+    when you ping it once.<br>
+    <br></li>
+
+    <li>test_emailnotify.c -- send email notifications when you
+    connect PD6 to GND. You need a tuxgraphics microcontroller mail
+    account to use this. There is a timeout of 3min to prevent too
+    many mails.<br>
+    <br></li>
+
+    <li>test_twitter.c -- post a message on twitter. To trigger the
+    posting of a message you connect PD6 to GND. You need a twitter
+    account to use this. There is a timeout of 3min to prevent too
+    many posts. Note that twitter ignores repeated identical
+    posts.<br>
+    <br></li>
+
+    <li>test_identi_ca.c -- post a message on identi.ca. To trigger
+    the sending of the message connect PD6 to GND. You need a
+    identi.ca account to use this. There is a timeout of 3min to
+    prevent too many posts.<br>
+    <br></li>
+  </ul><br>
+  <b>Open the files and edit the IP address and other information such as twitter/identi.ca
+  password before you compile the application files. Inside the application files there is a description of the different variables that might need customization. All variables and parameters that need to be customized are near the top of the file.</b>
+  <br>
+  <br>
+  There is also very simple test program which causes just an LED
+  to blink. It is useful to test your compiler and your
+  programmer:<br>
+
+  <ul>
+    <li>test0.c/test0.hex -- microcontroller test, causes an LED on PIN PB1
+    to blink<br>
+    <br></li>
+    <li>The sub-directory "files" contains a collection of screen-shots and captures taken with wireshark.<br> <br></li>
+    <li>Sub-directory udpcom contain a UDP application. Some application such as the relay on/off switch can also be controlled via UDP.
+  </ul><br>
+  <br>
+  A description as to how to program the fuse bytes of the microcontroller
+  can be found in <a href="README.htm">README.htm</a>. You need to set
+  the fuse bytes once for a new microcontroller.
+  <br>
+  <pre>
+Copyright of the software and all diagrams: Guido Socher, tuxgraphics.org
+
+License for everything: GPL V2
+See http://www.gnu.org/licenses/gpl.html
+Other licenses are available on request.
+</pre>
+  <hr>
+  <pre>
+For more detailed documentation  see <a href=
+"http://tuxgraphics.org/electronics/">http://tuxgraphics.org/electronics/</a>
+<br>
+</pre>
+vim:sw=8:ts=8:si:et

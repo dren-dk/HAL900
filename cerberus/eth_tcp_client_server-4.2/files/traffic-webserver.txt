@@ -1,0 +1,648 @@
+No.     Time        Source                Destination           Protocol Info
+      1 0.000000    IntelCor_15:2c:96     Broadcast             ARP      Who has 10.0.0.29?  Tell 10.0.0.7
+
+Frame 1 (60 bytes on wire, 60 bytes captured)
+    Arrival Time: May  3, 2009 11:11:09.424520000
+    Time delta from previous packet: 0.000000000 seconds
+    Time since reference or first frame: 0.000000000 seconds
+    Frame Number: 1
+    Packet Length: 60 bytes
+    Capture Length: 60 bytes
+    Protocols in frame: eth:arp
+Ethernet II, Src: IntelCor_15:2c:96 (00:15:00:15:2c:96), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+    Destination: Broadcast (ff:ff:ff:ff:ff:ff)
+    Source: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Type: ARP (0x0806)
+    Trailer: 0050E61134FC00A2B5D62E82801800850109
+Address Resolution Protocol (request)
+    Hardware type: Ethernet (0x0001)
+    Protocol type: IP (0x0800)
+    Hardware size: 6
+    Protocol size: 4
+    Opcode: request (0x0001)
+    Sender MAC address: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Sender IP address: 10.0.0.7 (10.0.0.7)
+    Target MAC address: 00:00:00_00:00:00 (00:00:00:00:00:00)
+    Target IP address: 10.0.0.29 (10.0.0.29)
+
+0000  ff ff ff ff ff ff 00 15 00 15 2c 96 08 06 00 01   ..........,.....
+0010  08 00 06 04 00 01 00 15 00 15 2c 96 0a 00 00 07   ..........,.....
+0020  00 00 00 00 00 00 0a 00 00 1d 00 50 e6 11 34 fc   ...........P..4.
+0030  00 a2 b5 d6 2e 82 80 18 00 85 01 09               ............
+
+No.     Time        Source                Destination           Protocol Info
+      2 0.000474    54:55:58:10:00:29     IntelCor_15:2c:96     ARP      10.0.0.29 is at 54:55:58:10:00:29
+
+Frame 2 (60 bytes on wire, 60 bytes captured)
+    Arrival Time: May  3, 2009 11:11:09.424994000
+    Time delta from previous packet: 0.000474000 seconds
+    Time since reference or first frame: 0.000474000 seconds
+    Frame Number: 2
+    Packet Length: 60 bytes
+    Capture Length: 60 bytes
+    Protocols in frame: eth:arp
+Ethernet II, Src: 54:55:58:10:00:29 (54:55:58:10:00:29), Dst: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Destination: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Source: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Type: ARP (0x0806)
+    Trailer: 000000000000000000000000000000000000
+Address Resolution Protocol (reply)
+    Hardware type: Ethernet (0x0001)
+    Protocol type: IP (0x0800)
+    Hardware size: 6
+    Protocol size: 4
+    Opcode: reply (0x0002)
+    Sender MAC address: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Sender IP address: 10.0.0.29 (10.0.0.29)
+    Target MAC address: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Target IP address: 10.0.0.7 (10.0.0.7)
+
+0000  00 15 00 15 2c 96 54 55 58 10 00 29 08 06 00 01   ....,.TUX..)....
+0010  08 00 06 04 00 02 54 55 58 10 00 29 0a 00 00 1d   ......TUX..)....
+0020  00 15 00 15 2c 96 0a 00 00 07 00 00 00 00 00 00   ....,...........
+0030  00 00 00 00 00 00 00 00 00 00 00 00               ............
+
+No.     Time        Source                Destination           Protocol Info
+      3 0.002681    10.0.0.7              10.0.0.29             TCP      36652 > http [SYN] Seq=0 Ack=0 Win=5840 Len=0 MSS=1460 TSV=720928 TSER=0 WS=6
+
+Frame 3 (74 bytes on wire, 74 bytes captured)
+    Arrival Time: May  3, 2009 11:11:09.427201000
+    Time delta from previous packet: 0.002207000 seconds
+    Time since reference or first frame: 0.002681000 seconds
+    Frame Number: 3
+    Packet Length: 74 bytes
+    Capture Length: 74 bytes
+    Protocols in frame: eth:ip:tcp
+Ethernet II, Src: IntelCor_15:2c:96 (00:15:00:15:2c:96), Dst: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Destination: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Source: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Type: IP (0x0800)
+Internet Protocol, Src: 10.0.0.7 (10.0.0.7), Dst: 10.0.0.29 (10.0.0.29)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+        .... ..0. = ECN-Capable Transport (ECT): 0
+        .... ...0 = ECN-CE: 0
+    Total Length: 60
+    Identification: 0x23e1 (9185)
+    Flags: 0x04 (Don't Fragment)
+        0... = Reserved bit: Not set
+        .1.. = Don't fragment: Set
+        ..0. = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (0x06)
+    Header checksum: 0x02b8 [correct]
+        Good: True
+        Bad : False
+    Source: 10.0.0.7 (10.0.0.7)
+    Destination: 10.0.0.29 (10.0.0.29)
+Transmission Control Protocol, Src Port: 36652 (36652), Dst Port: http (80), Seq: 0, Ack: 0, Len: 0
+    Source port: 36652 (36652)
+    Destination port: http (80)
+    Sequence number: 0    (relative sequence number)
+    Header length: 40 bytes
+    Flags: 0x0002 (SYN)
+        0... .... = Congestion Window Reduced (CWR): Not set
+        .0.. .... = ECN-Echo: Not set
+        ..0. .... = Urgent: Not set
+        ...0 .... = Acknowledgment: Not set
+        .... 0... = Push: Not set
+        .... .0.. = Reset: Not set
+        .... ..1. = Syn: Set
+        .... ...0 = Fin: Not set
+    Window size: 5840
+    Checksum: 0x5265 [correct]
+    Options: (20 bytes)
+        Maximum segment size: 1460 bytes
+        SACK permitted
+        Time stamp: tsval 720928, tsecr 0
+        NOP
+        Window scale: 6 (multiply by 64)
+
+0000  54 55 58 10 00 29 00 15 00 15 2c 96 08 00 45 00   TUX..)....,...E.
+0010  00 3c 23 e1 40 00 40 06 02 b8 0a 00 00 07 0a 00   .<#.@.@.........
+0020  00 1d 8f 2c 00 50 17 40 23 c1 00 00 00 00 a0 02   ...,.P.@#.......
+0030  16 d0 52 65 00 00 02 04 05 b4 04 02 08 0a 00 0b   ..Re............
+0040  00 20 00 00 00 00 01 03 03 06                     . ........
+
+No.     Time        Source                Destination           Protocol Info
+      4 0.003396    10.0.0.29             10.0.0.7              TCP      http > 36652 [SYN, ACK] Seq=0 Ack=1 Win=1400 Len=0 MSS=1280
+
+Frame 4 (60 bytes on wire, 60 bytes captured)
+    Arrival Time: May  3, 2009 11:11:09.427916000
+    Time delta from previous packet: 0.000715000 seconds
+    Time since reference or first frame: 0.003396000 seconds
+    Frame Number: 4
+    Packet Length: 60 bytes
+    Capture Length: 60 bytes
+    Protocols in frame: eth:ip:tcp
+Ethernet II, Src: 54:55:58:10:00:29 (54:55:58:10:00:29), Dst: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Destination: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Source: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Type: IP (0x0800)
+    Trailer: 0000
+Internet Protocol, Src: 10.0.0.29 (10.0.0.29), Dst: 10.0.0.7 (10.0.0.7)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+        .... ..0. = ECN-Capable Transport (ECT): 0
+        .... ...0 = ECN-CE: 0
+    Total Length: 44
+    Identification: 0x23e1 (9185)
+    Flags: 0x04 (Don't Fragment)
+        0... = Reserved bit: Not set
+        .1.. = Don't fragment: Set
+        ..0. = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (0x06)
+    Header checksum: 0x02c8 [correct]
+        Good: True
+        Bad : False
+    Source: 10.0.0.29 (10.0.0.29)
+    Destination: 10.0.0.7 (10.0.0.7)
+Transmission Control Protocol, Src Port: http (80), Dst Port: 36652 (36652), Seq: 0, Ack: 1, Len: 0
+    Source port: http (80)
+    Destination port: 36652 (36652)
+    Sequence number: 0    (relative sequence number)
+    Acknowledgement number: 1    (relative ack number)
+    Header length: 24 bytes
+    Flags: 0x0012 (SYN, ACK)
+        0... .... = Congestion Window Reduced (CWR): Not set
+        .0.. .... = ECN-Echo: Not set
+        ..0. .... = Urgent: Not set
+        ...1 .... = Acknowledgment: Set
+        .... 0... = Push: Not set
+        .... .0.. = Reset: Not set
+        .... ..1. = Syn: Set
+        .... ...0 = Fin: Not set
+    Window size: 1400
+    Checksum: 0xaab0 [correct]
+    Options: (4 bytes)
+        Maximum segment size: 1280 bytes
+    SEQ/ACK analysis
+        This is an ACK to the segment in frame: 3
+        The RTT to ACK the segment was: 0.000715000 seconds
+
+0000  00 15 00 15 2c 96 54 55 58 10 00 29 08 00 45 00   ....,.TUX..)..E.
+0010  00 2c 23 e1 40 00 40 06 02 c8 0a 00 00 1d 0a 00   .,#.@.@.........
+0020  00 07 00 50 8f 2c 00 00 0a 00 17 40 23 c2 60 12   ...P.,.....@#.`.
+0030  05 78 aa b0 00 00 02 04 05 00 00 00               .x..........
+
+No.     Time        Source                Destination           Protocol Info
+      5 0.005530    10.0.0.7              10.0.0.29             TCP      36652 > http [ACK] Seq=1 Ack=1 Win=5840 Len=0
+
+Frame 5 (60 bytes on wire, 60 bytes captured)
+    Arrival Time: May  3, 2009 11:11:09.430050000
+    Time delta from previous packet: 0.002134000 seconds
+    Time since reference or first frame: 0.005530000 seconds
+    Frame Number: 5
+    Packet Length: 60 bytes
+    Capture Length: 60 bytes
+    Protocols in frame: eth:ip:tcp
+Ethernet II, Src: IntelCor_15:2c:96 (00:15:00:15:2c:96), Dst: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Destination: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Source: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Type: IP (0x0800)
+    Trailer: 000000000000
+Internet Protocol, Src: 10.0.0.7 (10.0.0.7), Dst: 10.0.0.29 (10.0.0.29)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+        .... ..0. = ECN-Capable Transport (ECT): 0
+        .... ...0 = ECN-CE: 0
+    Total Length: 40
+    Identification: 0x23e2 (9186)
+    Flags: 0x04 (Don't Fragment)
+        0... = Reserved bit: Not set
+        .1.. = Don't fragment: Set
+        ..0. = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (0x06)
+    Header checksum: 0x02cb [correct]
+        Good: True
+        Bad : False
+    Source: 10.0.0.7 (10.0.0.7)
+    Destination: 10.0.0.29 (10.0.0.29)
+Transmission Control Protocol, Src Port: 36652 (36652), Dst Port: http (80), Seq: 1, Ack: 1, Len: 0
+    Source port: 36652 (36652)
+    Destination port: http (80)
+    Sequence number: 1    (relative sequence number)
+    Acknowledgement number: 1    (relative ack number)
+    Header length: 20 bytes
+    Flags: 0x0010 (ACK)
+        0... .... = Congestion Window Reduced (CWR): Not set
+        .0.. .... = ECN-Echo: Not set
+        ..0. .... = Urgent: Not set
+        ...1 .... = Acknowledgment: Set
+        .... 0... = Push: Not set
+        .... .0.. = Reset: Not set
+        .... ..0. = Syn: Not set
+        .... ...0 = Fin: Not set
+    Window size: 5840
+    Checksum: 0xb061 [correct]
+    SEQ/ACK analysis
+        This is an ACK to the segment in frame: 4
+        The RTT to ACK the segment was: 0.002134000 seconds
+
+0000  54 55 58 10 00 29 00 15 00 15 2c 96 08 00 45 00   TUX..)....,...E.
+0010  00 28 23 e2 40 00 40 06 02 cb 0a 00 00 07 0a 00   .(#.@.@.........
+0020  00 1d 8f 2c 00 50 17 40 23 c2 00 00 0a 01 50 10   ...,.P.@#.....P.
+0030  16 d0 b0 61 00 00 00 00 00 00 00 00               ...a........
+
+No.     Time        Source                Destination           Protocol Info
+      6 0.006245    10.0.0.7              10.0.0.29             HTTP     GET / HTTP/1.1
+
+Frame 6 (449 bytes on wire, 449 bytes captured)
+    Arrival Time: May  3, 2009 11:11:09.430765000
+    Time delta from previous packet: 0.000715000 seconds
+    Time since reference or first frame: 0.006245000 seconds
+    Frame Number: 6
+    Packet Length: 449 bytes
+    Capture Length: 449 bytes
+    Protocols in frame: eth:ip:tcp:http
+Ethernet II, Src: IntelCor_15:2c:96 (00:15:00:15:2c:96), Dst: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Destination: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Source: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Type: IP (0x0800)
+Internet Protocol, Src: 10.0.0.7 (10.0.0.7), Dst: 10.0.0.29 (10.0.0.29)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+        .... ..0. = ECN-Capable Transport (ECT): 0
+        .... ...0 = ECN-CE: 0
+    Total Length: 435
+    Identification: 0x23e3 (9187)
+    Flags: 0x04 (Don't Fragment)
+        0... = Reserved bit: Not set
+        .1.. = Don't fragment: Set
+        ..0. = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (0x06)
+    Header checksum: 0x013f [correct]
+        Good: True
+        Bad : False
+    Source: 10.0.0.7 (10.0.0.7)
+    Destination: 10.0.0.29 (10.0.0.29)
+Transmission Control Protocol, Src Port: 36652 (36652), Dst Port: http (80), Seq: 1, Ack: 1, Len: 395
+    Source port: 36652 (36652)
+    Destination port: http (80)
+    Sequence number: 1    (relative sequence number)
+    Next sequence number: 396    (relative sequence number)
+    Acknowledgement number: 1    (relative ack number)
+    Header length: 20 bytes
+    Flags: 0x0018 (PSH, ACK)
+        0... .... = Congestion Window Reduced (CWR): Not set
+        .0.. .... = ECN-Echo: Not set
+        ..0. .... = Urgent: Not set
+        ...1 .... = Acknowledgment: Set
+        .... 1... = Push: Set
+        .... .0.. = Reset: Not set
+        .... ..0. = Syn: Not set
+        .... ...0 = Fin: Not set
+    Window size: 5840
+    Checksum: 0x8b37 [correct]
+Hypertext Transfer Protocol
+    GET / HTTP/1.1\r\n
+        Request Method: GET
+        Request URI: /
+        Request Version: HTTP/1.1
+    Host: 10.0.0.29\r\n
+    User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.17) Gecko/20080829 Firefox/2.0.0.17\r\n
+    Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5\r\n
+    Accept-Language: en-us,en;q=0.5\r\n
+    Accept-Encoding: gzip,deflate\r\n
+    Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n
+    Keep-Alive: 300\r\n
+    Connection: keep-alive\r\n
+    \r\n
+
+0000  54 55 58 10 00 29 00 15 00 15 2c 96 08 00 45 00   TUX..)....,...E.
+0010  01 b3 23 e3 40 00 40 06 01 3f 0a 00 00 07 0a 00   ..#.@.@..?......
+0020  00 1d 8f 2c 00 50 17 40 23 c2 00 00 0a 01 50 18   ...,.P.@#.....P.
+0030  16 d0 8b 37 00 00 47 45 54 20 2f 20 48 54 54 50   ...7..GET / HTTP
+0040  2f 31 2e 31 0d 0a 48 6f 73 74 3a 20 31 30 2e 30   /1.1..Host: 10.0
+0050  2e 30 2e 32 39 0d 0a 55 73 65 72 2d 41 67 65 6e   .0.29..User-Agen
+0060  74 3a 20 4d 6f 7a 69 6c 6c 61 2f 35 2e 30 20 28   t: Mozilla/5.0 (
+0070  58 31 31 3b 20 55 3b 20 4c 69 6e 75 78 20 69 36   X11; U; Linux i6
+0080  38 36 3b 20 65 6e 2d 55 53 3b 20 72 76 3a 31 2e   86; en-US; rv:1.
+0090  38 2e 31 2e 31 37 29 20 47 65 63 6b 6f 2f 32 30   8.1.17) Gecko/20
+00a0  30 38 30 38 32 39 20 46 69 72 65 66 6f 78 2f 32   080829 Firefox/2
+00b0  2e 30 2e 30 2e 31 37 0d 0a 41 63 63 65 70 74 3a   .0.0.17..Accept:
+00c0  20 74 65 78 74 2f 78 6d 6c 2c 61 70 70 6c 69 63    text/xml,applic
+00d0  61 74 69 6f 6e 2f 78 6d 6c 2c 61 70 70 6c 69 63   ation/xml,applic
+00e0  61 74 69 6f 6e 2f 78 68 74 6d 6c 2b 78 6d 6c 2c   ation/xhtml+xml,
+00f0  74 65 78 74 2f 68 74 6d 6c 3b 71 3d 30 2e 39 2c   text/html;q=0.9,
+0100  74 65 78 74 2f 70 6c 61 69 6e 3b 71 3d 30 2e 38   text/plain;q=0.8
+0110  2c 69 6d 61 67 65 2f 70 6e 67 2c 2a 2f 2a 3b 71   ,image/png,*/*;q
+0120  3d 30 2e 35 0d 0a 41 63 63 65 70 74 2d 4c 61 6e   =0.5..Accept-Lan
+0130  67 75 61 67 65 3a 20 65 6e 2d 75 73 2c 65 6e 3b   guage: en-us,en;
+0140  71 3d 30 2e 35 0d 0a 41 63 63 65 70 74 2d 45 6e   q=0.5..Accept-En
+0150  63 6f 64 69 6e 67 3a 20 67 7a 69 70 2c 64 65 66   coding: gzip,def
+0160  6c 61 74 65 0d 0a 41 63 63 65 70 74 2d 43 68 61   late..Accept-Cha
+0170  72 73 65 74 3a 20 49 53 4f 2d 38 38 35 39 2d 31   rset: ISO-8859-1
+0180  2c 75 74 66 2d 38 3b 71 3d 30 2e 37 2c 2a 3b 71   ,utf-8;q=0.7,*;q
+0190  3d 30 2e 37 0d 0a 4b 65 65 70 2d 41 6c 69 76 65   =0.7..Keep-Alive
+01a0  3a 20 33 30 30 0d 0a 43 6f 6e 6e 65 63 74 69 6f   : 300..Connectio
+01b0  6e 3a 20 6b 65 65 70 2d 61 6c 69 76 65 0d 0a 0d   n: keep-alive...
+01c0  0a                                                .
+
+No.     Time        Source                Destination           Protocol Info
+      7 0.008596    10.0.0.29             10.0.0.7              TCP      http > 36652 [ACK] Seq=1 Ack=396 Win=800 Len=0
+
+Frame 7 (60 bytes on wire, 60 bytes captured)
+    Arrival Time: May  3, 2009 11:11:09.433116000
+    Time delta from previous packet: 0.002351000 seconds
+    Time since reference or first frame: 0.008596000 seconds
+    Frame Number: 7
+    Packet Length: 60 bytes
+    Capture Length: 60 bytes
+    Protocols in frame: eth:ip:tcp
+Ethernet II, Src: 54:55:58:10:00:29 (54:55:58:10:00:29), Dst: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Destination: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Source: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Type: IP (0x0800)
+    Trailer: 000000000000
+Internet Protocol, Src: 10.0.0.29 (10.0.0.29), Dst: 10.0.0.7 (10.0.0.7)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+        .... ..0. = ECN-Capable Transport (ECT): 0
+        .... ...0 = ECN-CE: 0
+    Total Length: 40
+    Identification: 0x23e3 (9187)
+    Flags: 0x04 (Don't Fragment)
+        0... = Reserved bit: Not set
+        .1.. = Don't fragment: Set
+        ..0. = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (0x06)
+    Header checksum: 0x02ca [correct]
+        Good: True
+        Bad : False
+    Source: 10.0.0.29 (10.0.0.29)
+    Destination: 10.0.0.7 (10.0.0.7)
+Transmission Control Protocol, Src Port: http (80), Dst Port: 36652 (36652), Seq: 1, Ack: 396, Len: 0
+    Source port: http (80)
+    Destination port: 36652 (36652)
+    Sequence number: 1    (relative sequence number)
+    Acknowledgement number: 396    (relative ack number)
+    Header length: 20 bytes
+    Flags: 0x0010 (ACK)
+        0... .... = Congestion Window Reduced (CWR): Not set
+        .0.. .... = ECN-Echo: Not set
+        ..0. .... = Urgent: Not set
+        ...1 .... = Acknowledgment: Set
+        .... 0... = Push: Not set
+        .... .0.. = Reset: Not set
+        .... ..0. = Syn: Not set
+        .... ...0 = Fin: Not set
+    Window size: 800
+    Checksum: 0xc286 [correct]
+    SEQ/ACK analysis
+        This is an ACK to the segment in frame: 6
+        The RTT to ACK the segment was: 0.002351000 seconds
+
+0000  00 15 00 15 2c 96 54 55 58 10 00 29 08 00 45 00   ....,.TUX..)..E.
+0010  00 28 23 e3 40 00 40 06 02 ca 0a 00 00 1d 0a 00   .(#.@.@.........
+0020  00 07 00 50 8f 2c 00 00 0a 01 17 40 25 4d 50 10   ...P.,.....@%MP.
+0030  03 20 c2 86 00 00 00 00 00 00 00 00               . ..........
+
+No.     Time        Source                Destination           Protocol Info
+      8 0.010906    10.0.0.29             10.0.0.7              HTTP     HTTP/1.0 200 OK (text/html)
+
+Frame 8 (476 bytes on wire, 476 bytes captured)
+    Arrival Time: May  3, 2009 11:11:09.435426000
+    Time delta from previous packet: 0.002310000 seconds
+    Time since reference or first frame: 0.010906000 seconds
+    Frame Number: 8
+    Packet Length: 476 bytes
+    Capture Length: 476 bytes
+    Protocols in frame: eth:ip:tcp:http:data-text-lines
+Ethernet II, Src: 54:55:58:10:00:29 (54:55:58:10:00:29), Dst: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Destination: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Source: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Type: IP (0x0800)
+Internet Protocol, Src: 10.0.0.29 (10.0.0.29), Dst: 10.0.0.7 (10.0.0.7)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+        .... ..0. = ECN-Capable Transport (ECT): 0
+        .... ...0 = ECN-CE: 0
+    Total Length: 462
+    Identification: 0x23e3 (9187)
+    Flags: 0x04 (Don't Fragment)
+        0... = Reserved bit: Not set
+        .1.. = Don't fragment: Set
+        ..0. = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (0x06)
+    Header checksum: 0x0124 [correct]
+        Good: True
+        Bad : False
+    Source: 10.0.0.29 (10.0.0.29)
+    Destination: 10.0.0.7 (10.0.0.7)
+Transmission Control Protocol, Src Port: http (80), Dst Port: 36652 (36652), Seq: 1, Ack: 396, Len: 422
+    Source port: http (80)
+    Destination port: 36652 (36652)
+    Sequence number: 1    (relative sequence number)
+    Next sequence number: 423    (relative sequence number)
+    Acknowledgement number: 396    (relative ack number)
+    Header length: 20 bytes
+    Flags: 0x0019 (FIN, PSH, ACK)
+        0... .... = Congestion Window Reduced (CWR): Not set
+        .0.. .... = ECN-Echo: Not set
+        ..0. .... = Urgent: Not set
+        ...1 .... = Acknowledgment: Set
+        .... 1... = Push: Set
+        .... .0.. = Reset: Not set
+        .... ..0. = Syn: Not set
+        .... ...1 = Fin: Set
+    Window size: 800
+    Checksum: 0xd5cb [correct]
+Hypertext Transfer Protocol
+    HTTP/1.0 200 OK\r\n
+        Request Version: HTTP/1.0
+        Response Code: 200
+    Content-Type: text/html\r\n
+    Pragma: no-cache\r\n
+    \r\n
+Line-based text data: text/html
+    <h2>Email notification status</h2>
+    <pre>
+    Number of PD6 to GND connections: 0
+    Number of email attempts: 0
+    Number successful emails: 0
+    Date of last mail: none
+    Email notify is: ON
+    <form action=/ method=get>
+    passw: <input type=password size=8 name=pw><input type=hidden name=mn value=0><input type=submit value="disable email"></form>
+    </pre><br><hr>tuxgraphics.org
+
+0000  00 15 00 15 2c 96 54 55 58 10 00 29 08 00 45 00   ....,.TUX..)..E.
+0010  01 ce 23 e3 40 00 40 06 01 24 0a 00 00 1d 0a 00   ..#.@.@..$......
+0020  00 07 00 50 8f 2c 00 00 0a 01 17 40 25 4d 50 19   ...P.,.....@%MP.
+0030  03 20 d5 cb 00 00 48 54 54 50 2f 31 2e 30 20 32   . ....HTTP/1.0 2
+0040  30 30 20 4f 4b 0d 0a 43 6f 6e 74 65 6e 74 2d 54   00 OK..Content-T
+0050  79 70 65 3a 20 74 65 78 74 2f 68 74 6d 6c 0d 0a   ype: text/html..
+0060  50 72 61 67 6d 61 3a 20 6e 6f 2d 63 61 63 68 65   Pragma: no-cache
+0070  0d 0a 0d 0a 3c 68 32 3e 45 6d 61 69 6c 20 6e 6f   ....<h2>Email no
+0080  74 69 66 69 63 61 74 69 6f 6e 20 73 74 61 74 75   tification statu
+0090  73 3c 2f 68 32 3e 0a 3c 70 72 65 3e 0a 4e 75 6d   s</h2>.<pre>.Num
+00a0  62 65 72 20 6f 66 20 50 44 36 20 74 6f 20 47 4e   ber of PD6 to GN
+00b0  44 20 63 6f 6e 6e 65 63 74 69 6f 6e 73 3a 20 30   D connections: 0
+00c0  0a 4e 75 6d 62 65 72 20 6f 66 20 65 6d 61 69 6c   .Number of email
+00d0  20 61 74 74 65 6d 70 74 73 3a 20 30 0a 4e 75 6d    attempts: 0.Num
+00e0  62 65 72 20 73 75 63 63 65 73 73 66 75 6c 20 65   ber successful e
+00f0  6d 61 69 6c 73 3a 20 30 0a 44 61 74 65 20 6f 66   mails: 0.Date of
+0100  20 6c 61 73 74 20 6d 61 69 6c 3a 20 6e 6f 6e 65    last mail: none
+0110  0a 45 6d 61 69 6c 20 6e 6f 74 69 66 79 20 69 73   .Email notify is
+0120  3a 20 4f 4e 0a 3c 66 6f 72 6d 20 61 63 74 69 6f   : ON.<form actio
+0130  6e 3d 2f 20 6d 65 74 68 6f 64 3d 67 65 74 3e 0a   n=/ method=get>.
+0140  70 61 73 73 77 3a 20 3c 69 6e 70 75 74 20 74 79   passw: <input ty
+0150  70 65 3d 70 61 73 73 77 6f 72 64 20 73 69 7a 65   pe=password size
+0160  3d 38 20 6e 61 6d 65 3d 70 77 3e 3c 69 6e 70 75   =8 name=pw><inpu
+0170  74 20 74 79 70 65 3d 68 69 64 64 65 6e 20 6e 61   t type=hidden na
+0180  6d 65 3d 6d 6e 20 76 61 6c 75 65 3d 30 3e 3c 69   me=mn value=0><i
+0190  6e 70 75 74 20 74 79 70 65 3d 73 75 62 6d 69 74   nput type=submit
+01a0  20 76 61 6c 75 65 3d 22 64 69 73 61 62 6c 65 20    value="disable 
+01b0  65 6d 61 69 6c 22 3e 3c 2f 66 6f 72 6d 3e 0a 3c   email"></form>.<
+01c0  2f 70 72 65 3e 3c 62 72 3e 3c 68 72 3e 74 75 78   /pre><br><hr>tux
+01d0  67 72 61 70 68 69 63 73 2e 6f 72 67               graphics.org
+
+No.     Time        Source                Destination           Protocol Info
+      9 0.016674    10.0.0.7              10.0.0.29             TCP      36652 > http [FIN, ACK] Seq=396 Ack=424 Win=6432 Len=0
+
+Frame 9 (60 bytes on wire, 60 bytes captured)
+    Arrival Time: May  3, 2009 11:11:09.441194000
+    Time delta from previous packet: 0.005768000 seconds
+    Time since reference or first frame: 0.016674000 seconds
+    Frame Number: 9
+    Packet Length: 60 bytes
+    Capture Length: 60 bytes
+    Protocols in frame: eth:ip:tcp
+Ethernet II, Src: IntelCor_15:2c:96 (00:15:00:15:2c:96), Dst: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Destination: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Source: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Type: IP (0x0800)
+    Trailer: 000000000000
+Internet Protocol, Src: 10.0.0.7 (10.0.0.7), Dst: 10.0.0.29 (10.0.0.29)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+        .... ..0. = ECN-Capable Transport (ECT): 0
+        .... ...0 = ECN-CE: 0
+    Total Length: 40
+    Identification: 0x23e4 (9188)
+    Flags: 0x04 (Don't Fragment)
+        0... = Reserved bit: Not set
+        .1.. = Don't fragment: Set
+        ..0. = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (0x06)
+    Header checksum: 0x02c9 [correct]
+        Good: True
+        Bad : False
+    Source: 10.0.0.7 (10.0.0.7)
+    Destination: 10.0.0.29 (10.0.0.29)
+Transmission Control Protocol, Src Port: 36652 (36652), Dst Port: http (80), Seq: 396, Ack: 424, Len: 0
+    Source port: 36652 (36652)
+    Destination port: http (80)
+    Sequence number: 396    (relative sequence number)
+    Acknowledgement number: 424    (relative ack number)
+    Header length: 20 bytes
+    Flags: 0x0011 (FIN, ACK)
+        0... .... = Congestion Window Reduced (CWR): Not set
+        .0.. .... = ECN-Echo: Not set
+        ..0. .... = Urgent: Not set
+        ...1 .... = Acknowledgment: Set
+        .... 0... = Push: Not set
+        .... .0.. = Reset: Not set
+        .... ..0. = Syn: Not set
+        .... ...1 = Fin: Set
+    Window size: 6432
+    Checksum: 0xaade [correct]
+    SEQ/ACK analysis
+        This is an ACK to the segment in frame: 8
+        The RTT to ACK the segment was: 0.005768000 seconds
+
+0000  54 55 58 10 00 29 00 15 00 15 2c 96 08 00 45 00   TUX..)....,...E.
+0010  00 28 23 e4 40 00 40 06 02 c9 0a 00 00 07 0a 00   .(#.@.@.........
+0020  00 1d 8f 2c 00 50 17 40 25 4d 00 00 0b a8 50 11   ...,.P.@%M....P.
+0030  19 20 aa de 00 00 00 00 00 00 00 00               . ..........
+
+No.     Time        Source                Destination           Protocol Info
+     10 0.017365    10.0.0.29             10.0.0.7              TCP      http > 36652 [ACK] Seq=424 Ack=397 Win=800 Len=0
+
+Frame 10 (60 bytes on wire, 60 bytes captured)
+    Arrival Time: May  3, 2009 11:11:09.441885000
+    Time delta from previous packet: 0.000691000 seconds
+    Time since reference or first frame: 0.017365000 seconds
+    Frame Number: 10
+    Packet Length: 60 bytes
+    Capture Length: 60 bytes
+    Protocols in frame: eth:ip:tcp
+Ethernet II, Src: 54:55:58:10:00:29 (54:55:58:10:00:29), Dst: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Destination: IntelCor_15:2c:96 (00:15:00:15:2c:96)
+    Source: 54:55:58:10:00:29 (54:55:58:10:00:29)
+    Type: IP (0x0800)
+    Trailer: 000000000000
+Internet Protocol, Src: 10.0.0.29 (10.0.0.29), Dst: 10.0.0.7 (10.0.0.7)
+    Version: 4
+    Header length: 20 bytes
+    Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)
+        0000 00.. = Differentiated Services Codepoint: Default (0x00)
+        .... ..0. = ECN-Capable Transport (ECT): 0
+        .... ...0 = ECN-CE: 0
+    Total Length: 40
+    Identification: 0x23e4 (9188)
+    Flags: 0x04 (Don't Fragment)
+        0... = Reserved bit: Not set
+        .1.. = Don't fragment: Set
+        ..0. = More fragments: Not set
+    Fragment offset: 0
+    Time to live: 64
+    Protocol: TCP (0x06)
+    Header checksum: 0x02c9 [correct]
+        Good: True
+        Bad : False
+    Source: 10.0.0.29 (10.0.0.29)
+    Destination: 10.0.0.7 (10.0.0.7)
+Transmission Control Protocol, Src Port: http (80), Dst Port: 36652 (36652), Seq: 424, Ack: 397, Len: 0
+    Source port: http (80)
+    Destination port: 36652 (36652)
+    Sequence number: 424    (relative sequence number)
+    Acknowledgement number: 397    (relative ack number)
+    Header length: 20 bytes
+    Flags: 0x0010 (ACK)
+        0... .... = Congestion Window Reduced (CWR): Not set
+        .0.. .... = ECN-Echo: Not set
+        ..0. .... = Urgent: Not set
+        ...1 .... = Acknowledgment: Set
+        .... 0... = Push: Not set
+        .... .0.. = Reset: Not set
+        .... ..0. = Syn: Not set
+        .... ...0 = Fin: Not set
+    Window size: 800
+    Checksum: 0xc0de [correct]
+    SEQ/ACK analysis
+        This is an ACK to the segment in frame: 9
+        The RTT to ACK the segment was: 0.000691000 seconds
+
+0000  00 15 00 15 2c 96 54 55 58 10 00 29 08 00 45 00   ....,.TUX..)..E.
+0010  00 28 23 e4 40 00 40 06 02 c9 0a 00 00 1d 0a 00   .(#.@.@.........
+0020  00 07 00 50 8f 2c 00 00 0b a8 17 40 25 4e 50 10   ...P.,.....@%NP.
+0030  03 20 c0 de 00 00 00 00 00 00 00 00               . ..........

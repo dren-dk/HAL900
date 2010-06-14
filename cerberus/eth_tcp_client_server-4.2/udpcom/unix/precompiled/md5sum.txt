@@ -1,0 +1,2 @@
+48b4a12b28e0bb273348c6f47a92cf5f  udpcom_MacOSX_10.4_PPC
+d2ee08c139cf0814a89229e3501ddab4  udpcom_linux

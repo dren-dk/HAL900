@@ -27,7 +27,6 @@
 #include "enc28j60.h"
 #include "net.h"
 
-
 /*
 Pinout:
 
@@ -40,6 +39,12 @@ Pinout:
 | Orange/white | D1      | PC1 | PC3 |
 | Green        | LED     | PD2 | PD4 |
 | Green/white  | Beeper  | PD3 | PD5 |
+
+
+PC0 = PCINT8
+PC1 = PCINT9
+PC2 = PCINT10
+PC3 = PCINT11
 
 */
 
@@ -95,6 +100,57 @@ void transistor(char on) {
   }
 }
 
+unsigned char state;
+unsigned long rfidFrame;
+unsigned char kbdFrame;
+
+void startWiegandTimeout() {
+    TCCR0B = 0; // Stop timer    
+
+    TCCR0A = 0;
+    TCNT0=0; 
+    OCR0A=128; // 10 ms.
+    TIMSK0 = 1<<OCIE0A; // Fire interrupt when done
+
+    TCCR0B = 1<<CS00 | 1<<CS02; // Start timer at the slowest clock (20M / 1024)    
+}
+
+ISR(PCINT1_vect) {
+  unsigned char new = PINC;
+
+  unsigned char kbdBit0  = (state & (1<<PC0)) && !(new & (1<<PC0));
+  unsigned char kbdBit1  = (state & (1<<PC1)) && !(new & (1<<PC1));
+  unsigned char rfidBit0 = (state & (1<<PC2)) && !(new & (1<<PC2));
+  unsigned char rfidBit1 = (state & (1<<PC3)) && !(new & (1<<PC3));
+
+  if (kbdBit0 || kbdBit1) {
+    kbdFrame <<= 1;
+    kbdFrame |= kbdBit1;
+  }
+
+  if (rfidBit0 || rfidBit1) {
+    rfidFrame <<= 1;
+    rfidFrame |= rfidBit1;
+  }
+
+  state = new;
+  startWiegandTimeout();
+}
+
+unsigned char wiegandReady;
+unsigned long rfidReady;
+unsigned char kbdReady;
+
+ISR(TIMER0_COMPA_vect) {
+  rfidReady = rfidFrame>>1;
+  kbdReady = kbdFrame;
+  rfidFrame = 0;
+  kbdFrame = 0;
+
+  TCCR0B = 0; // Stop timer      
+  wiegandReady = 1;
+}
+
 #define BUFFER_SIZE 550
 #define MYUDPPORT 4747
 
@@ -127,8 +183,8 @@ int main(void) {
   // Inputs:
   DDRC  &=~ (1<<PC0);
   DDRC  &=~ (1<<PC1);
+  DDRC  &=~ (1<<PC2);
   DDRC  &=~ (1<<PC3);
-  DDRC  &=~ (1<<PC4);
 
   greenKBDLED(1);
   uart_init();
@@ -137,26 +193,25 @@ int main(void) {
   fprintf(stdout, "Power up!\n");
   greenRFIDLED(1);
 
+  // Enable pin change interrupt for the 4 wiegand inputs
+  PCMSK1 = (1<<PCINT8) | (1<<PCINT9) | (1<<PCINT10) | (1<<PCINT11);
+  PCICR |= 1<<PCIE1;
+
   // 0x476 is PHLCON LEDA=links status, LEDB=receive/transmit
-  // enc28j60PhyWrite(PHLCON,0b0000 0100 0111 01 10);
   enc28j60PhyWrite(PHLCON,0x476);
   init_ip_arp_udp_tcp(mymac, myip, 0);
 
   greenKBDLED(0);
   greenRFIDLED(0);
-
   
   int loop = 0;
   while(1) {
     static uint8_t buf[BUFFER_SIZE+1];
 
     uint16_t plen=enc28j60PacketReceive(BUFFER_SIZE, buf);
-    fprintf(stdout, "Received: %d\n", plen);
     buf[BUFFER_SIZE]='\0';
     unsigned int tcpPacketSize = packetloop_icmp_tcp(buf,plen);
-    fprintf(stdout, "tcpPacketSize: %d\n", tcpPacketSize);
-
-    if (!tcpPacketSize){ 
+    if (plen && !tcpPacketSize){ 
       if (eth_type_is_ip_and_my_ip(buf,plen) && 
 	  buf[IP_PROTO_P]==IP_PROTO_UDP_V &&
 	  buf[UDP_DST_PORT_H_P]==(MYUDPPORT>>8) &&
@@ -171,14 +226,17 @@ int main(void) {
     }
 
     loop++;
-    greenKBDLED(loop & 1);
-    greenRFIDLED(loop & 2);
-    led(loop & 4);
+    //    greenKBDLED(loop & 1);
+    // greenRFIDLED(loop & 2);
+    //led(loop & 4);
 
     //beepRFID(loop & 4);
     //beepKBD(loop & 8);
 
-    fprintf(stdout, "Loop: %d\n", loop);
+    if (wiegandReady) {
+      wiegandReady = 0;
+      fprintf(stdout, "RFID: %ld\tkbd:%d\n", rfidReady, kbdReady);
+    }
 
     sleepMs(10);
     wdt_reset();

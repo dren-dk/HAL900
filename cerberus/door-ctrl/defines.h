@@ -1,5 +1,5 @@
 
-#define CLOCK_8
+#define CLOCK_125
 
 #if defined(CLOCK_10)
 
@@ -24,12 +24,12 @@
 #define CLOCK_PRESCALER 0
 #define SLEEP_10_MS_COUNT 79
 
-#elif defined(CLOCK_3) 
+#elif defined(CLOCK_125) 
 
-// 3.125 MHz external 25.0 MHz osc divided down by 8
-#define F_CPU 3125000UL
+// 12.5 MHz external clock from enc28j60
+#define F_CPU 12500000UL
 #define CLOCK_PRESCALER 0
-#define SLEEP_10_MS_COUNT 31
+#define SLEEP_10_MS_COUNT 113
 
 #else
 #error No CLOCK_ defined

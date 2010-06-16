@@ -1,0 +1,44 @@
+
+#define CLOCK_8
+
+#if defined(CLOCK_10)
+
+// 20 MHz crystal divided down to 10 MHz to stay within the spec for 3.3V
+#define F_CPU 10000000UL
+#define CLOCK_PRESCALER 1<<CLKPS0
+#define SLEEP_10_MS_COUNT 90
+
+
+#elif defined(CLOCK_20) 
+
+// 20 MHz crystal, full bore, only valid for 4.5-5.5V
+#define F_CPU 20000000UL
+#define CLOCK_PRESCALER 0
+#define SLEEP_10_MS_COUNT 180
+
+
+#elif defined(CLOCK_8) 
+
+// 8 MHz internal RC osc, inaccurate.
+#define F_CPU 8000000UL
+#define CLOCK_PRESCALER 0
+#define SLEEP_10_MS_COUNT 79
+
+#elif defined(CLOCK_3) 
+
+// 3.125 MHz external 25.0 MHz osc divided down by 8
+#define F_CPU 3125000UL
+#define CLOCK_PRESCALER 0
+#define SLEEP_10_MS_COUNT 31
+
+#else
+#error No CLOCK_ defined
+#endif
+
+#define UART_BAUD  19200
+
+//#define TWI_DELAY 500
+
+
+
+

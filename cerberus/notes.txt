@@ -1,10 +1,9 @@
-
 | Cable        | Signal  |  AVR-pin  |
++--------------+---------+-----+-----+
 | UTP          | Wiegand | KBD | RFID|
 | Blue pair    | +12V    |     |     |
 | Brown pair   | GND     |     |     |
 | Orange       | D0      | PC0 | PC2 |
 | Orange/white | D1      | PC1 | PC3 |
-| Green        | LED     | PD2 | PD3 |
-| Green/white  | Beeper  | PD4 | PD5 |
-
+| Green        | LED     | PD2 | PD4 |
+| Green/white  | Beeper  | PD3 | PD5 |

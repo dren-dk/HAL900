@@ -103,6 +103,8 @@ void transistor(char on) {
 unsigned char state;
 unsigned long rfidFrame;
 unsigned char kbdFrame;
+unsigned char rfidBits;
+unsigned char kbdBits;
 
 void startWiegandTimeout() {
     TCCR0B = 0; // Stop timer    
@@ -126,29 +128,37 @@ ISR(PCINT1_vect) {
   if (kbdBit0 || kbdBit1) {
     kbdFrame <<= 1;
     kbdFrame |= kbdBit1;
+    kbdBits++;
   }
 
   if (rfidBit0 || rfidBit1) {
     rfidFrame <<= 1;
     rfidFrame |= rfidBit1;
+    rfidBits++;
   }
 
   state = new;
   startWiegandTimeout();
 }
 
-unsigned char wiegandReady;
-unsigned long rfidReady;
+unsigned long rfidValue;
+unsigned char kbdValue;
+unsigned char rfidReady;
 unsigned char kbdReady;
 
 ISR(TIMER0_COMPA_vect) {
-  rfidReady = rfidFrame>>1;
-  kbdReady = kbdFrame;
+  TCCR0B = 0; // Stop timer      
+
+  // Get rid of the first and last bits (parity)
+  rfidValue = (rfidFrame>>1) & ~((unsigned long)1<<24); 
+  kbdValue = kbdFrame;
+  kbdReady = kbdBits;
+  rfidReady = rfidBits;
+
   rfidFrame = 0;
   kbdFrame = 0;
-
-  TCCR0B = 0; // Stop timer      
-  wiegandReady = 1;
+  kbdBits = 0;
+  rfidBits = 0;
 }
 
 #define BUFFER_SIZE 550
@@ -233,9 +243,14 @@ int main(void) {
     //beepRFID(loop & 4);
     //beepKBD(loop & 8);
 
-    if (wiegandReady) {
-      wiegandReady = 0;
-      fprintf(stdout, "RFID: %ld\tkbd:%d\n", rfidReady, kbdReady);
+    if (kbdReady) {
+      kbdReady = 0;
+      fprintf(stdout, "kbd:%d\n", kbdValue);
+    }
+
+    if (rfidReady) {
+      rfidReady = 0;
+      fprintf(stdout, "RFID: %ld\n", rfidValue);
     }
 
     sleepMs(10);

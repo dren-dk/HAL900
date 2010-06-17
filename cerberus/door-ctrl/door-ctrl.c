@@ -26,6 +26,8 @@
 #include "ip_arp_udp_tcp.h"
 #include "enc28j60.h"
 #include "net.h"
+#include "aes256.h"
+
 
 /*
 Pinout:
@@ -167,9 +169,8 @@ ISR(TIMER0_COMPA_vect) {
 int main(void) {
   wdt_enable(WDTO_4S);
 
-  char id = 42; // TODO: Read this from EEPROM?
-  uint8_t mymac[6] = {0x42,0x42,0x42,0x10,0x00, id};
-  uint8_t myip[4]  = {10,0,0,id};
+  uint8_t mymac[6] = {0x42,0x42,0x42,0x10,0x00, NODE};
+  uint8_t myip[4]  = {10,0,0,NODE};
 
   enc28j60Init(mymac);
   enc28j60clkout(2); // change clkout from 6.25MHz to 12.5MHz

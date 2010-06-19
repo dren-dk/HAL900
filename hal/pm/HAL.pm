@@ -43,6 +43,13 @@ sub configureHAL {
 	    salt=>'345klj56kl',
 	    db=>'dbi:Pg:dbname=hal;port=5432'	    
 	},
+	lisbeth=>{
+	    root=>"/home/jacob/Desktop/HACK/hal",
+	    test=>1,
+	    salt=>'345klj56kl',
+	    db=>'dbi:Pg:dbname=hal;port=5432',
+	},
+
     );
     
     $config = $CONFIG{$host} || die "HOST=$host is not found in \%CONFIG, cannot self-configure, fix pm/HAL.pm";

@@ -358,7 +358,7 @@ sub accountsPage {
     my $html = '<p>Konto type: '.selector(@types).'</p>';
     if ($type_id) {
 	$html .= qq'
-<table>
+<table class=\"sortable\">
 <tr><th>Konto ID</th><th>Konto navn</th><th>Ejer</th><th>Saldo</th></tr>
 ';
 	my $ar = db->sql("select account.id, accountName, owner_id, realname ".
@@ -524,7 +524,7 @@ sub membersPage {
 
     my $html = '';
 
-    $html .= qq'<table><tr><th>ID</th><th>Bruger</th><th>Navn</th><th>email</th><th>Telefon</th><th>Type</th></tr>';
+    $html .= qq'<table class=\"sortable\"><tr><th>ID</th><th>Bruger</th><th>Navn</th><th>email</th><th>Telefon</th><th>Type</th></tr>';
 
     my $mr = db->sql("select member.id,username,realname,email,phone,memberType ".
 		     "from member inner join membertype on (membertype_id=membertype.id) ".

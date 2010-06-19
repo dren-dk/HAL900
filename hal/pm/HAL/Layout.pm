@@ -25,6 +25,8 @@ sub htmlPage($$;$) {
     $headers .= qq'\n  <META HTTP-EQUIV="Refresh" CONTENT="30">' if $opt->{autorefresh};
     $headers .= qq'\n  <script type="text/javascript" src="/hal-static/$opt->{js}?now=$now"></script>' if $opt->{js};
     $headers .= qq'\n  <script type="text/javascript" src="/hal-static/typeahead.js?now=$now"></script>';
+    $headers .= qq'\n  <script type="text/javascript" src="/hal-static/sorttable.js"></script>';
+
     my $onload = '';
     if ($opt->{onload}) {
 	$onload = qq' onload="$opt->{onload}"';

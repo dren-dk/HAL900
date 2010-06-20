@@ -157,9 +157,9 @@ sorttable = {
 	        for (var j=0; j<row_array.length; j++) {
 		  var row = row_array[j][1];
 		  if (count++ & 1 ) {
-		      row.setClass("odd");
+		      row.setAttribute('class',"odd");
 		  } else {
-		      row.setClass("even");		      
+		      row.setAttribute('class',"even");		      
 		  }
 	          tb.appendChild(row);
 	        }

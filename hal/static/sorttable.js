@@ -153,8 +153,15 @@ sorttable = {
 	        row_array.sort(this.sorttable_sortfunction);
 	        
 	        tb = this.sorttable_tbody;
+		var count = 0;
 	        for (var j=0; j<row_array.length; j++) {
-	          tb.appendChild(row_array[j][1]);
+		  var row = row_array[j][1];
+		  if (count++ & 1 ) {
+		      row.setClass("odd");
+		  } else {
+		      row.setClass("even");		      
+		  }
+	          tb.appendChild(row);
 	        }
 	        
 	        delete row_array;

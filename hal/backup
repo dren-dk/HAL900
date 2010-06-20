@@ -21,7 +21,6 @@ my $enc = "$root/remote/$fn.gpg";
 system("gpg --yes --output $enc -s -e -u HAL900 -r helle\@daimi.au.dk -r markus\@markuspetersen.dk -r ff\@nrvissing.net $target")
     and die "Failed to encrypt $target to $enc";
 
-# TODO: rsync remote to web server.
 system("rsync -a $root/remote osaa.dk:backups")
     and die "Failed to sync the $root/remote dir to osaa.dk:backups";
 

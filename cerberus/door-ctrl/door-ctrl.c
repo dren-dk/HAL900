@@ -115,10 +115,10 @@ void startWiegandTimeout() {
 
     TCCR0A = 0;
     TCNT0=0; 
-    OCR0A=128; // 10 ms.
+    OCR0A=122; // 10 ms.
     TIMSK0 = 1<<OCIE0A; // Fire interrupt when done
 
-    TCCR0B = 1<<CS00 | 1<<CS02; // Start timer at the slowest clock (20M / 1024)    
+    TCCR0B = 1<<CS00 | 1<<CS02; // Start timer at the slowest clock (1 / 1024)    
 }
 
 ISR(PCINT1_vect) {
@@ -165,7 +165,46 @@ ISR(TIMER0_COMPA_vect) {
   rfidBits = 0;
 }
 
-void handleTelegram(unsigned char *payload) {
+char telegramBuffer[16];
+void sendTelegrams(char *telegram) { // Sends the telegram to the registered servers.
+
+}
+
+
+void sendTelegram(uint8_t *dip, uint16_t dport, char *telegram) { // Stomps on telegram!
+
+  // Affix crc in the right place.
+  *((unsigned long *)(telegram+12)) = crc32(0, (char *)telegram, 12);
+
+  aes256_context ctx; 
+  aes256_init(&ctx, getAESKEY());
+  aes256_encrypt_ecb(&ctx, (unsigned char *)telegram);
+
+  char transmitBuffer[UDP_DATA_P+16];
+  send_udp(transmitBuffer, (unsigned char *)telegram, 16, UDP_PORT, dip, dport);  
+}
+
+void handlePing(unsigned char *request, PingPongTelegram *ping) {
+  fprintf(stdout, "Got ping package, replying with pong\n");
+
+  PingPongTelegram pong;
+
+  pong.type = 'P';
+  pong.seq = ping->seq;
+  for (char i=0;i<9;i++) {
+    pong.payload[i] = ping->payload[i] ^ ((i & 1) ? 0xaa : 0xbb);
+  }
+
+  unsigned int dport = request[UDP_SRC_PORT_H_P];
+  dport <<= 8;
+  dport += request[UDP_SRC_PORT_L_P];
+
+  unsigned char *dip = request+IP_SRC_P;
+
+  sendTelegram(dip, dport, (char *)&pong);
+}
+
+void handleTelegram(unsigned char *request, unsigned char *payload) {
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_decrypt_ecb(&ctx, payload);
@@ -176,9 +215,14 @@ void handleTelegram(unsigned char *payload) {
   unsigned long realCRC = crc32(0, (char *)payload, 12);
   
   if (*crc == realCRC) {
-    fprintf(stdout, "Got package of type: '%c' seq: %d crc is ok: %ld\n",
-	    *type, *seq, realCRC);
-  
+    fprintf(stdout, "Got package of type: '%c' seq: %d crc is ok: %ld\n", *type, *seq, realCRC);
+
+    if (*type == 'p') {
+      handlePing(request, (PingPongTelegram *)payload);
+
+    } else {
+      fprintf(stdout, "Got package of invalid type: '%c'\n");
+    }  
   } else {
     fprintf(stdout, "Got package of type: '%c' seq: %d crc should be: %ld crc is: %ld\n",
 	    *type, *seq, *crc, realCRC);  
@@ -186,8 +230,6 @@ void handleTelegram(unsigned char *payload) {
 }
 
 #define BUFFER_SIZE 550
-#define MYUDPPORT 4747
-
 int main(void) {
   wdt_enable(WDTO_4S);
 
@@ -247,15 +289,14 @@ int main(void) {
     if (plen && !tcpPacketSize){ 
       if (eth_type_is_ip_and_my_ip(buf,plen) && 
 	  buf[IP_PROTO_P]==IP_PROTO_UDP_V &&
-	  buf[UDP_DST_PORT_H_P]==(MYUDPPORT>>8) &&
-	  buf[UDP_DST_PORT_L_P]==(MYUDPPORT&0xff)) {
+	  buf[UDP_DST_PORT_H_P]==(UDP_PORT>>8) &&
+	  buf[UDP_DST_PORT_L_P]==(UDP_PORT&0xff)) {
 	
 	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
 	unsigned char *payload = buf + UDP_DATA_P;
-	payload[payloadlen] = 0;
 
 	if (payloadlen == 16) {
-	  handleTelegram(payload);
+	  handleTelegram(buf, payload);
 	}	
       }
     }

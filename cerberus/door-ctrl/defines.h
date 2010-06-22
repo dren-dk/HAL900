@@ -39,6 +39,8 @@
 
 #define UART_BAUD  19200
 
+#define UDP_PORT 4747
+
 #endif
 
 

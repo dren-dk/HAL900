@@ -28,8 +28,8 @@ rdfuses:
 fuses:
 	$(AVRDUDE) -u -v -U lfuse:w:0xc0:m
 
-door-ctrl.obj : door-ctrl.c sleep.c sleep.h uart.c uart.h defines.h net.h ip_config.h ip_arp_udp_tcp.h enc28j60.h ip_arp_udp_tcp.c enc28j60.c aes256.h aes256.c crc32.h crc32.c Makefile
-	$(CC) $(CFLAGS) -DNODE=$(NODE) uart.c sleep.c ip_arp_udp_tcp.c enc28j60.c aes256.c crc32.c door-ctrl.c -o $@
+door-ctrl.obj : door-ctrl.c sleep.c sleep.h uart.c uart.h defines.h net.h ip_config.h ip_arp_udp_tcp.h enc28j60.h ip_arp_udp_tcp.c enc28j60.c aes256.h aes256.c crc32.h crc32.c config.c config.h Makefile
+	$(CC) $(CFLAGS) -DNODE=$(NODE) uart.c sleep.c ip_arp_udp_tcp.c enc28j60.c aes256.c crc32.c config.c door-ctrl.c -o $@
 
 %.hex : %.obj
 	$(OBJ2HEX) -R .eeprom -O ihex $< $@

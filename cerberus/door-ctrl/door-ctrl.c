@@ -27,6 +27,8 @@
 #include "enc28j60.h"
 #include "net.h"
 #include "aes256.h"
+#include "crc32.h"
+#include "config.h"
 
 
 /*
@@ -163,6 +165,26 @@ ISR(TIMER0_COMPA_vect) {
   rfidBits = 0;
 }
 
+void handleTelegram(unsigned char *payload) {
+  aes256_context ctx; 
+  aes256_init(&ctx, getAESKEY());
+  aes256_decrypt_ecb(&ctx, payload);
+
+  char *type = (char *)payload;
+  unsigned int *seq = (unsigned int *)(payload+1);    
+  unsigned long *crc  = (unsigned long *)(payload+12);
+  unsigned long realCRC = crc32(0, (char *)payload, 12);
+  
+  if (*crc == realCRC) {
+    fprintf(stdout, "Got package of type: '%c' seq: %d crc is ok: %ld\n",
+	    *type, *seq, realCRC);
+  
+  } else {
+    fprintf(stdout, "Got package of type: '%c' seq: %d crc should be: %ld crc is: %ld\n",
+	    *type, *seq, *crc, realCRC);  
+  }
+}
+
 #define BUFFER_SIZE 550
 #define MYUDPPORT 4747
 
@@ -231,8 +253,10 @@ int main(void) {
 	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
 	unsigned char *payload = buf + UDP_DATA_P;
 	payload[payloadlen] = 0;
-	
-	fprintf(stdout, "Got UDP: %s\n", payload);
+
+	if (payloadlen == 16) {
+	  handleTelegram(payload);
+	}	
       }
     }
 

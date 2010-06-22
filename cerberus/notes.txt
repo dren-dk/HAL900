@@ -1,6 +1,6 @@
 | Cable        | Signal  |  AVR-pin  |
-+--------------+---------+-----+-----+
 | UTP          | Wiegand | KBD | RFID|
++--------------+---------+-----+-----+
 | Blue pair    | +12V    |     |     |
 | Brown pair   | GND     |     |     |
 | Orange       | D0      | PC0 | PC2 |

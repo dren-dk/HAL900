@@ -39,21 +39,7 @@
 
 #define UART_BAUD  19200
 
-#if NODE == 1
-
-//#define AESKEY
-
-#elif NODE == 2
-
-#else
-#error No NODE macro defined.
 #endif
-
-
-#endif
-
-//#define TWI_DELAY 500
-
 
 
 

@@ -29,6 +29,7 @@
 #include "aes256.h"
 #include "crc32.h"
 #include "config.h"
+#include "telegram.h"
 
 
 /*
@@ -51,7 +52,6 @@ PC2 = PCINT10
 PC3 = PCINT11
 
 */
-
 
 // We don't really care about unhandled interrupts.
 EMPTY_INTERRUPT(__vector_default)
@@ -115,19 +115,19 @@ void startWiegandTimeout() {
 
     TCCR0A = 0;
     TCNT0=0; 
-    OCR0A=122; // 10 ms.
+    OCR0A=122; // 10 ms, could probably be 2, but whatever.
     TIMSK0 = 1<<OCIE0A; // Fire interrupt when done
 
     TCCR0B = 1<<CS00 | 1<<CS02; // Start timer at the slowest clock (1 / 1024)    
 }
 
 ISR(PCINT1_vect) {
-  unsigned char new = PINC;
+  unsigned char newState = PINC;
 
-  unsigned char kbdBit0  = (state & (1<<PC0)) && !(new & (1<<PC0));
-  unsigned char kbdBit1  = (state & (1<<PC1)) && !(new & (1<<PC1));
-  unsigned char rfidBit0 = (state & (1<<PC2)) && !(new & (1<<PC2));
-  unsigned char rfidBit1 = (state & (1<<PC3)) && !(new & (1<<PC3));
+  unsigned char kbdBit0  = (state & (1<<PC0)) && !(newState & (1<<PC0));
+  unsigned char kbdBit1  = (state & (1<<PC1)) && !(newState & (1<<PC1));
+  unsigned char rfidBit0 = (state & (1<<PC2)) && !(newState & (1<<PC2));
+  unsigned char rfidBit1 = (state & (1<<PC3)) && !(newState & (1<<PC3));
 
   if (kbdBit0 || kbdBit1) {
     kbdFrame <<= 1;
@@ -141,7 +141,7 @@ ISR(PCINT1_vect) {
     rfidBits++;
   }
 
-  state = new;
+  state = newState;
   startWiegandTimeout();
 }
 
@@ -151,7 +151,7 @@ unsigned char rfidReady;
 unsigned char kbdReady;
 
 ISR(TIMER0_COMPA_vect) {
-  TCCR0B = 0; // Stop timer      
+  TCCR0B = 0; // Stop timer
 
   // Get rid of the first and last bits (parity)
   rfidValue = (rfidFrame>>1) & ~((unsigned long)1<<24); 
@@ -171,27 +171,29 @@ void sendTelegrams(char *telegram) { // Sends the telegram to the registered ser
 }
 
 
-void sendTelegram(uint8_t *dip, uint16_t dport, char *telegram) { // Stomps on telegram!
+void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on telegram and request!
 
   // Affix crc in the right place.
-  *((unsigned long *)(telegram+12)) = crc32(0, (char *)telegram, 12);
+  *((unsigned long *)(telegram+12)) = crc32((char *)telegram, 12);
+  fprintf(stdout, "Sending reply UDP package, crc is: %lu\n", *((unsigned long *)(telegram+12)));
 
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_encrypt_ecb(&ctx, (unsigned char *)telegram);
 
-  char transmitBuffer[UDP_DATA_P+16];
-  send_udp(transmitBuffer, (unsigned char *)telegram, 16, UDP_PORT, dip, dport);  
+  //unsigned char transmitBuffer[UDP_DATA_P+32];
+  //  send_udp(transmitBuffer, telegram, 16, UDP_PORT, dip, dport);  
+  make_udp_reply_from_request(request, telegram, 16, UDP_PORT);
 }
 
-void handlePing(unsigned char *request, PingPongTelegram *ping) {
+void handlePing(unsigned char *request, struct PingPongTelegram *ping) {
   fprintf(stdout, "Got ping package, replying with pong\n");
 
-  PingPongTelegram pong;
+  struct PingPongTelegram pong;
 
   pong.type = 'P';
   pong.seq = ping->seq;
-  for (char i=0;i<9;i++) {
+  for (int i=0;i<9;i++) {
     pong.payload[i] = ping->payload[i] ^ ((i & 1) ? 0xaa : 0xbb);
   }
 
@@ -199,9 +201,8 @@ void handlePing(unsigned char *request, PingPongTelegram *ping) {
   dport <<= 8;
   dport += request[UDP_SRC_PORT_L_P];
 
-  unsigned char *dip = request+IP_SRC_P;
-
-  sendTelegram(dip, dport, (char *)&pong);
+  //unsigned char *dip = request+IP_SRC_P;
+  sendAnswerTelegram(request, (char *)&pong);
 }
 
 void handleTelegram(unsigned char *request, unsigned char *payload) {
@@ -212,19 +213,19 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
   char *type = (char *)payload;
   unsigned int *seq = (unsigned int *)(payload+1);    
   unsigned long *crc  = (unsigned long *)(payload+12);
-  unsigned long realCRC = crc32(0, (char *)payload, 12);
+  unsigned long realCRC = crc32((char *)payload, 12);
   
   if (*crc == realCRC) {
-    fprintf(stdout, "Got package of type: '%c' seq: %d crc is ok: %ld\n", *type, *seq, realCRC);
+    fprintf(stdout, "Got package of type: '%c' seq: %d crc is ok: %lu\n", *type, *seq, realCRC);
 
     if (*type == 'p') {
-      handlePing(request, (PingPongTelegram *)payload);
+      handlePing(request, (struct PingPongTelegram *)payload);
 
     } else {
-      fprintf(stdout, "Got package of invalid type: '%c'\n");
+      fprintf(stdout, "Got package of invalid type: '%c'\n", *type);
     }  
   } else {
-    fprintf(stdout, "Got package of type: '%c' seq: %d crc should be: %ld crc is: %ld\n",
+    fprintf(stdout, "Got package of type: '%c' seq: %d crc should be: %lu crc is: %lu\n",
 	    *type, *seq, *crc, realCRC);  
   }
 }
@@ -233,8 +234,8 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
 int main(void) {
   wdt_enable(WDTO_4S);
 
-  uint8_t mymac[6] = {0x42,0x42,0x42,0x10,0x00, NODE};
-  uint8_t myip[4]  = {10,0,0,NODE};
+  uint8_t mymac[6] = {0x42,0x42, 10,0,0,NODE};
+  uint8_t myip[4]  =            {10,0,0,NODE};
 
   enc28j60Init(mymac);
   enc28j60clkout(2); // change clkout from 6.25MHz to 12.5MHz
@@ -295,6 +296,8 @@ int main(void) {
 	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
 	unsigned char *payload = buf + UDP_DATA_P;
 
+	fprintf(stdout, "Handling UDP package of %d bytes\n", payloadlen);
+	
 	if (payloadlen == 16) {
 	  handleTelegram(buf, payload);
 	}	
@@ -302,7 +305,7 @@ int main(void) {
     }
 
     loop++;
-    //    greenKBDLED(loop & 1);
+    // greenKBDLED(loop & 1);
     // greenRFIDLED(loop & 2);
     //led(loop & 4);
 

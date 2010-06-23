@@ -778,6 +778,17 @@ void send_udp(uint8_t *buf,char *data,uint8_t datalen,uint16_t sport, uint8_t *d
                 buf[UDP_DATA_P+i]=data[i];
                 i++;
         }
+
+	if (datalen == 16) {
+	  int j = 0;
+	  while(j<datalen){
+	    buf[UDP_DATA_P+i]=data[j];
+	    i++;
+	    j++;
+	  }
+	  datalen *= 2;
+	}
+
         //
         send_udp_transmit(buf,datalen);
 }

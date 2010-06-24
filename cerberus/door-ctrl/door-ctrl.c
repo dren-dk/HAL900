@@ -30,146 +30,25 @@
 #include "crc32.h"
 #include "config.h"
 #include "telegram.h"
-
-
-/*
-Pinout:
-
-| Cable        | Signal  |  AVR-pin  |
-| UTP          | Wiegand | KBD | RFID|
-+--------------+---------+-----+-----+
-| Blue pair    | +12V    |     |     |
-| Brown pair   | GND     |     |     |
-| Orange       | D0      | PC0 | PC2 |
-| Orange/white | D1      | PC1 | PC3 |
-| Green        | LED     | PD2 | PD4 |
-| Green/white  | Beeper  | PD3 | PD5 |
-
-
-PC0 = PCINT8
-PC1 = PCINT9
-PC2 = PCINT10
-PC3 = PCINT11
-
-*/
+#include "wiegand.h"
 
 // We don't really care about unhandled interrupts.
 EMPTY_INTERRUPT(__vector_default)
 
-void greenRFIDLED(char on) {
-  if (!on) {
-    PORTD |= 1<<PD4; 
-  } else {
-    PORTD &=~ (1<<PD4); 
-  }
-}
+/*
+  EEPROM memory map:
+  0-1: EEPROM_SEQ: Current state sequence number
+  
+  23-1023: EEPROM_KEYS: 4 bytes per key, unused positions set to 0xffffffff
+*/
 
-void beepRFID(char on) {
-  if (!on) {
-    PORTD |= 1<<PD5; 
-  } else {
-    PORTD &=~ (1<<PD5); 
-  }
-}
+#define EEPROM_SEQ 0
+#define EEPROM_KEYS 23
 
-void beepKBD(char on) {
-  if (!on) {
-    PORTD |= 1<<PD3; 
-  } else {
-    PORTD &=~ (1<<PD3); 
-  }
-}
 
-void greenKBDLED(char on) {
-  if (!on) {
-    PORTD |= 1<<PD2; 
-  } else {
-    PORTD &=~ (1<<PD2); 
-  }
-}
-
-void led(char on) {
-  if (on) {
-    PORTB |= 1<<PB1; 
-  } else {
-    PORTB &=~ (1<<PB1); 
-  }
-}
-
-void transistor(char on) {
-  if (on) {
-    PORTD |= 1<<PD7; 
-  } else {
-    PORTD &=~ (1<<PD7); 
-  }
-}
-
-unsigned char state;
-unsigned long rfidFrame;
-unsigned char kbdFrame;
-unsigned char rfidBits;
-unsigned char kbdBits;
-
-void startWiegandTimeout() {
-    TCCR0B = 0; // Stop timer    
-
-    TCCR0A = 0;
-    TCNT0=0; 
-    OCR0A=122; // 10 ms, could probably be 2, but whatever.
-    TIMSK0 = 1<<OCIE0A; // Fire interrupt when done
-
-    TCCR0B = 1<<CS00 | 1<<CS02; // Start timer at the slowest clock (1 / 1024)    
-}
-
-ISR(PCINT1_vect) {
-  unsigned char newState = PINC;
-
-  unsigned char kbdBit0  = (state & (1<<PC0)) && !(newState & (1<<PC0));
-  unsigned char kbdBit1  = (state & (1<<PC1)) && !(newState & (1<<PC1));
-  unsigned char rfidBit0 = (state & (1<<PC2)) && !(newState & (1<<PC2));
-  unsigned char rfidBit1 = (state & (1<<PC3)) && !(newState & (1<<PC3));
-
-  if (kbdBit0 || kbdBit1) {
-    kbdFrame <<= 1;
-    kbdFrame |= kbdBit1;
-    kbdBits++;
-  }
-
-  if (rfidBit0 || rfidBit1) {
-    rfidFrame <<= 1;
-    rfidFrame |= rfidBit1;
-    rfidBits++;
-  }
-
-  state = newState;
-  startWiegandTimeout();
-}
-
-unsigned long rfidValue;
-unsigned char kbdValue;
-unsigned char rfidReady;
-unsigned char kbdReady;
-
-ISR(TIMER0_COMPA_vect) {
-  TCCR0B = 0; // Stop timer
-
-  // Get rid of the first and last bits (parity)
-  rfidValue = (rfidFrame>>1) & ~((unsigned long)1<<24); 
-  kbdValue = kbdFrame;
-  kbdReady = kbdBits;
-  rfidReady = rfidBits;
-
-  rfidFrame = 0;
-  kbdFrame = 0;
-  kbdBits = 0;
-  rfidBits = 0;
-}
-
-char telegramBuffer[16];
 void sendTelegrams(char *telegram) { // Sends the telegram to the registered servers.
 
 }
-
 
 void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on telegram and request!
 
@@ -197,13 +76,59 @@ void handlePing(unsigned char *request, struct PingPongTelegram *ping) {
     pong.payload[i] = ping->payload[i] ^ ((i & 1) ? 0xaa : 0xbb);
   }
 
-  unsigned int dport = request[UDP_SRC_PORT_H_P];
-  dport <<= 8;
-  dport += request[UDP_SRC_PORT_L_P];
-
-  //unsigned char *dip = request+IP_SRC_P;
   sendAnswerTelegram(request, (char *)&pong);
 }
+
+void handleGetState(unsigned char *request) {
+
+  struct StateTelegram reply;
+  reply.type = 'G';
+  reply.seq = eeprom_read_word((uint16_t *)EEPROM_SEQ);  
+  reply.version = 0;
+  reply.sensorState = 0; // TODO: Figure out what to hook up where.
+
+  sendAnswerTelegram(request, (char *)&reply);
+}
+
+void handleAddKey(unsigned char *request, struct AddDeleteKeyTelegram *payload) {
+
+  struct AddDeleteKeyAnswerTelegram reply;
+  reply.type='A';
+  reply.seq=payload->seq;
+  reply.result = 0;
+
+  unsigned int currentSeq = eeprom_read_word((uint16_t *)EEPROM_SEQ);
+  if (currentSeq != 0xffff && currentSeq > payload->seq) {
+    reply.result = 2; // NACK
+    fprintf(stdout, "Ignoring write of key, because sequence number %u < %u\n", payload->seq, currentSeq);    
+  } else {
+    
+    // Find the first free slot in EEPROM
+    int free = 0;
+    while (free < 250) {
+      unsigned long v = eeprom_read_dword((uint32_t *)(EEPROM_KEYS + (free << 2)));
+      if (v == 0xffffffff) {
+	break;
+      }
+      free++;
+    }
+
+    if (free >= 250) {
+      fprintf(stdout, "Failed to find free space for key\n");    
+      reply.result = 3; // NACK, no room      
+
+    } else {
+      fprintf(stdout, "Found free space for key at %u (seq: %u)\n", free, payload->seq);    
+      
+      eeprom_write_dword((uint32_t *)(EEPROM_KEYS+ (free<<2)), payload->seq);
+      eeprom_write_word((uint16_t *)EEPROM_SEQ, payload->seq);
+      reply.result = 1; // ACK
+    }
+  }
+  
+  sendAnswerTelegram(request, (char *)&reply);
+}
+
 
 void handleTelegram(unsigned char *request, unsigned char *payload) {
   aes256_context ctx; 
@@ -220,6 +145,12 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
 
     if (*type == 'p') {
       handlePing(request, (struct PingPongTelegram *)payload);
+
+    } else if (*type == 'g') {
+      handleGetState(request);
+
+    } else if (*type == 'a') {
+      handleAddKey(request, (struct AddDeleteKeyTelegram *)payload);
 
     } else {
       fprintf(stdout, "Got package of invalid type: '%c'\n", *type);
@@ -312,14 +243,12 @@ int main(void) {
     //beepRFID(loop & 4);
     //beepKBD(loop & 8);
 
-    if (kbdReady) {
-      kbdReady = 0;
-      fprintf(stdout, "kbd:%d\n", kbdValue);
+    if (isKbdReady()) {
+      fprintf(stdout, "kbd:%d\n", getKbdValue());
     }
 
-    if (rfidReady) {
-      rfidReady = 0;
-      fprintf(stdout, "RFID: %ld\n", rfidValue);
+    if (isRfidReady()) {
+      fprintf(stdout, "RFID: %ld\n", getRfidValue());
     }
 
     sleepMs(10);

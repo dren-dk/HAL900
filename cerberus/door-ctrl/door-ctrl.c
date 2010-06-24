@@ -120,7 +120,7 @@ void handleAddKey(unsigned char *request, struct AddDeleteKeyTelegram *payload) 
     } else {
       fprintf(stdout, "Found free space for key at %u (seq: %u)\n", free, payload->seq);    
       
-      eeprom_write_dword((uint32_t *)(EEPROM_KEYS+ (free<<2)), payload->seq);
+      eeprom_write_dword((uint32_t *)(EEPROM_KEYS+ (free<<2)), payload->hash);
       eeprom_write_word((uint16_t *)EEPROM_SEQ, payload->seq);
       reply.result = 1; // ACK
     }
@@ -160,6 +160,129 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
 	    *type, *seq, *crc, realCRC);  
   }
 }
+
+unsigned long keyHash(unsigned long rfid, unsigned long pin) {
+  return rfid ^ (0xffff0000 & (pin << 16)) ^ (0x0000ffff & (pin >> 16));
+}
+
+
+/*
+  This is the state-machine that keeps track of the user-interaction
+*/
+
+enum UserState {
+  IDLE,
+  ACTIVE,
+  OPEN,
+  DENY
+};
+
+enum UserState userState;
+
+int active; // 0: idle, 1: rfid is valid, collecting pin
+int pinCount; // Number of pin digits entered.
+unsigned long pin;
+unsigned int idleCount;
+unsigned long currentRfid;
+
+void handleKey(unsigned char key) {
+  if (userState == ACTIVE) {
+    idleCount = 0;
+
+    if (key == 10) { // *
+      // Door bell?
+
+    } else if (key == 11) { // #
+      // Door bell?
+      
+    } else { // 0..9
+
+      if (pinCount > 8) {
+	userState = DENY;
+	// TODO: Send logging info.
+
+      } else {
+	pinCount++;
+	pin *= 10;	
+	pin += key;
+
+	if (pinCount >= 4) {
+	  unsigned long hash = keyHash(currentRfid, pin);
+	
+	  for (int i=0;i<250;i++) {
+	    unsigned long v = eeprom_read_dword((uint32_t *)(EEPROM_KEYS + (i << 2)));
+	    /*
+	    if (v != 0xffffffff) {
+	      fprintf(stdout, "Comparing with %d = %ld\n", i, v);  	      
+	    }
+	    */
+
+	    if (hash == v) {
+	      // TODO: Send logging info.
+
+	      fprintf(stdout, "Found hit at %d\n", i);  	      
+	      
+	      idleCount = 0;
+	      userState = OPEN;
+	      return;
+	    }
+	  }
+	} 
+      }
+    } 
+  }
+}
+
+void handleRFID(unsigned long rfid) {
+  userState = ACTIVE;
+  pin = 0;
+  idleCount = 0;
+  pinCount = 0;
+  currentRfid = rfid; 
+  greenRFIDLED(1);
+
+  fprintf(stdout, "Got RFID: %ld\n", rfid);  
+}
+
+void handleTick() {
+  if (userState == ACTIVE) {
+    idleCount++;
+    if (idleCount > 500) {
+      userState = DENY;
+      idleCount = 0;
+      // TODO: Send logging info.
+    }
+
+  } else if (userState == DENY) {
+    idleCount++;
+    beepRFID(1);
+    beepKBD(idleCount > 100);
+    greenRFIDLED(0);
+    greenKBDLED(0);
+
+    if (idleCount > 200) {
+      beepRFID(0);
+      beepKBD(0);
+      userState = IDLE;
+    }
+
+  } else if (userState == OPEN) {
+    idleCount++;
+    greenRFIDLED(1);
+    greenKBDLED(1);
+    led(1);
+    transistor(1);
+
+    if (idleCount > 1000) {
+      greenRFIDLED(0);
+      greenKBDLED(0);
+      led(0);
+      transistor(0);
+      userState = IDLE;
+    }
+  }
+}
+
 
 #define BUFFER_SIZE 550
 int main(void) {
@@ -203,6 +326,7 @@ int main(void) {
   // Enable pin change interrupt for the 4 wiegand inputs
   PCMSK1 = (1<<PCINT8) | (1<<PCINT9) | (1<<PCINT10) | (1<<PCINT11);
   PCICR |= 1<<PCIE1;
+  sei();
 
   // 0x476 is PHLCON LEDA=links status, LEDB=receive/transmit
   enc28j60PhyWrite(PHLCON,0x476);
@@ -235,7 +359,6 @@ int main(void) {
       }
     }
 
-    loop++;
     // greenKBDLED(loop & 1);
     // greenRFIDLED(loop & 2);
     //led(loop & 4);
@@ -244,14 +367,18 @@ int main(void) {
     //beepKBD(loop & 8);
 
     if (isKbdReady()) {
-      fprintf(stdout, "kbd:%d\n", getKbdValue());
+      handleKey(getKbdValue());
     }
 
     if (isRfidReady()) {
-      fprintf(stdout, "RFID: %ld\n", getRfidValue());
+      handleRFID(getRfidValue());
     }
 
-    sleepMs(10);
+    handleTick();
+
+    _delay_ms(10);
+    led(loop & 1);
     wdt_reset();
+    loop++;
   }	
 }

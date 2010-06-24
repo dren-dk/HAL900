@@ -20,6 +20,8 @@ p3:
 
 program : door-ctrl.hex
 	$(AVRDUDE) -e -U flash:w:door-ctrl.hex
+	sleep 1;
+	../../hal/util/test-sync ${NODE}
 
 rdfuses:
 	$(AVRDUDE) -v -q

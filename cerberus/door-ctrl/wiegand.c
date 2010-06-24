@@ -1,3 +1,7 @@
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include "wiegand.h"
+
 /*
 Pinout:
 
@@ -17,10 +21,6 @@ PC1 = PCINT9
 PC2 = PCINT10
 PC3 = PCINT11
 */
-
-#include <avr/interrupt.h>
-#include <avr/io.h>
-#include "wiegand.h"
 
 unsigned char state;
 unsigned long rfidFrame;

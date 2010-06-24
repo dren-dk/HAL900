@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib "$Bin/../pm";
+use HAL::DoorCtrl;
+
+my $s = 1;
+while (1) {
+    my $t = pingDoor(1, $s++);
+    if ($t >= 0) {
+	print "Got answer, roundtrip: $t ms\n";
+    } else {
+	print "No answer\n";
+    }
+    sleep 1;
+}

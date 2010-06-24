@@ -174,8 +174,8 @@ void sendTelegrams(char *telegram) { // Sends the telegram to the registered ser
 void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on telegram and request!
 
   // Affix crc in the right place.
-  *((unsigned long *)(telegram+12)) = crc32((char *)telegram, 12);
-  fprintf(stdout, "Sending reply UDP package, crc is: %lu\n", *((unsigned long *)(telegram+12)));
+  *((unsigned long *)(telegram+12)) = crc32((unsigned char*)telegram, 12);
+  //  fprintf(stdout, "Sending reply UDP package, crc is: %lu\n", *((unsigned long *)(telegram+12)));
 
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
@@ -187,7 +187,7 @@ void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on t
 }
 
 void handlePing(unsigned char *request, struct PingPongTelegram *ping) {
-  fprintf(stdout, "Got ping package, replying with pong\n");
+  //  fprintf(stdout, "Got ping package, replying with pong\n");
 
   struct PingPongTelegram pong;
 
@@ -213,7 +213,7 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
   char *type = (char *)payload;
   unsigned int *seq = (unsigned int *)(payload+1);    
   unsigned long *crc  = (unsigned long *)(payload+12);
-  unsigned long realCRC = crc32((char *)payload, 12);
+  unsigned long realCRC = crc32((unsigned char *)payload, 12);
   
   if (*crc == realCRC) {
     fprintf(stdout, "Got package of type: '%c' seq: %d crc is ok: %lu\n", *type, *seq, realCRC);
@@ -296,7 +296,7 @@ int main(void) {
 	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
 	unsigned char *payload = buf + UDP_DATA_P;
 
-	fprintf(stdout, "Handling UDP package of %d bytes\n", payloadlen);
+	//	fprintf(stdout, "Handling UDP package of %d bytes\n", payloadlen);
 	
 	if (payloadlen == 16) {
 	  handleTelegram(buf, payload);

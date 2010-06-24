@@ -33,4 +33,18 @@ struct AddDeleteKeyAnswerTelegram {
   unsigned long crc32;
 } __attribute__ ((packed));
 
+struct LogTelegram {
+  char type; // 'L' for log message
+  unsigned int seq; 
+  unsigned char logType; // Power up, Unlock, Rfid, Key, Sensor 
+  union {
+    unsigned long hash;   // Unlock
+    unsigned long rfid;   // Rfid
+    unsigned char sensor; // Sensor
+    unsigned char key;    // Key
+  } item;
+  unsigned char padding[4];
+  unsigned long crc32;
+} __attribute__ ((packed));
+
 #endif

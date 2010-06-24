@@ -46,9 +46,49 @@ EMPTY_INTERRUPT(__vector_default)
 #define EEPROM_KEYS 23
 
 
-void sendTelegrams(char *telegram) { // Sends the telegram to the registered servers.
+/**********************************************************************************************/
+struct LoggingServer {
+  unsigned char ip[4];
+  unsigned int port;
+};
 
+unsigned int logSeq = 0;
+int loggingServersInuse = 0;
+struct LoggingServer loggingServers[10];
+
+void addLoggingServer(unsigned char *ip, unsigned int port) {
+  if (loggingServersInuse < 10) {
+    memcpy(loggingServers[loggingServersInuse].ip, ip, 4);
+    loggingServers[loggingServersInuse++].port = port;
+  }
 }
+
+void sendLogTelegrams(struct LogTelegram *lt) { // Sends the telegram to the registered servers.
+  lt->crc32 = crc32((unsigned char*)lt, 12);
+
+  for (int i=0;i<loggingServersInuse;i++) {
+    aes256_context ctx; 
+    aes256_init(&ctx, getAESKEY());
+    aes256_encrypt_ecb(&ctx, (unsigned char *)lt);
+    
+    unsigned char transmitBuffer[UDP_DATA_P+32];
+    send_udp(transmitBuffer, (char *)lt, 16, UDP_PORT, loggingServers[i].ip, loggingServers[i].port);  
+  }
+}
+
+void logPowerUp() {
+  struct LogTelegram lt;
+  lt.type = 'L';
+  lt.seq = logSeq++;
+  lt.logType = 'P';
+  
+  sendLogTelegrams(&lt);
+}
+
+
+
+
+/**********************************************************************************************/
 
 void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on telegram and request!
 
@@ -197,14 +237,16 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
   }
 }
 
-unsigned long keyHash(unsigned long rfid, unsigned long pin) {
-  return rfid ^ (0xffff0000 & (pin << 16)) ^ (0x0000ffff & (pin >> 16));
-}
 
 
+/**********************************************************************************************/
 /*
   This is the state-machine that keeps track of the user-interaction
 */
+
+unsigned long keyHash(unsigned long rfid, unsigned long pin) {
+  return rfid ^ (0xffff0000 & (pin << 16)) ^ (0x0000ffff & (pin >> 16));
+}
 
 enum UserState {
   IDLE,
@@ -328,12 +370,13 @@ void handleTick() {
 }
 
 
+/**********************************************************************************************/
 #define BUFFER_SIZE 550
 int main(void) {
   wdt_enable(WDTO_4S);
 
-  uint8_t mymac[6] = {0x42,0x42, 10,0,0,NODE};
-  uint8_t myip[4]  =            {10,0,0,NODE};
+  uint8_t mymac[6] = {0x42,0x42, 10,37,37,NODE};
+  uint8_t myip[4]  =            {10,37,37,NODE};
 
   enc28j60Init(mymac);
   enc28j60clkout(2); // change clkout from 6.25MHz to 12.5MHz
@@ -364,7 +407,7 @@ int main(void) {
   uart_init();
   FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
   stdout = stdin = &uart_str;
-  fprintf(stdout, "Power up!\n");
+  fprintf(stdout, "Power up! IP: %u.%u.%u.%u\n",myip[0],myip[1],myip[2],myip[3]);
   greenRFIDLED(1);
 
   // Enable pin change interrupt for the 4 wiegand inputs
@@ -378,6 +421,11 @@ int main(void) {
 
   greenKBDLED(0);
   greenRFIDLED(0);
+
+  unsigned char DEFAULT_LOG_SERVER[4]  = {10,37,37,254};
+  addLoggingServer(DEFAULT_LOG_SERVER, 4747);
+
+  logPowerUp();
   
   int loop = 0;
   while(1) {
@@ -402,13 +450,6 @@ int main(void) {
 	}	
       }
     }
-
-    // greenKBDLED(loop & 1);
-    // greenRFIDLED(loop & 2);
-    //led(loop & 4);
-
-    //beepRFID(loop & 4);
-    //beepKBD(loop & 8);
 
     if (isKbdReady()) {
       handleKey(getKbdValue());

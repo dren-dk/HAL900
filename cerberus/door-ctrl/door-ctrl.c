@@ -129,6 +129,39 @@ void handleAddKey(unsigned char *request, struct AddDeleteKeyTelegram *payload) 
   sendAnswerTelegram(request, (char *)&reply);
 }
 
+void handleDeleteKey(unsigned char *request, struct AddDeleteKeyTelegram *payload) {
+
+  struct AddDeleteKeyAnswerTelegram reply;
+  reply.type='D';
+  reply.seq=payload->seq;
+  reply.result = 0;
+
+  unsigned int currentSeq = eeprom_read_word((uint16_t *)EEPROM_SEQ);
+  if (currentSeq != 0xffff && currentSeq > payload->seq) {
+    reply.result = 2; // NACK
+    fprintf(stdout, "Ignoring delete of key, because sequence number %u < %u\n", payload->seq, currentSeq);    
+
+  } else {
+    // Find and nuke the key in EEPROM
+    for (int i = 0; i < 250; i++) {
+      unsigned long v = eeprom_read_dword((uint32_t *)(EEPROM_KEYS + (i << 2)));
+      if (v == payload->hash) {
+	eeprom_write_dword((uint32_t *)(EEPROM_KEYS+ (i<<2)), 0xffffffff);
+	eeprom_write_word((uint16_t *)EEPROM_SEQ, payload->seq);
+	reply.result = 1; // ACK
+	break;
+      }
+    }   
+
+    if (reply.result != 1) {
+      fprintf(stdout, "Failed to find existing key to nuke.\n");    
+      reply.result = 3; // NACK, not found
+    }
+  }
+  
+  sendAnswerTelegram(request, (char *)&reply);
+}
+
 
 void handleTelegram(unsigned char *request, unsigned char *payload) {
   aes256_context ctx; 
@@ -151,6 +184,9 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
 
     } else if (*type == 'a') {
       handleAddKey(request, (struct AddDeleteKeyTelegram *)payload);
+
+    } else if (*type == 'd') {
+      handleDeleteKey(request, (struct AddDeleteKeyTelegram *)payload);
 
     } else {
       fprintf(stdout, "Got package of invalid type: '%c'\n", *type);

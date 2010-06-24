@@ -2,7 +2,7 @@
 package HAL::DoorCtrl;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(pingDoor);
+@EXPORT = qw(pingDoor getDoorState addDoorKey deleteDoorKey);
 
 use strict;
 use warnings;
@@ -22,9 +22,9 @@ my %DOOR = (
 
 my %REQUEST_TYPES = (
     'p' => 'Ping',
+    'g' => 'Get state',
     'a' => 'Add key',
     'd' => 'Delete key',
-    'c' => 'Check state',
 );
 
 sub crc32($) {
@@ -93,6 +93,8 @@ sub pokeDoor($$$$) {
 	return 'CRC failed';
     }
 
+    push @res, substr($res, 3,9); # The raw payload.
+
     return @res;    
 }
 
@@ -110,3 +112,83 @@ sub pingDoor {
 	return -1;
     }
 }
+
+sub decodeSensorState($) {
+    my $byte = shift;
+
+    return {
+	closed0=> $byte & 0x01,
+	locked0=> $byte & 0x02,
+	closed1=> $byte & 0x04,
+	locked1=> $byte & 0x08,
+	closed2=> $byte & 0x10,
+	locked2=> $byte & 0x20,
+	closed3=> $byte & 0x40,
+	locked3=> $byte & 0x80,	
+	};       
+}
+
+sub getDoorState {
+    my ($id) = @_;
+
+    my @res = pokeDoor($id, 'g', 0, pack('CCCCCCCCC', 0,0,0, 0,0,0, 0,0,0));
+    
+    return undef unless @res == 13;
+    
+    my ($version, $sensorState) = unpack('CC', $res[12]);
+    my $seq = $res[1];
+
+    # Note: Only version 0 exists, when new versions are added the payload will grow.
+
+    return {
+	sequence=>$seq,
+	sensors=>decodeSensorState($sensorState),
+    };
+}
+
+sub keyHash($$) {
+    my ($rfid, $pin) = @_;
+    return $rfid ^ (0xffff0000 & ($pin << 16)) ^ (0x0000ffff & ($pin >> 16));
+}
+
+sub addDoorKey {
+    my ($id, $seq, $rfid, $pin) = @_;
+
+    my $hash = keyHash($rfid, $pin);
+    my @res = pokeDoor($id, 'a', $seq, pack('LCCCCC', $hash ,0,0, 0,0,0));
+
+    return undef unless @res == 13;
+
+    if ($res[2] == 1) {
+	return 'ACK';
+
+    } elsif ($res[2] == 2) {
+	return 'NACK';
+
+    } elsif ($res[2] == 3) {
+	return 'NACK, no room';
+
+    } else {
+	return "Error ($res[2])";
+    }    
+}
+
+sub deleteDoorKey {
+    my ($id, $seq, $rfid, $pin) = @_;
+    
+    my $hash = keyHash($rfid, $pin);
+    my @res = pokeDoor($id, 'd', $seq, pack('LCCCCC', $hash ,0,0, 0,0,0));
+
+    return undef unless @res == 13;
+
+    if ($res[2] == 1) {
+	return 'ACK';
+
+    } elsif ($res[2] == 2) {
+	return 'NACK';
+
+    } else {
+	return "Error ($res[2])";
+    }
+}
+

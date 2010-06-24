@@ -1,0 +1,40 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin $Script);
+use lib "$Bin/../pm";
+use HAL::DoorCtrl;
+use Data::Dumper;
+
+die "Syntax: $Script <door id>"  unless @ARGV == 1;
+my ($id) = @ARGV;
+
+
+my $startSeq = getDoorState($id)->{sequence};
+
+my %txn = (
+    1=>{
+	op=>'a',
+	rfid=>2426005,
+	pin=>4747,
+    },
+);
+
+
+my $newestSeq = 0;
+map {$newestSeq = $_ if $newestSeq < $_} keys %txn;
+
+if ($startSeq == 0xffff or $startSeq < $newestSeq) {
+    for my $seq (sort keys %txn) {
+	my $t = $txn{$seq};
+	if ($t->{op} eq 'a') {
+	    addDoorKey($id, $seq, $t->{rfid}, $t->{pin});
+	    
+	} elsif ($t->{op} eq 'd') {
+	    deleteDoorKey($id, $seq, $t->{rfid}, $t->{pin});
+
+	} else {
+	    die "Invalid op for txn $seq: $t->{op}";
+	}
+    }
+}

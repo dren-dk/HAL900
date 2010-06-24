@@ -234,14 +234,22 @@ void handleKey(unsigned char key) {
 }
 
 void handleRFID(unsigned long rfid) {
-  userState = ACTIVE;
-  pin = 0;
-  idleCount = 0;
-  pinCount = 0;
-  currentRfid = rfid; 
-  greenRFIDLED(1);
+  
+  if (userState == IDLE || userState == DENY) {
+    userState = ACTIVE;
 
-  fprintf(stdout, "Got RFID: %ld\n", rfid);  
+    beepRFID(0);
+    beepKBD(0);
+
+    pin = 0;
+    idleCount = 0;
+    pinCount = 0;
+    currentRfid = rfid; 
+    greenRFIDLED(1);
+    led(0);
+
+    fprintf(stdout, "Got RFID: %ld\n", rfid);  
+  }
 }
 
 void handleTick() {
@@ -255,8 +263,8 @@ void handleTick() {
 
   } else if (userState == DENY) {
     idleCount++;
-    beepRFID(1);
-    beepKBD(idleCount > 100);
+    beepRFID(idleCount > 100);
+    beepKBD(1);
     greenRFIDLED(0);
     greenKBDLED(0);
 

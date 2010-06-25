@@ -105,6 +105,14 @@ void logRfid(unsigned long rfid) {
   broadcastLog(&lt);
 }
 
+void logSensors(unsigned char sensors) {
+  struct LogTelegram lt;
+  lt.logType = 'S';
+  lt.item.sensors = sensors;
+  
+  broadcastLog(&lt);
+}
+
 
 /**********************************************************************************************/
 
@@ -355,7 +363,11 @@ void handleRFID(unsigned long rfid) {
 void handleTick() {
   if (userState == ACTIVE) {
     idleCount++;
+
+    greenKBDLED(idleCount & 64);
+
     if (idleCount > 500) {
+      greenKBDLED(0);
       logDeny();
       userState = DENY;
       idleCount = 0;
@@ -425,6 +437,8 @@ int main(void) {
   DDRC  &=~ (1<<PC1);
   DDRC  &=~ (1<<PC2);
   DDRC  &=~ (1<<PC3);
+  DDRB  &=~ (1<<PB0);
+  DDRD  &=~ (1<<PD6);
 
   greenKBDLED(1);
   uart_init();
@@ -448,6 +462,7 @@ int main(void) {
   logPowerUp();
   
   int loop = 0;
+  unsigned char oldSensors = 0;
   while(1) {
     static uint8_t buf[BUFFER_SIZE+1];
 
@@ -480,6 +495,12 @@ int main(void) {
     }
 
     handleTick();
+
+    unsigned char sensors = getSensors();
+    if (sensors != oldSensors) {
+      oldSensors = sensors;
+      logSensors(sensors);
+    }
 
     _delay_ms(10);
     led(loop & 1);

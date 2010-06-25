@@ -149,3 +149,39 @@ unsigned char getKbdValue() {
   kbdReady = 0;
   return kbdValue;
 }
+
+
+/*
+Bolt cable:
+
+| UTP          | Signal  | AVR |
++--------------+---------+-----+
+| Blue         | +12V    |     |
+| Blue/white   | +12V    |     |
+| Brown        | GND     |     |
+| Brown/white  | GND     |     |
+| Orange       | Lock    | PD6 |
+| Orange/white | Door    | PB0 |
+| Green        | Control | PD7 |
+| Green/white  |         |     |
+*/
+
+#if NODE == 1
+unsigned char getSensors() {
+  unsigned char res = 0;
+
+  if (PIND & 1<<PD6) {
+    res |= 2;
+  }
+  if (PINB & 1<<PB0) {
+    res |= 1;
+  }
+
+  return res;
+}
+
+#else
+unsigned char getSensors() {
+  return 0;
+}
+#endif

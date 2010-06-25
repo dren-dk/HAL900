@@ -12,11 +12,11 @@ default:
 	echo make p3: Build and program for node 3
 
 p1:
-	NODE=1 make program
+	NODE=1 make clean program
 p2:
-	NODE=2 make program
+	NODE=2 make clean program
 p3:
-	NODE=3 make program
+	NODE=3 make clean program
 
 program : door-ctrl.hex
 	$(AVRDUDE) -e -U flash:w:door-ctrl.hex

@@ -40,7 +40,7 @@ struct LogTelegram {
   union {
     unsigned long hash;   // Unlock
     unsigned long rfid;   // Rfid
-    unsigned char sensor; // Sensor
+    unsigned char sensors; // Sensor
     unsigned char key;    // Key
   } item;
   unsigned char padding[4];

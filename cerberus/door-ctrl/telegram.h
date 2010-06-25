@@ -36,7 +36,7 @@ struct AddDeleteKeyAnswerTelegram {
 struct LogTelegram {
   char type; // 'L' for log message
   unsigned int seq; 
-  unsigned char logType; // Power up, Unlock, Rfid, Key, Sensor 
+  unsigned char logType; // Power up, Unlock, Rfid, Key, Sensor, Locked 
   union {
     unsigned long hash;   // Unlock
     unsigned long rfid;   // Rfid

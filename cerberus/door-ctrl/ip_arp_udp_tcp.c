@@ -792,6 +792,70 @@ void send_udp(uint8_t *buf,char *data,uint8_t datalen,uint16_t sport, uint8_t *d
         //
         send_udp_transmit(buf,datalen);
 }
+
+
+void spam_udp(uint8_t *buf, char *data, uint8_t datalen, uint16_t sport, uint16_t dport)
+{
+
+  // Boardcast MAC addy (no need for any steenking arp):
+  for (int i=0;i<6;i++) {
+    buf[ETH_DST_MAC +i]=0xff;
+    buf[ETH_SRC_MAC +i]=macaddr[i];
+  }
+
+  buf[ETH_TYPE_H_P] = ETHTYPE_IP_H_V;
+  buf[ETH_TYPE_L_P] = ETHTYPE_IP_L_V;
+  fill_buf_p(&buf[IP_P],9,IPHDR);
+  // total length field in the IP header must be set:
+  buf[IP_TOTLEN_H_P]=0;
+  // done in transmit: buf[IP_TOTLEN_L_P]=IP_HEADER_LEN+UDP_HEADER_LEN+datalen;
+  buf[IP_PROTO_P]=IP_PROTO_UDP_V;
+
+  // Broadcast IP, no need to configure log server list.
+  for (int i=0;i<4;i++) {
+    buf[IP_DST_P+i] = buf[IP_SRC_P+i] = ipaddr[i];
+  }
+  buf[IP_DST_P+3] = 0xff;
+
+  // done in transmit: fill_ip_hdr_checksum(buf);
+  buf[UDP_DST_PORT_H_P]=(dport>>8);
+  buf[UDP_DST_PORT_L_P]=0xff&dport; 
+  buf[UDP_SRC_PORT_H_P]=(sport>>8);
+  buf[UDP_SRC_PORT_L_P]=sport&0xff; 
+  buf[UDP_LEN_H_P]=0;
+  // done in transmit: buf[UDP_LEN_L_P]=UDP_HEADER_LEN+datalen;
+  // zero the checksum
+  buf[UDP_CHECKSUM_H_P]=0;
+  buf[UDP_CHECKSUM_L_P]=0;
+  // copy the data:
+  // now starting with the first byte at buf[UDP_DATA_P]
+  //
+
+  uint8_t i=0;
+  // limit the length:
+  if (datalen>220){
+    datalen=220;
+  }
+  // copy the data:
+  i=0;
+  while(i<datalen){
+    buf[UDP_DATA_P+i]=data[i];
+    i++;
+  }
+  
+  if (datalen == 16) {
+    int j = 0;
+    while(j<datalen){
+      buf[UDP_DATA_P+i]=data[j];
+      i++;
+      j++;
+    }
+    datalen *= 2;
+  }
+  
+  send_udp_transmit(buf,datalen);
+}
+
 #endif // UDP_client
 
 #ifdef WOL_client

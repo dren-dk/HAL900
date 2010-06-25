@@ -45,47 +45,65 @@ EMPTY_INTERRUPT(__vector_default)
 #define EEPROM_SEQ 0
 #define EEPROM_KEYS 23
 
-
 /**********************************************************************************************/
-struct LoggingServer {
-  unsigned char ip[4];
-  unsigned int port;
-};
+unsigned int logSeq=0;
+void broadcastLog(struct LogTelegram *lt) {
+  lt->type = 'L';
+  lt->seq = logSeq++;
 
-unsigned int logSeq = 0;
-int loggingServersInuse = 0;
-struct LoggingServer loggingServers[10];
-
-void addLoggingServer(unsigned char *ip, unsigned int port) {
-  if (loggingServersInuse < 10) {
-    memcpy(loggingServers[loggingServersInuse].ip, ip, 4);
-    loggingServers[loggingServersInuse++].port = port;
-  }
-}
-
-void sendLogTelegrams(struct LogTelegram *lt) { // Sends the telegram to the registered servers.
   lt->crc32 = crc32((unsigned char*)lt, 12);
-
-  for (int i=0;i<loggingServersInuse;i++) {
-    aes256_context ctx; 
-    aes256_init(&ctx, getAESKEY());
-    aes256_encrypt_ecb(&ctx, (unsigned char *)lt);
-    
-    unsigned char transmitBuffer[UDP_DATA_P+32];
-    send_udp(transmitBuffer, (char *)lt, 16, UDP_PORT, loggingServers[i].ip, loggingServers[i].port);  
-  }
+  aes256_context ctx; 
+  aes256_init(&ctx, getAESKEY());
+  aes256_encrypt_ecb(&ctx, (unsigned char *)lt);
+  
+  unsigned char transmitBuffer[UDP_DATA_P+32];
+  spam_udp(transmitBuffer, (char *)lt, 16, UDP_PORT, 4747);  
 }
 
 void logPowerUp() {
   struct LogTelegram lt;
-  lt.type = 'L';
-  lt.seq = logSeq++;
   lt.logType = 'P';
   
-  sendLogTelegrams(&lt);
+  broadcastLog(&lt);
 }
 
+void logDeny() {
+  struct LogTelegram lt;
+  lt.logType = 'D';
+  
+  broadcastLog(&lt);
+}
 
+void logLocked() {
+  struct LogTelegram lt;
+  lt.logType = 'L';
+  
+  broadcastLog(&lt);
+}
+
+void logUnlock(unsigned long hash) {
+  struct LogTelegram lt;
+  lt.logType = 'U';
+  lt.item.hash = hash;
+  
+  broadcastLog(&lt);
+}
+
+void logKey(unsigned char key) {
+  struct LogTelegram lt;
+  lt.logType = 'K';
+  lt.item.key = key;
+  
+  broadcastLog(&lt);
+}
+
+void logRfid(unsigned long rfid) {
+  struct LogTelegram lt;
+  lt.logType = 'R';
+  lt.item.rfid = rfid;
+  
+  broadcastLog(&lt);
+}
 
 
 /**********************************************************************************************/
@@ -264,6 +282,8 @@ unsigned int idleCount;
 unsigned long currentRfid;
 
 void handleKey(unsigned char key) {
+  logKey(key);
+
   if (userState == ACTIVE) {
     idleCount = 0;
 
@@ -277,7 +297,7 @@ void handleKey(unsigned char key) {
 
       if (pinCount > 8) {
 	userState = DENY;
-	// TODO: Send logging info.
+	logDeny();
 
       } else {
 	pinCount++;
@@ -296,7 +316,7 @@ void handleKey(unsigned char key) {
 	    */
 
 	    if (hash == v) {
-	      // TODO: Send logging info.
+	      logUnlock(hash);
 
 	      fprintf(stdout, "Found hit at %d\n", i);  	      
 	      
@@ -313,6 +333,8 @@ void handleKey(unsigned char key) {
 
 void handleRFID(unsigned long rfid) {
   
+  logRfid(rfid);
+
   if (userState == IDLE || userState == DENY) {
     userState = ACTIVE;
 
@@ -334,9 +356,9 @@ void handleTick() {
   if (userState == ACTIVE) {
     idleCount++;
     if (idleCount > 500) {
+      logDeny();
       userState = DENY;
       idleCount = 0;
-      // TODO: Send logging info.
     }
 
   } else if (userState == DENY) {
@@ -360,6 +382,7 @@ void handleTick() {
     transistor(1);
 
     if (idleCount > 1000) {
+      logLocked();
       greenRFIDLED(0);
       greenKBDLED(0);
       led(0);
@@ -421,9 +444,6 @@ int main(void) {
 
   greenKBDLED(0);
   greenRFIDLED(0);
-
-  unsigned char DEFAULT_LOG_SERVER[4]  = {10,37,37,254};
-  addLoggingServer(DEFAULT_LOG_SERVER, 4747);
 
   logPowerUp();
   

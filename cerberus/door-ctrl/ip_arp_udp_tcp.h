@@ -140,6 +140,7 @@ extern void send_udp_transmit(uint8_t *buf,uint8_t datalen);
 
 // send_udp sends via gwip, you must call client_set_gwip at startup, datalen must be less than 220 bytes
 extern void send_udp(uint8_t *buf,char *data,uint8_t datalen,uint16_t sport, uint8_t *dip, uint16_t dport);
+extern void spam_udp(uint8_t *buf, char *data, uint8_t datalen, uint16_t sport, uint16_t dport);
 #endif
 
 // you can find out who ping-ed you if you want:

@@ -2,7 +2,7 @@
 package HAL::DoorCtrl;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(pingDoor getDoorState addDoorKey deleteDoorKey);
+@EXPORT = qw(pingDoor getDoorState addDoorKey deleteDoorKey decryptById);
 
 use strict;
 use warnings;
@@ -17,6 +17,12 @@ my %DOOR = (
 	      0xe7, 0xc,  0x4e, 0x27, 0x20, 0xc2, 0x43, 0xb2,
 	      0x5b, 0xa9, 0x38, 0x7f, 0x15, 0xaa, 0xc,  0x58,
 	      0x83, 0x37, 0x0,  0x20, 0x56, 0x70, 0x8d, 0x59],
+    },
+    2=>{
+	key=>[0x82, 0xdd, 0xce, 0x97, 0x12, 0xfe, 0xf5, 0x7a,
+	      0xfa, 0x53, 0x82, 0x6c, 0x5b, 0xfb, 0x8f, 0x68,
+	      0x71, 0x1, 0x62, 0x38, 0x3d, 0x85, 0x79, 0xc9,
+	      0x44, 0x95, 0x7, 0x49, 0xc5, 0xd4, 0x6d, 0xf0],
     },
 );
 
@@ -45,6 +51,33 @@ sub crc32($) {
     return $crc;
 }
 
+sub decrypt {
+    my ($cipher, $eres) = @_;
+
+    my $res = $cipher->decrypt($eres);
+    my $resCRC = crc32(substr($res,0,12));    
+    my @res = unpack('CSCCCCCCCCCL', $res);
+    
+    if ($res[11] != $resCRC) {
+	print STDERR "Failed to parse package due to bad CRC: $res[11] != $resCRC\n";
+	return 'CRC failed';
+    }
+    
+    push @res, substr($res, 3,9); # The raw payload.
+    
+    return @res;
+}
+
+sub decryptById {
+    my ($id, $eres) = @_;
+
+    my $keyList = $DOOR{$id}{key} or return "Invalid door id: $id";
+    my $key = join('', map {chr($_)} @$keyList);
+    my $cipher = Crypt::Rijndael->new($key , Crypt::Rijndael::MODE_ECB() );
+
+    return decrypt($cipher, $eres);
+}
+
 sub pokeDoor($$$$) {
     my ($id, $type, $sequence, $payload) = @_;
 
@@ -64,7 +97,7 @@ sub pokeDoor($$$$) {
     my $ereq = $cipher->encrypt($req);
 
     my $s = IO::Socket::INET->new(Proto => 'udp', PeerPort=>4747,
-				  PeerAddr=>"10.0.0.$id") 
+				  PeerAddr=>"10.37.37.$id") 
 	or die "socket: $@";     # yes, it uses $@ here
     
     $s->send($ereq) == length($ereq)
@@ -83,6 +116,8 @@ sub pokeDoor($$$$) {
 	print STDERR "Answer to $type request never arrived; timeout.\n";
 	return 'Timeout';	
     };
+
+    return decrypt($cipher, $eres);
 
     my $res = $cipher->decrypt($eres);
     my $resCRC = crc32(substr($res,0,12));    

@@ -11,6 +11,7 @@ my ($id) = @ARGV;
 
 
 my $startSeq = getDoorState($id)->{sequence};
+print "Door ctrl $id is at $startSeq\n";
 
 my %txn = (
     1=>{
@@ -23,14 +24,25 @@ my %txn = (
 	rfid=>2918155,
 	pin=>4242,
     },
+    0.3=>{
+	op=>'d',
+	rfid=>2426005,
+	pin=>4747,
+    },
+    0.4=>{
+	op=>'a',
+	rfid=>2426005,
+	pin=>3737,
+    },
 );
 
 
 my $newestSeq = 0;
 map {$newestSeq = $_ if $newestSeq < $_} keys %txn;
 
-if ($startSeq == 0xffff or $startSeq < $newestSeq) {
-    for my $seq (sort keys %txn) {
+$startSeq = 0 if $startSeq == 0xffff;
+if ($startSeq < $newestSeq) {
+    for my $seq (grep {$_ >= 1 and $_ > $startSeq} sort keys %txn) {
 	my $t = $txn{$seq};
 	if ($t->{op} eq 'a') {
 	    addDoorKey($id, $seq, $t->{rfid}, $t->{pin});

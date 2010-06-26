@@ -18,7 +18,7 @@ system("pg_dump", '--format=c', '--username=hal', 'hal', "--file=$target")
 mkdir "$root/remote";
 my $enc = "$root/remote/$fn.gpg";
 
-system("gpg --yes --output $enc -s -e -u HAL900 -r helle\@daimi.au.dk -r markus\@markuspetersen.dk -r ff\@nrvissing.net $target")
+system("gpg --yes --output $enc -s -e -u HAL900 -r helle\@daimi.au.dk -r markus\@markuspetersen.dk -r ff\@nrvissing.net -r jacob\@rotand.dk $target")
     and die "Failed to encrypt $target to $enc";
 
 system("rsync -a $root/remote osaa.dk:backups")

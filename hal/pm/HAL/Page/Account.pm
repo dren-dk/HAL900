@@ -128,7 +128,7 @@ Tlf. $phone
 			 "inner join account sa on (t.source_account_id = sa.id) ".
 			 "inner join account ta on (t.target_account_id = ta.id) ".
 			 "where target_account_id=? or source_account_id=? ".
-			 "order by t.id desc", $account_id, $account_id);
+			 "order by t.id asc", $account_id, $account_id);
 	my $sum = 0;
 	my $sumIn = 0;
 	my $sumOut = 0;
@@ -145,7 +145,7 @@ Tlf. $phone
 	$html .= qq'<h2>$typeName: $accountName - Saldo: $sum</h2>';
 	$html .= "<table><th>ID</th><th>Dato</th><th>Transaktion</th><th>Fra/Til konto</th><th>Beløb</th><th>Saldo</th>\n";
 	my $count = 0;
-	for my $r (reverse @table) {
+	for my $r (@table) {
 	    my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
 	    $html .= qq'<tr $class>'.join('', map {"<td>$_</td>"} @$r).qq'</tr>\n';
 	}

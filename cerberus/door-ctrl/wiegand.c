@@ -164,6 +164,9 @@ Bolt cable:
 | Orange/white | Door    | PB0 |
 | Green        | Control | PD7 |
 | Green/white  |         |     |
+
+Exit push: NC to ground from PB7 (internal pull up)
+           available via TP3 on the board.
 */
 
 #if NODE == 1
@@ -171,10 +174,13 @@ unsigned char getSensors() {
   unsigned char res = 0;
 
   if (PIND & 1<<PD6) {
-    res |= 2;
+    res |= 0x02;
   }
   if (PINB & 1<<PB0) {
-    res |= 1;
+    res |= 0x01;
+  }
+  if (PINB & 1<<PB7) {
+    res |= 0x80;
   }
 
   return res;

@@ -89,6 +89,13 @@ void logUnlock(unsigned long hash) {
   broadcastLog(&lt);
 }
 
+void logExit() {
+  struct LogTelegram lt;
+  lt.logType = 'E';
+  
+  broadcastLog(&lt);
+}
+
 void logKey(unsigned char key) {
   struct LogTelegram lt;
   lt.logType = 'K';
@@ -339,25 +346,30 @@ void handleKey(unsigned char key) {
   }
 }
 
+void handleExit() {
+  logExit();
+  idleCount = 0;
+  userState = OPEN;
+  return;
+}
+
 void handleRFID(unsigned long rfid) {
   
   logRfid(rfid);
 
-  if (userState == IDLE || userState == DENY) {
-    userState = ACTIVE;
-
-    beepRFID(0);
-    beepKBD(0);
-
-    pin = 0;
-    idleCount = 0;
-    pinCount = 0;
-    currentRfid = rfid; 
-    greenRFIDLED(1);
-    led(0);
-
-    fprintf(stdout, "Got RFID: %ld\n", rfid);  
-  }
+  userState = ACTIVE;
+  
+  beepRFID(0);
+  beepKBD(0);
+  
+  pin = 0;
+  idleCount = 0;
+  pinCount = 0;
+  currentRfid = rfid; 
+  greenRFIDLED(1);
+  led(0);
+  
+  //  fprintf(stdout, "Got RFID: %ld\n", rfid);  
 }
 
 void handleTick() {
@@ -439,6 +451,8 @@ int main(void) {
   DDRC  &=~ (1<<PC3);
   DDRB  &=~ (1<<PB0);
   DDRD  &=~ (1<<PD6);
+  DDRB  &=~ (1<<PB7);
+  PORTB |= (1<<PB7);  
 
   greenKBDLED(1);
   uart_init();
@@ -486,6 +500,16 @@ int main(void) {
       }
     }
 
+    unsigned char sensors = getSensors();
+    if (sensors != oldSensors) {
+      oldSensors = sensors;
+      logSensors(sensors);
+    }
+
+    if (sensors & 0x80) { // Exit button pressed
+      handleExit();
+    }
+
     if (isKbdReady()) {
       handleKey(getKbdValue());
     }
@@ -495,12 +519,6 @@ int main(void) {
     }
 
     handleTick();
-
-    unsigned char sensors = getSensors();
-    if (sensors != oldSensors) {
-      oldSensors = sensors;
-      logSensors(sensors);
-    }
 
     _delay_ms(10);
     led(loop & 1);

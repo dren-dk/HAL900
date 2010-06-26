@@ -9,7 +9,6 @@ use Data::Dumper;
 die "Syntax: $Script <door id>"  unless @ARGV == 1;
 my ($id) = @ARGV;
 
-
 my $startSeq = getDoorState($id)->{sequence};
 print "Door ctrl $id is at $startSeq\n";
 
@@ -24,15 +23,25 @@ my %txn = (
 	rfid=>2918155,
 	pin=>4242,
     },
-    0.3=>{
+    3=>{
 	op=>'d',
 	rfid=>2426005,
 	pin=>4747,
     },
-    0.4=>{
+    4=>{
+	op=>'d',
+	rfid=>2918155,
+	pin=>4242,
+    },
+    5=>{ # Fleming
 	op=>'a',
 	rfid=>2426005,
-	pin=>3737,
+	pin=>4242,
+    },
+    6=>{ # Kasper
+	op=>'a',
+	rfid=>6138865,
+	pin=>1436,
     },
 );
 

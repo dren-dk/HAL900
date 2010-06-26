@@ -56,6 +56,9 @@ while (1) {
     } elsif ($type eq 'D') {
 	$msg = "Deny";
 
+    } elsif ($type eq 'E') {
+	$msg = "Exit";
+
     } elsif ($type eq 'L') {
 	$msg = "Locked";
 

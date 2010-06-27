@@ -750,6 +750,7 @@ sub rfidDetailsPage {
 		      "where r.id = ?", $rfid_id) or die "failed to look up rfid";
     my ($owner_id, $owner_name, $rfid, $pin, $lost) = $res->fetchrow_array;
     $res->finish;
+    return outputGoto("/hal/admin/rfid") unless $rfid;
 
     my $html = '';
 

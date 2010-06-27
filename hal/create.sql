@@ -153,4 +153,26 @@ CREATE TRIGGER update_updated BEFORE UPDATE
         ON webSession FOR EACH ROW EXECUTE PROCEDURE 
         update_updated();
 
+create table rfid (
+       id serial primary key,
+       created timestamp default now(),
+       updated timestamp default now(),
+
+       rfid integer unique not null,
+       owner_id integer references member(id) not null,
+       pin bigint
+       lost boolean,
+);
+
+create table doorTransaction (
+       id serial primary key,
+       created timestamp default now(),
+       updated timestamp default now(),
+
+       rfid_id integer references rfid(id) not null,
+
+       hash bigint not null, 
+       kind char(1) not null
+);
+
 commit;

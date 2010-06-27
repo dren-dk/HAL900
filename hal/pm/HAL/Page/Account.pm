@@ -110,9 +110,10 @@ Tlf. $phone
     $html .= "<td></tr></table> <!-- Yes I'm using a table for layout, so sue me! -->";
 
     if ($monthlyFee > 0) {
+	my $sugFee = $monthlyFee*6;
 	$html .= "<h2>Kontingent</h2>
 <p>Dit kontingent er $monthlyFee kr pr. måned. Betalingen foregår ved at lave en bankoverførsel med din email adresse (<strong>$email</strong>) i kommentarfeltet, så vi har pengene senest den første i hver måned.</p><p>Open Space Aarhus’ kontooplysninger er: <strong>Reg.nr.: 1982 Konto nr.: 0741891514</strong></p>
-<p>Det anbefales at, om muligt, betale for et halvt år af gangen (900 kr), da færre og større betalinger nedsætter administrationsomkostningerne og giver foreningen større økonomisk stabilitet.</p>";
+<p>Det anbefales at, om muligt, betale for et halvt år af gangen ($sugFee kr), da færre og større betalinger nedsætter administrationsomkostningerne og giver foreningen større økonomisk stabilitet.</p>";
     }
     
     my $ar = db->sql("select account.id, accountName, typeName, type_id ".

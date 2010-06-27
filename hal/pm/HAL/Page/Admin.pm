@@ -31,15 +31,9 @@ sub outputAdminPage($$$;$) {
 	    title=>'Medlemmer',
 	},
 	{
-	    link=>"/hal/admin/load",
-	    name=>'load',
-	    title=>'Load poster',
-	},
-	{
-	    link=>"/hal/admin/consolidate",
-	    name=>'consolidate',
-	    title=>'Konsolider',
-	    js=>1,
+	    link=>"/hal/admin/rfid",
+	    name=>'rfid',
+	    title=>'RFID',
 	},
 	{
 	    link=>"/hal/admin/accounts",
@@ -90,8 +84,12 @@ sub indexPage {
 	my $class = ($i++ & 1) ? 'class="odd"' : 'class="even"';
 	$html .= "<tr $class><td>$type</td><td>$access</td><td>$count</td></tr>";
     }
+    $html .= "</table>";
 
-    return outputAdminPage('index', 'Hoved konti', $html);
+    $html .= qq'<p><a href="/hal/admin/load">Load nye poster fra Nordea</a></p>';
+    $html .= qq'<p><a href="/hal/admin/consolidate">Konsolider nye poster med systemet</a></p>';
+
+    return outputAdminPage('index', 'Admin oversigt', $html);
 }
 
 sub loadPage {
@@ -586,10 +584,36 @@ Tlf. $phone
 <h2>Email</h2>
 <p>$email</p>
 </div>
-
-
-<form method="post" action="/hal/admin/members/$member_id">
 ';
+
+    my $rfids = '';
+    my $rr = db->sql("select id, rfid, pin, lost from rfid where owner_id=?", $member_id)
+	or die "Failed to fetch list of RFIDs for user";
+    while (my ($id, $rfid, $pin, $lost) = $rr->fetchrow_array) {
+
+	if ($lost) {
+	    $rfids .= qq'<p><a href="/hal/admin/rfid/$id">$rfid</a> [Lost]</p>';
+
+	} elsif ($pin) {
+	    $rfids .= qq'<p><a href="/hal/admin/rfid/$id">$rfid</a> [OK]</p>';
+
+	} else {
+	    $rfids .= qq'<p><a href="/hal/admin/rfid/$id">$rfid</a> [no pin]</p>';	    
+	}
+    }
+    $rr->finish;
+
+
+    $html .= qq'
+<div class="floaty">
+<h2>RFID</h2>
+$rfids
+<p><a href="/hal/admin/members/1/addrfid">Tilføj RFID</a></p>
+</div>
+';
+
+
+    $html .= qq'<form method="post" action="/hal/admin/members/$member_id">';
     my $errors = 0;
     
     $html .= '<div class="floaty">';
@@ -663,6 +687,90 @@ Tlf. $phone
     return outputAdminPage('member', "Medlemmer", $html);
 }
 
+sub addRFIDPage {
+    my ($r,$q,$p,$member_id) = @_;
+
+    my $html = '';
+    
+    $html .= qq'<form method="post" action="/hal/admin/members/$member_id/addrfid">';
+    
+    my $errors = 0;
+    $html .= textInput("RFID",
+		       "Indtast RFID værdien eller brug USB RFID læseren.",
+		       'rfid', $p, sub {
+	my ($v,$p,$name) = @_;
+	if ($v !~ /^\d{5,10}$/) {
+	    $errors ++;
+	    return "Æh, hvad? Det ligner ikke et gyldigt RFID";	    
+	}
+	
+	my $res = db->sql("select m.id, realname from rfid r inner join member m on (r.owner_id=m.id) where rfid = ?", $v);
+	my ($owner_id, $owner_name) = $res->fetchrow_array;
+	$res->finish;
+	
+	if ($owner_id) {
+	    $errors++;
+	    return qq'Dette RFID er allerede i brug af <a href="/hal/admin/members/$owner_id">$owner_name</a>';
+	}
+    });
+	
+    $html .= qq'<hr><input style="clear: both" type="submit" name="gogogo" value="Tilføj RFID">';
+    $html .= qq'</form>';
+
+    if ($p->{rfid} and !$errors) {
+	db->sql("insert into rfid (owner_id, rfid) values (?,?)",
+		$member_id, $p->{rfid})
+	    or die "Failed to insert new rfid for $member_id, $p->{rfid}";
+	return outputGoto("/hal/admin/members/$member_id");
+    }
+
+    return outputAdminPage('member', "Tilføj RFID", $html);
+}
+
+sub rfidPage {
+    my ($r,$q,$p) = @_;
+
+    my $html = '';
+
+    return outputAdminPage('rfid', "RFID", $html);
+}
+
+sub rfidDetailsPage {
+    my ($r,$q,$p,$rfid_id) = @_;
+
+    if ($p->{lost}) {
+	db->sql("update rfid set lost=true where id=?", $rfid_id) or die "Failed to mark rfid as lost";
+    }
+    if ($p->{found}) {
+	db->sql("update rfid set lost=false where id=?", $rfid_id) or die "Failed to mark rfid as found";
+    }
+
+    my $res = db->sql("select m.id, realname, rfid, pin, lost ".
+		      "from rfid r inner join member m on (r.owner_id=m.id) ".
+		      "where r.id = ?", $rfid_id) or die "failed to look up rfid";
+    my ($owner_id, $owner_name, $rfid, $pin, $lost) = $res->fetchrow_array;
+    $res->finish;
+
+    my $html = '';
+
+    $html .= qq'<p>Detaljer for RFID #$rfid:</p>';
+    $html .= "<ul>";
+    $html .= qq'<li>Ejer: <a href="/hal/admin/members/$owner_id">$owner_name</a></li>';
+    if ($pin) {
+	$html .= '<li>PIN: OK</li>';
+    } else {
+	$html .= '<li>PIN: Mangler</li>';
+    }
+    if ($lost) {
+	$html .= qq'<li>Markeret som tabt. <a href="/hal/admin/rfid/$rfid_id?found=1">Marker som fundet</a></li>';
+    } else {
+	$html .= qq'<li>Ikke markeret som tabt. <a href="/hal/admin/rfid/$rfid_id?lost=1">Marker som tabt</a></li>';
+    }
+        
+
+    return outputAdminPage('rfiddetails', "RFID detaljer", $html);
+}
+
 BEGIN {
     ensureAdmin(qr'^/hal/admin');
     addHandler(qr'^/hal/admin/?$', \&indexPage);
@@ -674,6 +782,9 @@ BEGIN {
     addHandler(qr'^/hal/admin/accounts/(\d+)/create$', \&createAccountPage);
     addHandler(qr'^/hal/admin/members/?$', \&membersPage);
     addHandler(qr'^/hal/admin/members/(\d+)?$', \&memberPage);
+    addHandler(qr'^/hal/admin/members/(\d+)/addrfid$', \&addRFIDPage);
+    addHandler(qr'^/hal/admin/rfid$', \&rfidPage);
+    addHandler(qr'^/hal/admin/rfid/(\d+)$', \&rfidDetailsPage);
 }
 
 12;

@@ -27,13 +27,13 @@ while (my ($id, $email, $realname) = $nu->fetchrow_array) {
 
     print "$id\t$email\t$url\n";
 
-    next;
     my $email = sendmail('OSAA <register@hal.osaa.dk>', 
-			 "$realname <dren.dk\@gmail.com>",
-			 #"$realname <$email>",
+			 #"$realname <dren.dk\@gmail.com>",
+			 "$realname <$email>",
 			 'Fortsæt Open Space Aarhus registreringen',
-"Hej, $firstname, du får denne mail fordi vi nu har fået vores rigtige medlemssystem op at stå.
-I det nye system kan du bla. se alle dine indbetalinger og ændre dine kontakt oplysninger.
+"Hej, $firstname, du får denne mail fordi du mangler at fuldføre din registrering som medlem af OSAA.
+I medlemssystemet kan kan du bla. se alle dine indbetalinger, ændre dine kontakt oplysninger og
+vælge PIN kode til brug sammen med din elektroniske nøgle.
 
 Klik her for at fortsætte registreringen som medlem af Open Space Aarhus:
 $url

@@ -663,9 +663,6 @@ sub rfidPage {
 <input type="submit" name="gogogo" value="Skift min PIN kode!">
 </form>';
 
-	$html .= qq'<h2>Glemt PIN kode?</h2><p>Hvis du glemmer din PIN kode til din RFID nøgle, kan du altid bruge denne side til at vælge en ny kode.</p>';
-
-	$html .= qq'<h2>Tabt nøgle?</h2><p>Hvis du har tabt RFID nøglen, kontakt <a href="mailto:kassereren\@osaa.dk">kassereren\@osaa.dk</a> så den kan blive markeret som tabt eller <a href="/hal/account/rfid/$rfid_id?lost=1">klik her for at markere den som tabt</a>, hvis du finder nøglen igen, kan du nemt markere den som fundet på denne side.</p>';
 
 	if ($p->{gogogo}) {
 	    if ($errors) {
@@ -680,6 +677,10 @@ sub rfidPage {
 		}
 	    }	 
 	}
+
+	$html .= qq'<h2>Glemt PIN kode?</h2><p>Hvis du glemmer din PIN kode til din RFID nøgle, kan du altid bruge denne side til at vælge en ny kode.</p>';
+
+	$html .= qq'<h2>Tabt nøgle?</h2><p>Hvis du har tabt RFID nøglen, kontakt <a href="mailto:kassereren\@osaa.dk">kassereren\@osaa.dk</a> så den kan blive markeret som tabt eller <a href="/hal/account/rfid/$rfid_id?lost=1">klik her for at markere den som tabt</a>, hvis du finder nøglen igen, kan du nemt markere den som fundet på denne side.</p>';
     }   
 
     return outputAccountPage('rfid', 'Ret RFID nøgle', $html);

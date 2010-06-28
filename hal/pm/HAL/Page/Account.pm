@@ -99,12 +99,47 @@ Tlf. $phone
 <h2>Privilegier</h2>
 <ul>
 ';
-    
-    $html .= $doorAccess 
-	? '<li>Du kan låse døren til lokalerne op</li>' 
-	: $memberDoorAccess 
-	   ? '<li>Du kan ikke låse døren til lokalerne op, kontakt <a href="mailto:kassereren@osaa.dk">kassereren@osaa.dk</a></li>'
-	   : '<li>Du kan ikke låse døren til lokalerne op, <a href="/hal/account/type">opgrader til betalende medlem</a></li>';
+
+    my $okCount = 0;
+    my $noPin = 0;
+    my $rr = db->sql("select id, rfid, pin, lost from rfid where owner_id=?", getSession->{member_id})
+	or die "Failed to fetch list of RFIDs for user";
+    while (my ($id, $rfid, $pin, $lost) = $rr->fetchrow_array) {
+	
+	my $status = '';
+	if ($lost) {
+	    $status = qq'Tabt';
+	} elsif ($pin) {
+	    $status = qq'OK';
+	    $okCount++;
+	} else {
+	    $status = qq'Mangler PIN kode'; 
+	    $noPin = qq'/hal/account/rfid/$id';
+	}
+
+	$html .= qq'<li>RFID nøgle <a href="/hal/account/rfid/$id">$rfid [$status]</a></li>';
+    }
+    $rr->finish;
+
+    if ($doorAccess) {
+	
+	if ($okCount) {
+	    $html .= '<li>Du kan låse døren til lokalerne op med din RFID og PIN kode</li>';
+
+	} elsif ($noPin) {
+	    $html .= qq'<li>Du kunne låse døren til lokalerne op med din RFID, men du mangler <a href="$noPin">at vælge en pin kode</a>.</li>';
+	    
+	} else {
+	    $html .= '<li>Du kunne låse døren til lokalerne op, hvis ellers du havde en RFID nøgle, kontakt <a href="mailto:kassereren@osaa.dk">kassereren@osaa.dk</a></li>';	    
+	}
+
+    } elsif ($memberDoorAccess) {
+	$html .= '<li>Du kan ikke låse døren til lokalerne op, kontakt <a href="mailto:kassereren@osaa.dk">kassereren@osaa.dk</a></li>';
+
+    } else {
+	$html .= '<li>Du kan ikke låse døren til lokalerne op, <a href="/hal/account/type">opgrader til betalende medlem</a></li>';
+    }
+
     $html .= $adminAccess ? '<li>Du kan administrere systemet</li>' : '';
     $html .= "</ul></div>\n";
     $html .= "<td></tr></table> <!-- Yes I'm using a table for layout, so sue me! -->";
@@ -535,6 +570,117 @@ sub detailsPage {
     return outputAccountPage('details', 'Ret bruger oplysninger', $form);
 }
 
+sub rfidPage {
+    my ($r,$q,$p,$rfid_id) = @_;
+    
+    if ($p->{lost}) {
+	db->sql('update rfid set pin=null, lost=true where id=? and owner_id=?',
+		$rfid_id, getSession->{member_id}) or die "Urgh";
+	l "Marked rfid as lost rfid_id=$rfid_id";
+    }
+    if ($p->{found}) {
+	db->sql('update rfid set pin=null, lost=false where id=? and owner_id=?',
+		$rfid_id, getSession->{member_id}) or die "Urgh";
+	l "Marked rfid as lost rfid_id=$rfid_id";
+    }
+
+    my $rr = db->sql("select rfid, pin, lost from rfid where owner_id=? and id=?",
+		     getSession->{member_id}, $rfid_id)
+	or die "Failed to fetch RFID for user $rfid_id";
+    my ($rfid, $pin, $lost) = $rr->fetchrow_array;    
+    $rr->finish;
+    return outputGoto('/hal/account') unless $rfid;
+
+    my $html = '';
+
+    $html .= "<p>Din RFID nøgle har nummer <strong>$rfid</strong>.</p>";
+    
+    if ($lost) {
+	$html .= qq'<p>Denne RFID nøgle kan ikke bruges, fordi den er markeret som tabt, hvis du har fundet den, så klik her: <a href="/hal/account/rfid/$rfid_id?found=1">Fundet!</a></p>';
+
+    } else {
+	if (!$pin) {
+	    $html .= qq'<p>Denne RFID nøgle kan ikke bruges, fordi den ikke har nogen PIN kode.</p>';
+	}
+
+	$html .= qq'<form method="POST" action="/hal/account/rfid/$rfid_id">';
+
+	my $errors = 0;
+	$html .= passwdInput2("PIN kode",
+			      "PIN koden gør det muligt at bruge RFID nøglen, den skal være mindst 5 cifre og må ikke være den samme som du bruger andre steder f.eks. på kredit kort.",
+			      'pin', $p, sub {
+	my ($v,$p,$name) = @_;
+	if (length($v)<5) {
+	    $errors++;
+	    return "Din PIN kode skal være mindst 5 cifre langt";
+	}
+	if ($v !~ /^\d+$/) {
+	    $errors++;
+	    return "Din PIN kode må kun indeholde tal";
+	}
+	if ($v =~ /^0$/) {
+	    $errors++;
+	    return "Din PIN kode må ikke starte med 0";
+	}
+	if ($v =~ /(.+)\1/) {
+	    $errors++;
+	    return "Din PIN kode må ikke indeholde gentagelser";
+	}
+	my @v = split(//, $v);
+	my $oc = 0;
+	my $monoCount = 0;
+	my $slope = 0;
+	for my $c (@v) {
+	    my $ns = $c-$oc;
+	    $oc = $c;
+	    if ($ns == $slope) {
+		$monoCount++;
+	    } else {
+		$monoCount = 0;
+	    }
+	    $slope = $ns;
+	    
+	    if ($monoCount >= 2) {
+		$errors++;
+		return "Cifrene må ikke komme i rækkefølge";
+	    }
+	}
+	if ($v ne $p->{"${name}_confirm"}) {
+	    $errors++;
+	    return "De to PIN koder skal være ens";
+	}
+
+	return "";
+	});
+
+	$html .= '
+<hr>
+<input type="submit" name="gogogo" value="Skift min PIN kode!">
+</form>';
+
+
+	$html .= qq'<h2>Glemt PIN kode?</h2><p>Hvis du glemmer din PIN kode til din RFID nøgle, kan du altid bruge denne side til at vælge en ny kode.</p>';
+
+	$html .= qq'<h2>Tabt nøgle?</h2><p>Hvis du har tabt RFID nøglen, kontakt <a href="mailto:kassereren\@osaa.dk">kassereren\@osaa.dk</a> så den kan blive markeret som tabt eller <a href="/hal/account/rfid/$rfid_id?lost=1">klik her for at markere den som tabt</a>, hvis du finder nøglen igen, kan du nemt markere den som fundet på denne side.</p>';
+
+	if ($p->{gogogo}) {
+	    if ($errors) {
+		$html .= "<p>Hovsa, der er noget galt, prøv igen!</p>";
+	    } else {
+		if (db->sql('update rfid set pin=? where id=? and owner_id=?',
+			    $p->{pin}, $rfid_id, getSession->{member_id})) {
+		    l "Updated PIN for: rfid_id=$rfid_id";
+		    return outputGoto('/hal/account');
+		} else {
+		    $html .= "<p>Hovsa, noget gik galt, prøv igen.</p>";		
+		}
+	    }	 
+	}
+    }   
+
+    return outputAccountPage('rfid', 'Ret RFID nøgle', $html);
+}
+
 BEGIN {
     ensureLogin(qr'^/hal/account');
     addHandler(qr'^/hal/account/?$', \&indexPage);
@@ -544,6 +690,7 @@ BEGIN {
     addHandler(qr'^/hal/account/type$', \&typePage);
     addHandler(qr'^/hal/account/details$', \&detailsPage);
     addHandler(qr'^/hal/account/confirmemail$', \&emailConfirmPage);
+    addHandler(qr'^/hal/account/rfid/(\d+)$', \&rfidPage);
 }
 
 42;

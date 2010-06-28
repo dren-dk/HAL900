@@ -44,6 +44,11 @@ sub outputAccountPage($$$;$) {
 	    name=>'details',
 	    title=>'Ret Detaljer',
 	},
+	{
+	    link=>"/hal/account/rfid",
+	    name=>'rfid',
+	    title=>'Nøgle',
+	},
 	);
     
     for my $i (@items) {
@@ -658,7 +663,6 @@ sub rfidPage {
 <input type="submit" name="gogogo" value="Skift min PIN kode!">
 </form>';
 
-
 	$html .= qq'<h2>Glemt PIN kode?</h2><p>Hvis du glemmer din PIN kode til din RFID nøgle, kan du altid bruge denne side til at vælge en ny kode.</p>';
 
 	$html .= qq'<h2>Tabt nøgle?</h2><p>Hvis du har tabt RFID nøglen, kontakt <a href="mailto:kassereren\@osaa.dk">kassereren\@osaa.dk</a> så den kan blive markeret som tabt eller <a href="/hal/account/rfid/$rfid_id?lost=1">klik her for at markere den som tabt</a>, hvis du finder nøglen igen, kan du nemt markere den som fundet på denne side.</p>';
@@ -681,6 +685,58 @@ sub rfidPage {
     return outputAccountPage('rfid', 'Ret RFID nøgle', $html);
 }
 
+sub rfidsPage {
+    my ($r,$q,$p) = @_;
+
+    my $html = '';
+
+    my $list = '';
+    my $lastId = 0;
+    my $count = 0;
+    my $rr = db->sql("select id, rfid, pin, lost from rfid where owner_id=? order by id", getSession->{member_id})
+	or die "Failed to fetch list of RFIDs for user";
+    while (my ($id, $rfid, $pin, $lost) = $rr->fetchrow_array) {
+
+	my $status = '';
+	if ($lost) {
+	    $status = qq'Tabt';
+	} elsif ($pin) {
+	    $status = qq'OK';
+	} else {
+	    $status = qq'Mangler PIN kode'; 
+	}
+
+	$list .= qq'<li><a href="/hal/account/rfid/$id">$rfid [$status]</a></li>';
+	$lastId = $id;
+	$count++;
+    }
+    $rr->finish;
+
+    return outputGoto("/hal/account/rfid/$lastId") if $count == 1;
+
+    if ($list) {
+	
+	$html .= qq'<p>OSAA bruger RFID nøgler med PIN koder til at give adgang til lokalerne, klik et link for at se detaljer.</p>';
+
+	$html .= "<ul>$list</ul>";
+
+    } else {
+	my $uRes = db->sql("select membertype.doorAccess, memberType, monthlyFee, username, email, phone, realname, smail, member.doorAccess, adminAccess ".
+			   "from member, membertype where member.membertype_id=membertype.id and member.id=?",
+			   getSession->{member_id});
+	my ($memberDoorAccess, $memberType, $monthlyFee, $username, $email, $phone, $realname, $smail, $doorAccess, $adminAccess) = $uRes->fetchrow_array;
+	$uRes->finish;
+		
+	if ($memberDoorAccess) {
+	    $html .= qq'<p>Du har ingen registrerede RFID nøgler, kontakt <a href="mailto:kassereren\@osaa.dk">kassereren\@osaa.dk</a></p>';
+	} else {
+	    $html .= qq'<p>Du har ingen registrerede RFID nøgler.</p>';
+	}
+    }
+
+    return outputAccountPage('rfid', 'RFID nøgler', $html);
+}
+
 BEGIN {
     ensureLogin(qr'^/hal/account');
     addHandler(qr'^/hal/account/?$', \&indexPage);
@@ -691,6 +747,7 @@ BEGIN {
     addHandler(qr'^/hal/account/details$', \&detailsPage);
     addHandler(qr'^/hal/account/confirmemail$', \&emailConfirmPage);
     addHandler(qr'^/hal/account/rfid/(\d+)$', \&rfidPage);
+    addHandler(qr'^/hal/account/rfid$', \&rfidsPage);
 }
 
 42;

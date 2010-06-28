@@ -127,7 +127,7 @@ sub textInput {
     return qq'
 <h4>$title</h4>
 <p class="lead">$lead</p>
-<input type="text" name="$name" size="50" value="$e">
+<input type="text" name="$name" id="$name" size="50" value="$e">
 $error
 ';
 }

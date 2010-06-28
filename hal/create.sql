@@ -161,7 +161,7 @@ create table rfid (
        rfid integer unique not null,
        owner_id integer references member(id) not null,
        pin bigint
-       lost boolean,
+       lost boolean not null default false,
 );
 
 create table doorTransaction (

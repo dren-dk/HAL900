@@ -674,7 +674,7 @@ sub rfidPage {
 		if (db->sql('update rfid set pin=? where id=? and owner_id=?',
 			    $p->{pin}, $rfid_id, getSession->{member_id})) {
 		    l "Updated PIN for: rfid_id=$rfid_id";
-		    return outputGoto('/hal/account');
+		    $html .= "<p>Din PIN kode er nu opdateret i HAL, lige nu kan der gå en uge før ændringen slår igennem i dørlåsen.</p>";
 		} else {
 		    $html .= "<p>Hovsa, noget gik galt, prøv igen.</p>";		
 		}

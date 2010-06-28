@@ -522,7 +522,7 @@ sub membersPage {
 
     my $html = '';
 
-    $html .= qq'<table class=\"sortable\"><tr><th>ID</th><th>Bruger</th><th>Navn</th><th>email</th><th>Telefon</th><th>Type</th></tr>';
+    $html .= qq'<table class="sortable"><tr><th>ID</th><th>Bruger</th><th>Navn</th><th>email</th><th>Telefon</th><th>Type</th></tr>';
 
     my $mr = db->sql("select member.id,username,realname,email,phone,memberType ".
 		     "from member inner join membertype on (membertype_id=membertype.id) ".
@@ -693,6 +693,10 @@ sub addRFIDPage {
     my $html = '';
     
     $html .= qq'<form method="post" action="/hal/admin/members/$member_id/addrfid">';
+
+    $html .= encode_hidden({
+	 fromrfid=>$p->{fromrfid} ? 1 : 0,
+    });
     
     my $errors = 0;
     $html .= textInput("RFID",
@@ -712,27 +716,26 @@ sub addRFIDPage {
 	    $errors++;
 	    return qq'Dette RFID er allerede i brug af <a href="/hal/admin/members/$owner_id">$owner_name</a>';
 	}
+	return '';
     });
 	
     $html .= qq'<hr><input style="clear: both" type="submit" name="gogogo" value="Tilføj RFID">';
     $html .= qq'</form>';
 
+    $html .= qq'
+<script>
+document.getElementById("rfid").focus();
+</script>
+';
     if ($p->{rfid} and !$errors) {
 	db->sql("insert into rfid (owner_id, rfid) values (?,?)",
 		$member_id, $p->{rfid})
 	    or die "Failed to insert new rfid for $member_id, $p->{rfid}";
+	return outputGoto("/hal/admin/rfid") if $p->{fromrfid};
 	return outputGoto("/hal/admin/members/$member_id");
     }
 
     return outputAdminPage('member', "Tilføj RFID", $html);
-}
-
-sub rfidPage {
-    my ($r,$q,$p) = @_;
-
-    my $html = '';
-
-    return outputAdminPage('rfid', "RFID", $html);
 }
 
 sub rfidDetailsPage {
@@ -770,6 +773,56 @@ sub rfidDetailsPage {
         
 
     return outputAdminPage('rfiddetails', "RFID detaljer", $html);
+}
+
+sub rfidPage {
+    my ($r,$q,$p) = @_;
+
+    my $html .= '';
+
+    $html .= '<h2>Brugere som mangler RFID nøgler</h2>';
+    $html .= qq'<table class="sortable"><tr><th>ID</th><th>Tilføj</th><th>Bruger</th><th>Navn</th><th>email</th><th>Telefon</th><th>Type</th></tr>';
+
+    my $mr = db->sql("select member.id,username,realname,email,phone,memberType ".
+		     "from member inner join membertype on (membertype_id=membertype.id) ".
+		     "and member.doorAccess ".
+		     "and not member.id in (select owner_id from rfid r where not r.lost) ".
+		     "order by realname")
+	or die "Failed to fetch member list";
+    my $count = 0;
+    while (my ($id, $username, $realname, $email, $phone, $memberType) = $mr->fetchrow_array) {
+	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
+	$html .= qq'<tr $class><td><a href="/hal/admin/members/$id">$id</a></td>'.
+	    qq'<td><a href="/hal/admin/members/$id/addrfid?fromrfid=1">Ny RFID</a></td>'.
+	    join('', map {
+		"<td>".encode_entities($_||'')."</td>"
+		 } ($username,$realname,$email,$phone,$memberType)).'</tr>';
+    }
+    $mr->finish;
+    $html.= "</table>";    
+    
+    if ($count == 0) {
+	$html = "<p>Alle brugere med dør-bit har en RFID nøgle.</p>";
+    }
+
+    $html .= '<h2>Eksisterende RFID nøgler</h2>';
+
+    $html .= qq'<table class="sortable"><tr><th>Ejer</th><th>RFID</th><th>Status</th></tr>\n';	
+    my $rr = db->sql("select m.id, realname, r.id, rfid, pin, lost ".
+		      "from rfid r inner join member m on (r.owner_id=m.id) ".
+		      "order by r.id") or die "failed to look up rfids";
+    $count = 0;
+    while (my ($owner_id, $owner_name, $rfid_id, $rfid, $pin, $lost) = $rr->fetchrow_array) {
+	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
+
+	my $status = $pin ? 'Ok' : $lost ? 'Tabt' : 'Mangler PIN';
+	$html .= qq'<tr><td><a href="/hal/admin/members/$owner_id">$owner_name</a></td>'.
+	    qq'<td><a href="/hal/admin/rfid/$rfid_id">$rfid</a></td><td>$status</td></tr>\n';
+    }
+    $rr->finish;
+    $html.= "</table>";    
+
+    return outputAdminPage('rfid', "RFID", $html);
 }
 
 BEGIN {

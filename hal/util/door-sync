@@ -1,0 +1,71 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin $Script);
+use lib "$Bin/../pm";
+use HAL::DoorCtrl;
+use Data::Dumper;
+use utf8;
+
+use HAL;
+use HAL::DB;
+use HAL::Util;
+
+
+my $db = new HAL::DB;
+
+my %hash2rfid;
+my %current;
+my $ct = $db->sql("select id, hash, kind, rfid_id from doorTransaction order by id") or die "Urgh";
+while (my ($id, $hash, $kind, $rfid_id) = $ct->fetchrow_array) {
+    $hash2rfid{$hash} = $rfid_id;
+
+    if ($kind eq 'a') {
+	$current{$hash}++;
+
+    } elsif ($kind eq 'd') {
+	if ($current{$hash}) {
+	    $current{$hash}--;
+	}
+
+    } else {
+	die "Invalid transaction kind '$kind' for doorTransaction.id $id";
+    }
+}
+$ct->finish;
+
+
+my %new;
+my $ns = $db->sql("select rfid, pin, id from rfid where pin is not null order by id") or die "Urgh";
+while (my ($rfid, $pin, $rfid_id) = $ns->fetchrow_array) {
+    my $hash = keyHash($rfid, $pin);
+    $new{$hash}++;
+    $hash2rfid{$hash} = $rfid_id;
+}
+$ns->finish;
+
+for my $k (keys %new) {
+    my $c = $current{$k}||0;
+    my $n = $new{$k}||0;
+    my $rfid_id = $hash2rfid{$k};
+
+    if ($c < $n) {
+	$db->sql("insert into doorTransaction (rfid_id, hash, kind) values (?,?,'a')",
+		 $rfid_id, $k) or die "Failed to insert hash add into door transaction table: $rfid_id $k";
+	print "Adding hash: $k for rfid_id=$rfid_id\n";
+    }
+}
+
+for my $k (keys %current) {
+    my $c = $current{$k}||0;
+    my $n = $new{$k}||0;
+    my $rfid_id = $hash2rfid{$k};
+
+    if ($c > $n) {
+	$db->sql("insert into doorTransaction (rfid_id, hash, kind) values (?,?,'d')",
+		 $rfid_id, $k) or die "Failed to insert hash delete into door transaction table: $rfid_id $k";
+	print "Deleting hash: $k for rfid_id=$rfid_id\n";
+    }
+}
+
+$db->dbh->commit;

@@ -2,7 +2,7 @@
 package HAL::DoorCtrl;
 require Exporter;
 @ISA=qw(Exporter);
-@EXPORT = qw(pingDoor getDoorState addDoorKey deleteDoorKey decryptById);
+@EXPORT = qw(pingDoor getDoorState addDoorKey deleteDoorKey addDoorHash deleteDoorHash decryptById keyHash);
 
 use strict;
 use warnings;
@@ -186,10 +186,9 @@ sub keyHash($$) {
     return $rfid ^ (0xffff0000 & ($pin << 16)) ^ (0x0000ffff & ($pin >> 16));
 }
 
-sub addDoorKey {
-    my ($id, $seq, $rfid, $pin) = @_;
+sub addDoorHash {
+    my ($id, $seq, $hash) = @_;
 
-    my $hash = keyHash($rfid, $pin);
     my @res = pokeDoor($id, 'a', $seq, pack('LCCCCC', $hash ,0,0, 0,0,0));
 
     return undef unless @res == 13;
@@ -208,10 +207,16 @@ sub addDoorKey {
     }    
 }
 
-sub deleteDoorKey {
+sub addDoorKey {
     my ($id, $seq, $rfid, $pin) = @_;
-    
+
     my $hash = keyHash($rfid, $pin);
+    return addDoorHash($id, $seq, $hash);
+}
+
+sub deleteDoorHash {
+    my ($id, $seq, $hash) = @_;
+
     my @res = pokeDoor($id, 'd', $seq, pack('LCCCCC', $hash ,0,0, 0,0,0));
 
     return undef unless @res == 13;
@@ -225,5 +230,12 @@ sub deleteDoorKey {
     } else {
 	return "Error ($res[2])";
     }
+}
+
+sub deleteDoorKey {
+    my ($id, $seq, $rfid, $pin) = @_;
+    
+    my $hash = keyHash($rfid, $pin);
+    return deleteDoorHash($id, $seq, $hash);
 }
 

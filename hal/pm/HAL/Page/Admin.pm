@@ -48,11 +48,12 @@ sub outputAdminPage($$$;$) {
     for my $i (@items) {
 	if ($i->{name} eq $cur) {
 	    $i->{current}=1;
-	    if ($i->{js}) {
-		$js = "$cur.js";
-		$onload = "init_$cur();";
-	    }
 	}
+    }
+
+    if ($cur eq 'consolidate') {
+	$js = "$cur.js";
+	$onload = "init_$cur();";
     }
     
     return {

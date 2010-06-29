@@ -169,7 +169,7 @@ create table doorTransaction (
        created timestamp default now(),
        updated timestamp default now(),
 
-       rfid_id integer references rfid(id) not null,
+       rfid_id integer references rfid(id) on delete set null,
 
        hash bigint not null, 
        kind char(1) not null

@@ -33,3 +33,4 @@ commit;
 begin transaction;
 alter table rfid add column lost boolean default false;
 commit;
+

@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin $Script);
+use lib "$Bin/../pm";
+use HAL::DoorCtrl;
+use Data::Dumper;
+use utf8;
+
+use HAL;
+use HAL::DB;
+use HAL::Util;
+
+my $db = new HAL::DB;
+
+open T, ">$Bin/latest.txn" or die "Failed to write latest.txn: $!";
+my $ct = $db->sql("select id, hash, kind, rfid_id from doorTransaction order by id") or die "Urgh";
+while (my ($id, $hash, $kind, $rfid_id) = $ct->fetchrow_array) {
+    print T join("\t", $id, $hash, $kind)."\n";
+}
+$ct->finish;
+

@@ -33,7 +33,7 @@ for my $door (1..2) {
 	    
 	} elsif ($t->{op} eq 'd') {
 	    print " Transaction id $t->{tid}: Deleting $t->{hash}\n";
-	    my $res = deleteDoorKey($door, $t->{tid}, $t->{hash});
+	    my $res = deleteDoorHash($door, $t->{tid}, $t->{hash});
 	    die "Failed to load transaction: $res" unless $res eq 'ACK';
 
 	} else {

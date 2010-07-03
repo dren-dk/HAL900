@@ -74,14 +74,19 @@ sub indexPage {
 
     my $html = '';
     
-    my $sr = db->sql('select count(*), membertype, m.dooraccess '.
-		     ' from member m join membertype t on (m.membertype_id=t.id) '.
-		     ' group by membertype, m.dooraccess') or die "Fail!";
+    my $sr = db->sql('select count(*), membertype, m.dooraccess 
+		     from member m join membertype t on (m.membertype_id=t.id) 
+		     group by membertype, m.dooraccess') or die "Fail!";
 
     $html = "<table><tr><th>Medlems type</th><th>Dør-bit</th><th>Antal</th></tr>\n";
     my $i = 0;
     while (my ($count, $type, $access) = $sr->fetchrow_array) {
-	$access ||= 0;
+	if (!defined $access) {
+	    $access = 'Never';
+
+	} elsif (!$access) {
+	    $access = 'Revoked';
+	}
 	my $class = ($i++ & 1) ? 'class="odd"' : 'class="even"';
 	$html .= "<tr $class><td>$type</td><td>$access</td><td>$count</td></tr>";
     }
@@ -609,7 +614,7 @@ Tlf. $phone
 <div class="floaty">
 <h2>RFID</h2>
 $rfids
-<p><a href="/hal/admin/members/1/addrfid">Tilføj RFID</a></p>
+<p><a href="/hal/admin/members/$member_id/addrfid">Tilføj RFID</a></p>
 </div>
 ';
 

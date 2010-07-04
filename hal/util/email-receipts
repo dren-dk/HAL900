@@ -8,7 +8,7 @@ use Digest::SHA qw(sha1_hex);
 use utf8;
 use Data::Dumper;
 
-use lib "$Bin/pm";
+use lib "$Bin/../pm";
 
 use HAL;
 use HAL::DB;
@@ -16,6 +16,50 @@ use HAL::Util;
 use HAL::Email;
 
 my $db = new HAL::DB;
+
+my $mr = $db->sql("select id, email, realname from member") or die "Urgh";
+while (my ($member_id, $email, $realname) = $mr->fetchrow_array) {
+    
+    my $ar = $db->sql("select a.id, t.id, typeName, accountName ".
+		      "from account a join accountType t on (a.type_id=t.id) ".
+		      "where owner_id=? ".
+		      "order by t.id", $member_id) or die "Urgh";
+    while (my ($account_id, $type_id, $typeName, $accountName) = $ar->fetchrow_array) {
+
+	my $nt = $db->sql("select date_part('epoch', timestamp(created)), source_account_id, target_account_id, amount, comment ".
+			  "from accounttransaction ".
+			  "where ? in (source_account_id, target_account_id) and receiptSent is null ".
+			  "order by id",
+			  $account_id) or die "Urgh";
+	my @txn;
+	while (my ($ts, $source_account_id, $target_account_id, $amount, $comment) = $nt->fetchrow_array()) {
+	    $amount *= -1 if $target_account_id == $account_id;
+	    
+	    push @txn, {
+		ts => $ts,
+		amount=>$amount,
+		comment=>$comment,
+	    };
+	}
+	$nt->finish;	
+
+	if (@txn) {
+	    #...
+
+	}
+
+    }
+    $ar->finish;    
+
+
+}
+$mr->finish;
+
+
+
+__DATA__
+
+
 
 my $ar = $db->sql("select a.id, email, realname from member m join account a on (a.owner_id=m.id)") or die "Urgh";
 while (my ($account_id, $email, $realname) = $ar->fetchrow_array) {

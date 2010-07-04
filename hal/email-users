@@ -32,6 +32,7 @@ while (my ($id, $email, $realname) = $nu->fetchrow_array) {
 			 "$realname <$email>",
 			 'Fortsæt Open Space Aarhus registreringen',
 "Hej, $firstname, du får denne mail fordi du mangler at fuldføre din registrering som medlem af OSAA.
+
 I medlemssystemet kan kan du bla. se alle dine indbetalinger, ændre dine kontakt oplysninger og
 vælge PIN kode til brug sammen med din elektroniske nøgle.
 

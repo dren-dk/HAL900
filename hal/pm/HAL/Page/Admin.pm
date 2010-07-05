@@ -74,24 +74,37 @@ sub indexPage {
 
     my $html = '';
     
-    my $sr = db->sql('select count(*), membertype, m.dooraccess 
-		     from member m join membertype t on (m.membertype_id=t.id) 
-		     group by membertype, m.dooraccess') or die "Fail!";
-
-    $html = "<table><tr><th>Medlems type</th><th>Dør-bit</th><th>Antal</th></tr>\n";
+    my $sr = db->sql('select count(*), membertype, da from (select m.id, membertype, COALESCE(m.dooraccess, false) as da from member m join membertype t on (m.membertype_id=t.id)) as foo group by membertype, da') or die "Fail!";
+    $html = "<h2>Medlems antal efter type</h2><table><tr><th>Medlems type</th><th>Dør-bit</th><th>Antal</th></tr>\n";
     my $i = 0;
     while (my ($count, $type, $access) = $sr->fetchrow_array) {
-	if (!defined $access) {
-	    $access = 'Never';
 
-	} elsif (!$access) {
-	    $access = 'Revoked';
-	}
 	my $class = ($i++ & 1) ? 'class="odd"' : 'class="even"';
 	$html .= "<tr $class><td>$type</td><td>$access</td><td>$count</td></tr>";
     }
     $html .= "</table>";
 
+    my $fr = db->sql('select membertype, username from member m join membertype t on (m.membertype_id=t.id)') or die "Fail!";
+    my %status;
+    while (my ($type, $username) = $fr->fetchrow_array) {
+	my $s = defined $username ? 'Ok' : 'Mangler brugernavn';
+	$status{$type}{$s}++;
+    }
+    $fr->finish;
+
+    $html .= "<h2>Medlems antal efter type og status</h2><table><tr><th>Medlems type</th><th>Status</th><th>Antal</th></tr>\n";
+    $i = 0;
+    for my $type (sort keys %status) {
+	my $status = $status{$type};
+	for my $s (sort keys %$status) {
+	    my $count = $status->{$s};
+	    my $class = ($i++ & 1) ? 'class="odd"' : 'class="even"';
+	    $html .= "<tr $class><td>$type</td><td>$s</td><td>$count</td></tr>";
+	}
+    }
+    $html .= "</table>";
+
+    $html .= '<h2>Diverse</h2>';
     $html .= qq'<p><a href="/hal/admin/load">Load nye poster fra Nordea</a></p>';
     $html .= qq'<p><a href="/hal/admin/consolidate">Konsolider nye poster med systemet</a></p>';
 

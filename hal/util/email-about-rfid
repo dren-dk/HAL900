@@ -1,0 +1,50 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use HTML::Entities;
+use Email::Valid;
+use Digest::SHA qw(sha1_hex);
+use utf8;
+
+use lib "$Bin/../pm";
+
+use HAL;
+use HAL::DB;
+use HAL::Util;
+use HAL::Email;
+
+my $db = new HAL::DB;
+
+my $rr = $db->sql("select rfid.id, rfid, pin, lost, email, realname
+from rfid join member on (rfid.owner_id=member.id)");
+while (my ($id, $rfid, $pin, $lost, $email, $realname) = $rr->fetchrow_array) {
+
+    my ($firstname) = split /\s+/, $realname;
+    
+    my $status = '';
+    if ($lost) {
+	# Meh.
+	
+    } elsif ($pin) {
+	# Meh.
+
+    } else {
+	sendmail('OSAA <rfid@hal.osaa.dk>', 
+		 #"$realname <dren.dk\@gmail.com>",
+		 "$realname <$email>",
+		 'Tillykke med din nye RFID nøgle til OSAA',
+"Hej, $firstname, du får denne mail fordi der er blevet knyttet en RFID nøgle til din konto.
+
+RFID nøglen giver adgang til lokalet, men for at bruge nøglen skal du først vælge en kode.
+
+For at vælge din kode gå til denne side: https://hal.osaa.dk/hal/account/rfid/$id
+
+Hvis du endu ikke har fået nøglen udleveret kontakt da kassereren@osaa.dk
+
+-- 
+Med venlig hilsen HAL-900, OSAAs elektronhjerne.
+");
+    }
+}
+$rr->finish;

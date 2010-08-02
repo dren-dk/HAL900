@@ -7,6 +7,8 @@ use Email::Valid;
 use Digest::SHA qw(sha1_hex);
 use utf8;
 use Data::Dumper;
+use Text::Table;
+use POSIX;
 
 use lib "$Bin/../pm";
 
@@ -20,95 +22,77 @@ my $db = new HAL::DB;
 my $mr = $db->sql("select id, email, realname from member") or die "Urgh";
 while (my ($member_id, $email, $realname) = $mr->fetchrow_array) {
     
+    my $accounts = '';
+    my $transactions = 0;
     my $ar = $db->sql("select a.id, t.id, typeName, accountName ".
 		      "from account a join accountType t on (a.type_id=t.id) ".
 		      "where owner_id=? ".
 		      "order by t.id", $member_id) or die "Urgh";
     while (my ($account_id, $type_id, $typeName, $accountName) = $ar->fetchrow_array) {
 
-	my $nt = $db->sql("select date_part('epoch', timestamp(created)), source_account_id, target_account_id, amount, comment ".
+	my $nt = $db->sql("select id, date_part('epoch', created), source_account_id, target_account_id, amount, comment ".
 			  "from accounttransaction ".
 			  "where ? in (source_account_id, target_account_id) and receiptSent is null ".
 			  "order by id",
 			  $account_id) or die "Urgh";
 	my @txn;
-	while (my ($ts, $source_account_id, $target_account_id, $amount, $comment) = $nt->fetchrow_array()) {
+	while (my ($transaction_id, $ts, $source_account_id, $target_account_id, $amount, $comment) = $nt->fetchrow_array()) {
 	    $amount *= -1 if $target_account_id == $account_id;
 	    
-	    push @txn, {
-		ts => $ts,
-		amount=>$amount,
-		comment=>$comment,
-	    };
+	    $amount = int(100*$amount)/100;
+	    $amount =~ s/\.00$//;
+
+	    push @txn, [ strftime("%d/%m %Y - %H:%M", localtime($ts)), $amount, $comment ];
+	    $transactions++;
+	    
+	    $db->sql("update accounttransaction set receiptSent=now() where id=?", $transaction_id) or die;
 	}
 	$nt->finish;	
 
 	if (@txn) {
-	    #...
+	    my $table = Text::Table->new("Dato", "Beløb", "Beskrivelse");
+	    $table->load(@txn);
 
+	    my $aname = ($type_id == 2 or $type_id == 3) ? $typeName : $accountName;
+	    my $nye = @txn == 1 ? 'Ny transaktion' : 'Nye transaktioner';
+
+	    my $inr = $db->sql("select sum(amount) from accountTransaction where target_account_id=?", $account_id);		
+	    my ($in) = $inr->fetchrow_array;
+	    $inr->finish;
+
+	    my $outr = $db->sql("select sum(amount) from accountTransaction where source_account_id=?", $account_id);		
+	    my ($out) = $outr->fetchrow_array;
+	    $outr->finish;
+
+	    my $saldo = int(100*(($out//0)-($in//0)))/100;
+	    $saldo =~ s/\.00$//;
+
+	    $accounts .= "$nye på $aname - Nuværende saldo: $saldo:\n$table\n";
 	}
-
     }
     $ar->finish;    
 
+    if ($accounts) {
+	my ($first) = split(/ /, $realname);
+	my $mail =
+qq'Hej, $first, dette er en kvittering for transaktioner på din OSAA konto.
 
+$accounts
+For mere information om din konto se: https://hal.osaa.dk/hal/account/
+
+-- 
+Med venlig hilsen HAL-900, OSAAs elektronhjerne.
+';
+
+	sendmail('OSAA <kvittering@hal.osaa.dk>', 
+		 #"$realname <dren.dk\@gmail.com>",
+		 "$realname <$email>",
+		 $transactions > 1 
+		   ? 'Nye transaktioner på din OSAA konto'
+		   : 'Ny transaktion på din OSAA konto',
+		 $mail);
+    }
 }
 $mr->finish;
 
-
-
-__DATA__
-
-
-
-my $ar = $db->sql("select a.id, email, realname from member m join account a on (a.owner_id=m.id)") or die "Urgh";
-while (my ($account_id, $email, $realname) = $ar->fetchrow_array) {
-
-    my $nt = $db->sql("select a.created, source_account_id, target_account_id, s.accountName, t.accountName, amount, comment ".
-		      "from accounttransaction a ".
-		      "join account s on (a.source_account_id=s.id) ".
-		      "join account t on (a.target_account_id=t.id) ".
-		      "where ? in (source_account_id, target_account_id) and receiptSent is null",
-		      $account_id) or die "Urgh";
-
-    my @txn;
-    while (my ($ts,$source_account_id, $target_account_id, $targetName, $sourceName, $amount, $comment) 
-	   = $nt->fetchrow_array()) {
-	
-	if ($target_account_id == $account_id) {
-	    $amount *= -1;
-	}
-
-	push @txn, {
-	    ts => $ts,
-	    amount=>$amount,
-	    comment=>$comment,
-	};
-    }
-    $nt->finish;
-
-    next unless @txn;
-        
-    my ($firstname) = split /\s+/, $realname;
-
-    die "Not done yet";
-    
-    next;
-    my $email = sendmail('OSAA <register@hal.osaa.dk>', 
-			 "$realname <dren.dk\@gmail.com>",
-			 #"$realname <$email>",
-			 'Fortsæt Open Space Aarhus registreringen',
-"Hej, $firstname, du får denne mail fordi vi nu har fået vores rigtige medlemssystem op at stå.
-I det nye system kan du bla. se alle dine indbetalinger og ændre dine kontakt oplysninger.
-
-Klik her for at fortsætte registreringen som medlem af Open Space Aarhus:
-
-
--- 
-Med venlig hilsen HAL900, på vegne af OSAA.
-"
-	);
-}
-$ar->finish;
-
-
+$db->dbh->commit;

@@ -5,7 +5,7 @@ use utf8;
 use DateTime;
 use FindBin qw($Bin);
 
-use lib "$Bin/pm";
+use lib "$Bin/../pm";
 
 use HAL;
 use HAL::DB;
@@ -48,10 +48,10 @@ while (my ($id, $hasAccess, $fee, $getsAccess, $membertype_id) = $mr->fetchrow_a
 
     next if $skip{$id};    
 
-    if ($fee) {
+    if ($fee > 0) {
 	my ($bal, $account_id) = $db->getAccountTypeBalance($id, 2);
 
-	if ($account_id && $bal >= 300) { # massive overdraft (> 2 months)
+	if ($account_id && $bal >= 150) { # overdraft (> 1 months)
 
 	    $db->sql("update member set dooraccess=false, membertype_id=2 where id=?", $id) 
 		or die "Failed to downgrade user: $id";
@@ -62,6 +62,7 @@ while (my ($id, $hasAccess, $fee, $getsAccess, $membertype_id) = $mr->fetchrow_a
 	} else { # Normal account state.
 
 	    if ($account_id) {
+		print STDERR "Pulling fee of $fee from $id\n";
 		$db->sql("insert into accounttransaction ".
 			 "(source_account_id, target_account_id, amount, comment) ".
 			 "values (?,?,?,?)",

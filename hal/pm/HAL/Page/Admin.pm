@@ -372,37 +372,50 @@ sub accountsPage {
     }
     $rest->finish;
 
+    my %memberTypes;
+    my $tr = db->sql("select id, memberType from membertype");
+    while (my ($id, $memberType) = $tr->fetchrow_array) {
+	$memberTypes{$id} = $memberType;
+    }
+    $tr->finish;
+
     my $html = '<p>Konto type: '.selector(@types).'</p>';
     if ($type_id) {
 	$html .= qq'
 <table class=\"sortable\">
-<tr><th>Konto ID</th><th>Konto navn</th><th>Ejer</th><th>Saldo</th></tr>
+<tr><th>Konto ID</th><th>Konto navn</th><th>Ejer</th><th>Kommentar</th><th>TX<sub>i<sub></th><th>TX<sub>o<sub></th><th>Saldo</th></tr>
 ';
-	my $ar = db->sql("select account.id, accountName, owner_id, realname ".
+	my $ar = db->sql("select account.id, accountName, owner_id, realname, doorAccess, membertype_id ".
 			 "from account left outer join member on (owner_id=member.id) ".
 			 "where type_id=? order by account.id",
 			 $type_id);		
 	my $count = 0;
-	while (my ($id, $accountName, $owner_id, $owner) = $ar->fetchrow_array) {
+	while (my ($id, $accountName, $owner_id, $owner, $doorAccess, $membertype_id) = $ar->fetchrow_array) {
 	    my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
 
 	    my $ol = 'n/a';
+	    my $com = '';
 	    if ($owner_id) {
+
+		my $door = $doorAccess ? ' [D]' : '';
+		my $type = $memberTypes{$membertype_id};
+		$com = "$type$door";
+
 		$ol = qq'<a href="/hal/admin/members/$owner_id">$owner</a>';
 	    }
 	    
-	    my $inr = db->sql("select sum(amount) from accountTransaction where target_account_id=?", $id);		
-	    my ($in) = $inr->fetchrow_array;
+	    my $inr = db->sql("select sum(amount), count(*) from accountTransaction where target_account_id=?", $id);		
+	    my ($in, $inc) = $inr->fetchrow_array;
 	    $inr->finish;
 
-	    my $outr = db->sql("select sum(amount) from accountTransaction where source_account_id=?", $id);		
-	    my ($out) = $outr->fetchrow_array;
+	    my $outr = db->sql("select sum(amount), count(*) from accountTransaction where source_account_id=?", $id);		
+	    my ($out, $outc) = $outr->fetchrow_array;
 	    $outr->finish;
 
 	    my $saldo = ($in//0)-($out//0);
 	    
 	    $html .= qq' <tr $class><td><a href="/hal/admin/accounts/$type_id/$id">$id</a></td>'.
-		qq'<td>$accountName</td><td>$ol</td><td>$saldo</td></tr>\n';
+		qq'<td>$accountName</td><td>$ol</td><td>$com</td><td>$inc</td><td>$outc</td><td>$saldo</td></tr>\n';
 	}
 	$ar->finish;
 

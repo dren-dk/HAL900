@@ -31,6 +31,11 @@ c-euc0805
 
 
 
+
+Husk header til I²C
+
+
+
 Wiegand cables:
 
 | Cable        | Signal  |  AVR-pin  |

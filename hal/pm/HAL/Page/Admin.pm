@@ -556,12 +556,17 @@ sub membersPage {
 
     $html .= qq'<table class="sortable"><tr><th>ID</th><th>Bruger</th><th>Navn</th><th>email</th><th>Telefon</th><th>Type</th></tr>';
 
-    my $mr = db->sql("select member.id,username,realname,email,phone,memberType ".
+    my $mr = db->sql("select member.id,username,realname,email,phone,memberType, member.doorAccess ".
 		     "from member inner join membertype on (membertype_id=membertype.id) ".
 		     "order by realname")
 	or die "Failed to fetch member list";
     my $count = 0;
-    while (my ($id, $username, $realname, $email, $phone, $memberType) = $mr->fetchrow_array) {
+    while (my ($id, $username, $realname, $email, $phone, $memberType, $doorAccess) = $mr->fetchrow_array) {
+
+	if ($doorAccess) {
+	    $memberType .= " [D]";
+	}
+
 	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
 	$html .= qq'<tr $class><td><a href="/hal/admin/members/$id">$id</a></td>'.
 	    join('', map {

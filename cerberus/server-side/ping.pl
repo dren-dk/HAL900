@@ -4,7 +4,6 @@ use warnings;
 use IO::Socket;
 use Crypt::Rijndael;
 use Data::Dumper;
-#use Digest::CRC qw(crc32);
 
 sub crc32($) {
     my $buffer = shift;
@@ -21,20 +20,6 @@ sub crc32($) {
 		$crc = $crc >>1;
 	    }
 	}
-    }
-    return $crc;
-}
-
-sub _crc32($) {
-    my $buffer = shift;
-    my @bytes = map {unpack('C', $_)} split //, $buffer;
-    my $crc = 0;
-
-    for my $byte (@bytes) {
-	$crc = $crc ^ $byte;
-	$crc <<= 4;
-	$crc &= 0xffffffff;
-#	print "$crc  $byte\n";
     }
     return $crc;
 }

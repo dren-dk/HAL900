@@ -1,3 +1,5 @@
+Wiegand cables:
+
 | Cable        | Signal  |  AVR-pin  |
 | UTP          | Wiegand | KBD | RFID|
 +--------------+---------+-----+-----+
@@ -7,3 +9,18 @@
 | Orange/white | D1      | PC1 | PC3 |
 | Green        | LED     | PD2 | PD4 |
 | Green/white  | Beeper  | PD3 | PD5 |
+
+
+
+Bolt cable:
+
+| UTP          | Signal  | AVR |
++--------------+---------+-----+
+| Blue         | +12V    |     |
+| Blue/white   | +12V    |     |
+| Brown        | GND     |     |
+| Brown/white  | GND     |     |
+| Orange       | Lock    | PD6 |
+| Orange/white | Door    | PB0 |
+| Green        | Control | PD7 |
+| Green/white  |         |     |

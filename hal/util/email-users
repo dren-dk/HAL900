@@ -7,7 +7,7 @@ use Email::Valid;
 use Digest::SHA qw(sha1_hex);
 use utf8;
 
-use lib "$Bin/pm";
+use lib "$Bin/../pm";
 
 use HAL;
 use HAL::DB;
@@ -16,8 +16,15 @@ use HAL::Email;
 
 my $db = new HAL::DB;
 
-my $nu = $db->sql("select id, email, realname from member where passwd is null") or die "Urgh";
-while (my ($id, $email, $realname) = $nu->fetchrow_array) {
+my $nu = $db->sql("select id, email, realname, userName, doorAccess ".
+		  "from member where lastNagMail + interval '7 days' < now()") or die "Urgh";
+while (my ($id, $email, $realname, $userName, $doorAccess) = $nu->fetchrow_array) {
+
+    # Check for RFID, but only if doorAccess
+
+    # Check for new accounts with no payments.
+
+
 
     my ($firstname) = split /\s+/, $realname;
 

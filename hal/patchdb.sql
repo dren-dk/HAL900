@@ -34,3 +34,6 @@ begin transaction;
 alter table rfid add column lost boolean default false;
 commit;
 
+begin transaction;
+alter table member add column lastNagMail timestamp;
+commit;

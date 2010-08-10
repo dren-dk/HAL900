@@ -563,9 +563,8 @@ sub membersPage {
     my $count = 0;
     while (my ($id, $username, $realname, $email, $phone, $memberType, $doorAccess) = $mr->fetchrow_array) {
 
-	if ($doorAccess) {
-	    $memberType .= " [D]";
-	}
+	$memberType .= " [D]" if $doorAccess;
+	$memberType .= " [U]" unless defined $username;
 
 	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
 	$html .= qq'<tr $class><td><a href="/hal/admin/members/$id">$id</a></td>'.

@@ -183,6 +183,8 @@ Tlf. $phone
 	}
 	$tx->finish;
 
+	@table = reverse @table;
+
 	$html .= qq'<h2>$typeName: $accountName - Saldo: $sum</h2>';
 	$html .= "<table><th>ID</th><th>Dato</th><th>Transaktion</th><th>Fra/Til konto</th><th>Beløb</th><th>Saldo</th>\n";
 	my $count = 0;

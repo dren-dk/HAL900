@@ -46,6 +46,8 @@ create table member (
        realname varchar(50),
        smail varchar(150),
 
+       lastNagMail timestamp,
+
        doorAccess boolean,  
        adminAccess boolean /* Admin access via the web interface */
 );

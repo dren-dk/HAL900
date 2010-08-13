@@ -1,0 +1,130 @@
+# -*- sh -*-
+# $Id$
+
+# hostname
+NANO_NAME=mother.bryggervej.osaa.dk
+NANO_KERNEL=MOTHER.BRYGGERVEJ.OSAA.DK
+
+# directories
+FILES_DIR=${PWD}/files
+NANO_PACKAGE_DIR=${PWD}/packages
+IMAGE_DIR=${PWD}/images
+
+# flash
+NANO_DRIVE=ad1
+NANO_MEDIASIZE=`expr 1020321792 / 512`
+NANO_HEADS=16
+NANO_SECTS=63
+
+# config
+CONF_BUILD=' '
+CONF_INSTALL='
+WITHOUT_INSTALLLIB=yes
+WITHOUT_MAKE=yes
+WITHOUT_TOOLCHAIN=yes
+'
+CONF_WORLD='
+NO_MODULES=yes
+WITHOUT_ACCT=yes
+WITHOUT_ACPI=yes
+WITHOUT_AMD=yes
+WITHOUT_APM=yes
+WITHOUT_ATM=yes
+WITHOUT_AUDIT=yes
+WITHOUT_BIND_DNSSEC=yes
+WITHOUT_BIND_ETC=yes
+WITHOUT_BIND_LIBS_LWRES=yes
+WITHOUT_BIND_MTREE=yes
+WITHOUT_BIND_NAMED=yes
+WITHOUT_BLUETOOTH=yes
+WITHOUT_CALENDAR=yes
+WITHOUT_CTM=yes
+WITHOUT_CVS=yes
+WITHOUT_DICT=yes
+WITHOUT_EXAMPLES=yes
+WITHOUT_FLOPPY=yes
+WITHOUT_FREEBSD_UPDATE=yes
+WITHOUT_GAMES=yes
+WITHOUT_GCOV=yes
+WITHOUT_GDB=yes
+WITHOUT_GPIB=yes
+WITHOUT_HTML=yes
+WITHOUT_IPFILTER=yes
+WITHOUT_IPFW=yes
+WITHOUT_IPX=yes
+WITHOUT_JAIL=yes
+WITHOUT_LEGACY_CONSOLE=yes
+WITHOUT_LOCATE=yes
+WITHOUT_LPR=yes
+WITHOUT_MAIL=yes
+WITHOUT_MAILWRAPPER=yes
+WITHOUT_MAN=yes
+WITHOUT_NCP=yes
+WITHOUT_NDIS=yes
+WITHOUT_NETGRAPH=yes
+WITHOUT_NIS=yes
+WITHOUT_NLS=yes
+WITHOUT_NLS_CATALOGS=yes
+WITHOUT_PMC=yes
+WITHOUT_PORTSNAP=yes
+WITHOUT_PROFILE=yes
+WITHOUT_RCMDS=yes
+WITHOUT_RCS=yes
+WITHOUT_RESCUE=yes
+WITHOUT_SENDMAIL=yes
+WITHOUT_SHAREDOCS=yes
+WITHOUT_SYSCONS=yes
+WITHOUT_SYSINSTALL=yes
+WITHOUT_ZFS=yes
+'
+
+# generic customizations
+customize_cmd cust_comconsole
+customize_cmd cust_install_files
+customize_cmd cust_pkg
+customize_cmd cust_allow_ssh_root
+
+# add more configuration files
+install_more_files() (
+        cd ${FILES_DIR}
+        find . -not -name '*~' -print | grep -v /.svn | cpio --no-preserve-owner -dumpv ${NANO_WORLDDIR}
+)
+customize_cmd install_more_files
+
+# set timezone
+set_timezone_Copenhagen() (
+        cp ${NANO_WORLDDIR}/usr/share/zoneinfo/Europe/Copenhagen ${NANO_WORLDDIR}/etc/localtime
+)
+customize_cmd set_timezone_Copenhagen
+
+# crontab
+add_crontab_check_uplink() (
+        echo '*/5       *       *       *       *       root    /usr/local/bin/check-uplink.sh www.osaa.dk' >> ${NANO_WORLDDIR}/etc/crontab
+)
+customize_cmd add_crontab_check_uplink
+
+# newsyslog
+add_newsyslog_entries() (
+	#echo '/var/log/hostapd.log	root:network	640  3	   100	*     JC' >> ${NANO_WORLDDIR}/etc/newsyslog.conf
+	echo '/var/log/dnsmasq.log			640  3	   100	*     JC' >> ${NANO_WORLDDIR}/etc/newsyslog.conf
+)
+customize_cmd add_newsyslog_entries
+
+# syslog
+add_syslog_entries() (
+	sed -e 's/^#\(.*sshguard\)/\1/' ${NANO_WORLDDIR}/etc/syslog.conf
+#	echo '!hostapd' >> ${NANO_WORLDDIR}/etc/syslog.conf
+#	echo '*.*						/var/log/hostapd.log' >> ${NANO_WORLDDIR}/etc/syslog.conf
+	echo '!dnsmasq' >> ${NANO_WORLDDIR}/etc/syslog.conf
+	echo '*.*						/var/log/dnsmasq.log' >> ${NANO_WORLDDIR}/etc/syslog.conf
+)
+late_customize_cmd add_syslog_entries
+
+# last orders
+last_orders() (
+    image=${IMAGE_DIR}/image-`date +%Y-%m-%d`.gz
+
+    echo "Compressing to ${image}..."
+    [ -f ${image} ] && rm -f ${image}
+    cat ${MAKEOBJDIRPREFIX}/_.disk.image | gzip > ${image}
+)

@@ -112,7 +112,7 @@ customize_cmd add_newsyslog_entries
 
 # syslog
 add_syslog_entries() (
-	sed -e 's/^#\(.*sshguard\)/\1/' ${NANO_WORLDDIR}/etc/syslog.conf
+	sed -i '' -e 's/^#\(.*sshguard\)/\1/' ${NANO_WORLDDIR}/etc/syslog.conf
 #	echo '!hostapd' >> ${NANO_WORLDDIR}/etc/syslog.conf
 #	echo '*.*						/var/log/hostapd.log' >> ${NANO_WORLDDIR}/etc/syslog.conf
 	echo '!dnsmasq' >> ${NANO_WORLDDIR}/etc/syslog.conf

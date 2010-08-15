@@ -12,51 +12,52 @@ Cleaned up the code a bit and corrected some spelling.
 
 #include "EEPROM.h"
 
-unsigned char state=0;
-unsigned char site=0;
 unsigned char catchend=0;
 unsigned char trigger=1;
-unsigned char dataArray[256];
 unsigned char firstTime=0;
-unsigned char comState=0;
 unsigned char value;
 unsigned long rfid = 0; 
 unsigned char command[5];
 unsigned char p=0;
 
+
+unsigned char comState=0;
 #define COM_IDLE 0
 #define COM_REC 1
 #define COM_ACTION 2
 
+unsigned char state=0;
 #define STATE_WAITING 0
 #define STATE_DECODING 1
 #define STATE_PROCESS 2
 
-#define SETBIT {  dataArray[u8_site]=0; site++; if (site>=255) catchend=1;}
-#define CLEANBIT {dataArray[u8_site]=1; site++; if (site>=255) catchend=1;}
+unsigned char dataArrayInUse=0;
+unsigned char dataArray[256];
+#define PUSH_ONE {  dataArray[u8_dataArrayInUse]=0; dataArrayInUse++; if (dataArrayInUse>=255) catchend=1;}
+#define PUSH_ZERO { dataArray[u8_dataArrayInUse]=1; dataArrayInUse++; if (dataArrayInUse>=255) catchend=1;}
   
 ISR(TIMER1_CAPT_vect) {
   TCCR1B = 0; 
   TCNT1 = 0;
   if (state==STATE_WAITING) {
     if (ICR1>500) {
-      site = 0;
+      dataArrayInUse = 0;
       firstTime=1;
     } 
     
     if (!catchend) {
       if (trigger) {
-        SETBIT;
+        PUSH_ONE;
 	if (ICR1>=3) {
-	  SETBIT;
+	  PUSH_ONE;
 	}	
 	TCCR1B=0x85;
 	trgger=0;
        
       } else {
-        CLEANBIT;
+        PUSH_ZERO;
 	if (ICR1>=3) {
-          CLEANBIT;
+          PUSH_ZERO;
         }
 	TCCR1B=0xC5;
 	trigger=1;
@@ -150,13 +151,13 @@ void loop() {
 }
 
 
-void decode(void)
-{
+void decode(void) {
   unsigned char start_data[21] = { 1,0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1 };
   unsigned char id_code[11]    = { 0,0,0,0,0,0,0,0,0,0,0 }; 
 
+  unsigned char j=0;
   for (unsigned char i=0;i<200;i++) {
-    for (unsigned char j=0;j<20;j++) {        
+    for (j=0;j<20;j++) {        
       if (dataArray[i+j] != start_data[j]) {           
         break;
       }
@@ -167,11 +168,11 @@ void decode(void)
       for (unsigned char k = 0;k < 11;k++) {
         unsigned char row_parity = 0; 
         unsigned char temp = 0;
-        for(j=0;j<5;j++) {
+        for (unsigned char foo=0; foo<5; foo++) {
           temp <<= 1; 
           if ((dataArray[i] == 0) && (dataArray[i+1] == 1)) { 
             temp |= 0x01; 
-            if (j < 4) {
+            if (foo < 4) {
 	      row_parity += 1; 
 	    }
 
@@ -180,7 +181,7 @@ void decode(void)
 
 	  } else {
             state=STATE_WAITING;
-            site=0;
+            dataArrayInUse=0;
             return;
           } 
           i+=2;
@@ -193,30 +194,28 @@ void decode(void)
         if (k<10) {
           if (row_parity != temp) {
             state=STATE_WAITING;
-            site=0;
+            dataArrayInUse=0;
             return;
           } 
 
         } else {
           if (temp!=0)  {
             state=STATE_WAITING;
-            site=0;     
+            dataArrayInUse=0;     
             return;
           } 
         }
       } 
 
-      if (k==11) {
-        for (j = 2;j < 10;j++) { 
-          rfid += (((unsigned long)(id_code[j])) << (4 * (9 - j))); 
-        }
-        state=STATE_PROCESS;   
-        return;
+      for (unsigned char foo = 2;foo < 10;j++) { 
+	rfid += (((unsigned long)(id_code[foo])) << (4 * (9 - foo))); 
       }
+      state=STATE_PROCESS;   
+      return;      
     }
   }
   state=STATE_WAITING;
-  site=0;  
+  dataArrayInUse=0;  
 }
 
 
@@ -225,7 +224,7 @@ void OutputData(void) {
   Serial.println(rfid);
   firstTime=0;
   rfid=0;
-  site=0;
+  dataArrayInUse=0;
   state=STATE_WAITING;
   digitalWrite(2,HIGH);
 }

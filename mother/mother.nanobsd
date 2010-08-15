@@ -122,8 +122,8 @@ late_customize_cmd add_syslog_entries
 
 # fix updatep1 + updatep2
 fix_update_scripts() (
-	sed -i -e 's/^boot0cfg.*/gpart set -a active -i 1 ${NANO_DRIVE}/' ${NANO_WORLDDIR}/root/updatep1
-	sed -i -e 's/^boot0cfg.*/gpart set -a active -i 2 ${NANO_DRIVE}/' ${NANO_WORLDDIR}/root/updatep2
+	sed -i '' -e 's/^boot0cfg.*/gpart set -a active -i 1 ${NANO_DRIVE}/' ${NANO_WORLDDIR}/root/updatep1
+	sed -i '' -e 's/^boot0cfg.*/gpart set -a active -i 2 ${NANO_DRIVE}/' ${NANO_WORLDDIR}/root/updatep2
 )
 late_customize_cmd fix_update_scripts
 

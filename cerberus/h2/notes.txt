@@ -7,6 +7,15 @@ https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=58-578-83;
 SMD 10 uF elektrolyte:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=67-733-29;
 
+SMD 0805 10uF/16V keramik:
+https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#toc=18803;item=65-502-89;
+
+SMD 1210 10uF/35V keramik
+https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#toc=18803;item=65-721-16;
+
+SMD 1206 2.2uF/50V keramik
+https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#item=65-721-20;
+
 Relay:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=37-071-31;
 

@@ -32,13 +32,16 @@ unsigned char state=0;
 #define STATE_PROCESS 2
 
 unsigned char dataArrayInUse=0;
-unsigned char dataArray[256];
+unsigned char dataArray[256]; // TODO: Convert this to a bit field to reduce memory usage to 1/8
 #define PUSH_ONE {  dataArray[u8_dataArrayInUse]=0; dataArrayInUse++; if (dataArrayInUse>=255) catchend=1;}
 #define PUSH_ZERO { dataArray[u8_dataArrayInUse]=1; dataArrayInUse++; if (dataArrayInUse>=255) catchend=1;}
   
+
+// This interrupt is fired on either rising or falling edge of the analog comparator output
+// The value of the TCNT1 register at the time of the edge is captured in the ICR1 register.
 ISR(TIMER1_CAPT_vect) {
-  TCCR1B = 0; 
-  TCNT1 = 0;
+  TCCR1B = 0; // Stop timer while we work.
+  TCNT1 = 0;  // Reset counter to 0
   if (state==STATE_WAITING) {
     if (ICR1>500) {
       dataArrayInUse = 0;
@@ -46,20 +49,20 @@ ISR(TIMER1_CAPT_vect) {
     } 
     
     if (!catchend) {
-      if (trigger) {
+      if (trigger) { // Not sure if this is needed, can there be two rising edges in a row?
         PUSH_ONE;
 	if (ICR1>=3) {
 	  PUSH_ONE;
 	}	
-	TCCR1B=0x85;
-	trgger=0;
+	TCCR1B=0x85; // Falling edge triggered + Input capture noice canceler=on + clock=clkio/1024 
+	trigger=0;
        
       } else {
         PUSH_ZERO;
 	if (ICR1>=3) {
           PUSH_ZERO;
         }
-	TCCR1B=0xC5;
+	TCCR1B=0xC5; // Rising edge triggered + Input capture noice canceler=on + clock=clkio/1024 
 	trigger=1;
       }
     }

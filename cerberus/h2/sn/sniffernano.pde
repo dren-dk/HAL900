@@ -1,11 +1,13 @@
-/******************** Sniffer Nano *************************
+/******************* Sniffer Nano *************************
 This is the first vesion source code of Sniffer Nano.It' basic 
 on the source code that written by Rainbow Chen.
 It implements the use of a microcontroller to read the RFID Tag
 and output the card ID.
                                   iteadstudio.com  7/30/2010
 
-Cleaned up the code a bit and corrected some spelling.
+* Cleaned up the code a bit
+* Corrected some spelling.
+* Converted to using a bit array to save 7/8 of the RAM. 
            Flemming Frandsen <http://dren.dk/> 15 August 2010
 
 ************************************************************/
@@ -32,10 +34,11 @@ unsigned char state=0;
 #define STATE_PROCESS 2
 
 unsigned char dataArrayInUse=0;
-unsigned char dataArray[256]; // TODO: Convert this to a bit field to reduce memory usage to 1/8
-#define PUSH_ONE {  dataArray[u8_dataArrayInUse]=0; dataArrayInUse++; if (dataArrayInUse>=255) catchend=1;}
-#define PUSH_ZERO { dataArray[u8_dataArrayInUse]=1; dataArrayInUse++; if (dataArrayInUse>=255) catchend=1;}
-  
+unsigned char dataArray[256/8];
+#define PUSH_ONE  { dataArray[dataArrayInUse>>3] |=   1<<(dataArrayInUse & 7);   if (dataArrayInUse>=255) catchend=1; }
+#define PUSH_ZERO { dataArray[dataArrayInUse>>3] &= ~(1<<(dataArrayInUse & 7)) ; if (dataArrayInUse>=255) catchend=1; }
+#define GET_BIT(x) { (dataArray[(x)>>3] &= 1<<((x) & 7)) }  
+
 
 // This interrupt is fired on either rising or falling edge of the analog comparator output
 // The value of the TCNT1 register at the time of the edge is captured in the ICR1 register.
@@ -49,10 +52,10 @@ ISR(TIMER1_CAPT_vect) {
     } 
     
     if (!catchend) {
-      if (trigger) { // Not sure if this is needed, can there be two rising edges in a row?
+      if (trigger) { // Not sure if this is needed, can there be two rising edges in a row? Perhaps leftovers from PCINT?
         PUSH_ONE;
 	if (ICR1>=3) {
-	  PUSH_ONE;
+	  PUSH_ONE; 
 	}	
 	TCCR1B=0x85; // Falling edge triggered + Input capture noice canceler=on + clock=clkio/1024 
 	trigger=0;
@@ -161,7 +164,7 @@ void decode(void) {
   unsigned char j=0;
   for (unsigned char i=0;i<200;i++) {
     for (j=0;j<20;j++) {        
-      if (dataArray[i+j] != start_data[j]) {           
+      if ((GET_BIT(i+j)?1:0) != start_data[j]) {           
         break;
       }
     }
@@ -173,13 +176,13 @@ void decode(void) {
         unsigned char temp = 0;
         for (unsigned char foo=0; foo<5; foo++) {
           temp <<= 1; 
-          if ((dataArray[i] == 0) && (dataArray[i+1] == 1)) { 
+          if ((!GET_BIT(i)) && GET_BIT(i+1)) { 
             temp |= 0x01; 
             if (foo < 4) {
 	      row_parity += 1; 
 	    }
 
-          } else if ((dataArray[i] == 1) && (dataArray[i+1] == 0)) {
+          } else if (GET_BIT(i) && !GET_BIT(i+1)) {
 	    temp &= 0xfe;
 
 	  } else {

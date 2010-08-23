@@ -162,7 +162,7 @@ create table rfid (
 
        rfid integer unique not null,
        owner_id integer references member(id) not null,
-       pin bigint
+       pin bigint,
        lost boolean not null default false,
 );
 

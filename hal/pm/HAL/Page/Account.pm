@@ -149,13 +149,24 @@ Tlf. $phone
     $html .= "</ul></div>\n";
     $html .= "<td></tr></table> <!-- Yes I'm using a table for layout, so sue me! -->";
 
+    if ($memberDoorAccess) {
+	$html .= qq'<h2>Rabat hos ELFA</h2>
+<p>Som betalende medlem af OSAA får du rabat på køb hos <a href="https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#page=about/shops.html;">ELFA</a>,
+rabatten består i at du får højeste pricebreak for alle varer, med andre ord får du den højeste mængderabat uanset hvor meget du køber, dette kan være op til
+60% rabat på nogle varer.</p>
+<p>For at gøre brug af rabatten skal du handle i butikken i Århus (Sintrupvej 26) og oplyse at du er medlem af OSAA inden de begynder at oprette ordren,
+dvs. at hvis du sender en mail til dem med en bestilling skal du sørge for at gøre opmærksom på dit OSAA medlemsskab allerede der.</p>
+<p>Det er vigtigt at lade være med at fortælle folk der ikke er betalende medlemmer hvordan man får rabatten, da misbrug af ordningen vil medføre at vi bliver
+nødt til at indføre medlemskort for at lette ELFAs kontrol.</p>';
+    }
+    
     if ($monthlyFee > 0) {
 	my $sugFee = $monthlyFee*6;
 	$html .= "<h2>Kontingent</h2>
 <p>Dit kontingent er $monthlyFee kr pr. måned. Betalingen foregår ved at lave en bankoverførsel med din email adresse (<strong>$email</strong>) i kommentarfeltet, så vi har pengene senest den første i hver måned.</p><p>Open Space Aarhus’ kontooplysninger er: <strong>Reg.nr.: 1982 Konto nr.: 0741891514</strong></p>
 <p>Det anbefales at, om muligt, betale for et halvt år af gangen ($sugFee kr), da færre og større betalinger nedsætter administrationsomkostningerne og giver foreningen større økonomisk stabilitet.</p>";
     }
-    
+
     my $ar = db->sql("select account.id, accountName, typeName, type_id ".
 		     "from account inner join accounttype on (type_id=accounttype.id) ".
 		     "where owner_id=? order by accounttype.id",

@@ -13,6 +13,9 @@ https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#toc=18803;item=65-5
 SMD 1210 10uF/35V keramik
 https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#toc=18803;item=65-721-16;
 
+SMD 1210 10uF/50V keramik
+https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#filter=18803:manu|0|:87465|3|578840,;
+
 SMD 1206 2.2uF/50V keramik
 https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#item=65-721-20;
 
@@ -31,8 +34,10 @@ https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=71-311-81;
 Diode:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=70-186-09;
 
-Terminal block:
+Terminal block 3 point:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=48-375-14;
+
+Terminal block 2 point:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=48-375-06;
 
 Zener protection diode:
@@ -48,9 +53,14 @@ Storage coil for PSU:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=58-113-71;
 
 
+5V voltage regulator:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-286-76;
 
 Quad opamp:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-462-24;
+
+Dual opamp:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-301-29;
 
 PNP:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#toc=19104;item=71-303-54;

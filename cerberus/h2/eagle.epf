@@ -324,7 +324,7 @@ UsedLibrary="/home/ff/bin/eagle-5.10.0/lbr/zilog.lbr"
 
 [Win_1]
 Type="Control Panel"
-Loc="1264 0 1863 399"
+Loc="1127 0 1726 399"
 State=2
 Number=0
 

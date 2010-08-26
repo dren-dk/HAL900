@@ -20,32 +20,23 @@ use Chart::Bars;
 
 use DBI;
 
-
-
 sub header_row {
-    my $tmp = '';
-    foreach (@_) {
-	$tmp .= tag($_, "th"); 
-    }
-    return tag($tmp , "tr");
+    return tag(join('', map {tag($_, 'th')} @_), 'tr');
 }
 
 sub row {
-    my $tmp = '';
-    foreach (@_) {
-	$tmp .= tag($_ , "td" );
-    }
-    return tag ($tmp , "tr");
+    return tag(join('', map {tag($_, 'td')} @_), 'tr');
 }
 
 sub tag {
-    return "<" . $_[1] . ">" . $_[0] . "</" . $_[1] . ">";
+    my ($content, $tag) = @_;
+    return "<$tag>$content</$tag>";
 }
 
 sub html_link {
-    return '<a href="/hal/admin/books/' . $_[0] . '">' . $_[1] . '</a>';
+    my ($page, $text) = @_;
+    return qq'<a href="/hal/admin/books/$page">$text</a>';
 }
-
 
 sub outputBookPage($$$;$) {
     my ($cur, $title, $body, $feed) = @_;
@@ -84,9 +75,10 @@ sub outputBookPage($$$;$) {
 sub createChart {
     my ($title, $file, @data) = @_;
     my $chart = Chart::Bars->new(600,400);
-    my %map = (	'title' => $title);
+    my %map = ('title' => $title);
     $chart->set(%map);
-    return "/hal-static/cache/" . $file if  $chart->png("/home/jacob/Desktop/HACK/hal/static/cache/" . $file, \@data);
+    $chart->png(HALRoot()."/static/cache/$file", \@data) or die "Failed!";
+    return "/hal-static/cache/$file";
 }
 
 

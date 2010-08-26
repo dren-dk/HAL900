@@ -43,8 +43,8 @@ sub outputBookPage($$$;$) {
     
     my @items = (
 	{
-	    link=>"/hal/admin/books/repports",
-	    name=>'repports',
+	    link=>"/hal/admin/books/reports",
+	    name=>'reports',
 	    title=>'Rapporter',
 	},
 	);
@@ -89,7 +89,7 @@ sub accountTable{
     my $acc_info = db->sql("SELECT accountname FROM account WHERE id=?", $acc);
     $acc_info->execute or die $acc_info->errstr;
     my $account_name = $acc_info->fetchrow_array;
-    $table .= 'Repport for account ' . $account_name .' number ' . $acc;
+    $table .= 'Report for account ' . $account_name .' number ' . $acc;
 
     $acc_info->finish;
 
@@ -143,7 +143,7 @@ sub accountTable{
     return $table;
 }
 
-sub repportPage {
+sub reportPage {
     my ($r,$q,$p) = @_;
 
     my $html .= '';
@@ -151,30 +151,30 @@ sub repportPage {
 
     my $accs = db->sql("SELECT DISTINCT id FROM account ORDER BY id");
     $accs->execute() or die $accs->errstr;
-    $html .= html_link("repport/" . 42, "Konto nummer " . 42);
+    $html .= html_link("report/" . 42, "Konto nummer " . 42);
     while( my $id = $accs->fetchrow_array) {
-    	$html .= tag( html_link("repport/" . $id, "Konto nummer " . $id), "p");
+    	$html .= tag( html_link("report/" . $id, "Konto nummer " . $id), "p");
     }
     $accs->finish;
-    return outputBookPage('repport', "Regnskab", $html);
+    return outputBookPage('report', "Regnskab", $html);
 }
 
 
-sub repportDetailsPage {
+sub reportDetailsPage {
     my ($r,$q,$p, $account) = @_;
     $account ||= 1;
     my $html .= '';
     $html .= '<h2>Regnskabs Rapport</h2>';
     $html .= accountTable($account);
-    return outputBookPage('repport', "Regnskab", $html);
+    return outputBookPage('report', "Regnskab", $html);
 
 }
 
 BEGIN {
     ensureAdmin(qr'^/hal/admin/books');
-    addHandler(qr'^/hal/admin/books$', \&repportPage);
-    addHandler(qr'^/hal/admin/books/repports$', \&repportPage);
-    addHandler(qr'^/hal/admin/books/repport/(\d+)$', \&repportDetailsPage);
+    addHandler(qr'^/hal/admin/books$', \&reportPage);
+    addHandler(qr'^/hal/admin/books/reports$', \&reportPage);
+    addHandler(qr'^/hal/admin/books/report/(\d+)$', \&reportDetailsPage);
 }
 
 12;

@@ -63,10 +63,10 @@ Dual opamp:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-301-29;
 
 PNP:
-https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#toc=19104;item=71-303-54;
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=71-303-54;
 
 NPN:
-https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#toc=19104;item=71-302-97;
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=71-302-97;
 
 
 Eagle names:

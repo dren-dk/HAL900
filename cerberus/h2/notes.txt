@@ -4,17 +4,11 @@ https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#toc=19662;item=42-4
 Ethernet trafo:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=58-578-83;
 
-SMD 10 uF elektrolyte:
-https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=67-733-29;
-
 SMD 0805 10uF/16V keramik:
 https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#toc=18803;item=65-502-89;
 
 SMD 1210 10uF/35V keramik
 https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#toc=18803;item=65-721-16;
-
-SMD 1210 10uF/50V keramik
-https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#filter=18803:manu|0|:87465|3|578840,;
 
 SMD 1206 2.2uF/50V keramik
 https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#item=65-721-20;
@@ -27,9 +21,6 @@ https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-786-19;
 
 LDO:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-067-85;
-
-NPN:
-https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=71-311-81;
 
 Diode:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=70-186-09;

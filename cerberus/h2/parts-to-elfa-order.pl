@@ -17,13 +17,43 @@ my %PACKAGES = (
 
 my %parts;
 open EAGLE, "<$input" or die "Failed to read input file $input: $!";
+
+# First find the header:
+#Part     Value             Device                 Package      Library                   Sheet
+my %cols;
+while (my $line = <EAGLE>) {
+  chomp $line;
+  next unless $line =~ /^Part\s+/;
+  
+  my @CN = qw(Part Value Device Package Library);
+  my @ci;
+  for my $col (@CN) {
+    my $index = index($line, $col);
+    die "Failed to find column header for $col" unless $index >= 0;
+    push @ci, $index;
+  }
+  
+  for my $i (0..@CN-2) {
+    my $n = $CN[$i];
+    $cols{$n} = {
+      start=>$ci[$i],
+      size =>$ci[$i+1]-$ci[$i]-1,
+    }
+  }
+
+  last;  
+}
+
+die "Failed to find the header line" unless %cols;
+
+
 while (my $line = <EAGLE>) {
   chomp $line;
   next unless $line =~ /\s\d$/;
   
-  my $name   = substr($line, 0, 9);
-  my $value  = substr($line, 9, 14);
-  my $package= substr($line, 47, 12); 
+  my $name   = substr($line, $cols{Part}{start},    $cols{Part}{size});
+  my $value  = substr($line, $cols{Value}{start},   $cols{Value}{size});
+  my $package= substr($line, $cols{Package}{start}, $cols{Package}{size}); 
 
   $name =~ s/\s+$//;
   $value =~ s/\s+$//;
@@ -32,8 +62,10 @@ while (my $line = <EAGLE>) {
   if ($PACKAGES{$package}) {
     $package = $PACKAGES{$package};
   }
+  
+  my $type = $value ne '' ? "$value $package" : $package;
 
-  push @{$parts{"$value $package"}}, $name;
+  push @{$parts{$type}}, $name;
 }
 close EAGLE;
 

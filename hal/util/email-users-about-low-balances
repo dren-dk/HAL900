@@ -45,8 +45,8 @@ while (my ($id, $hasAccess, $fee, $getsAccess, $membertype_id, $email, $realname
 
 	    if ($daysLeft > 15) {
 		my $email = sendmail('Open Space Aarhus <osaa@hal.osaa.dk>', 
-				     "$realname <dren.dk\@gmail.com>",
-				     #"$realname <$email>",
+				     #"$realname <dren.dk\@gmail.com>",
+				     "$realname <$email>",
 				     "Advarsel om overtræk på din OSAA konto, $firstname",
 "Hej, $firstname, du får denne mail fordi saldoen på din konto hos OSAA er gået i minus.
 
@@ -63,8 +63,8 @@ $SIG
 		    );    
 	    } else {
 		my $email = sendmail('Open Space Aarhus <osaa@hal.osaa.dk>', 
-				     "$realname <dren.dk\@gmail.com>",
-				     #"$realname <$email>",
+				     #"$realname <dren.dk\@gmail.com>",
+				     "$realname <$email>",
 				     "Advarsel om overtræk på din OSAA konto, $firstname",
 "Hej, $firstname, du får denne mail fordi saldoen på din konto hos OSAA er gået i minus.
 
@@ -88,8 +88,8 @@ $SIG
 	    $db->sql("update member set lastNagMail=now() where id=?", $id);
 
 	    my $email = sendmail('Open Space Aarhus <osaa@hal.osaa.dk>', 
-				 "$realname <dren.dk\@gmail.com>",
-				 #"$realname <$email>",
+				 #"$realname <dren.dk\@gmail.com>",
+				 "$realname <$email>",
 				 "Advarsel om lav saldo på din OSAA konto, $firstname",
 "Hej, $firstname, du får denne mail fordi saldoen på din konto hos OSAA er lavere end
 kontingentet på $fee kr som trækkes snart.
@@ -111,8 +111,8 @@ $SIG
 	$db->sql("update member set lastNagMail=now() where id=?", $id);
 
 	my $email = sendmail('Open Space Aarhus <osaa@hal.osaa.dk>', 
-			     "$realname <dren.dk\@gmail.com>",
-			     #"$realname <$email>",
+			     #"$realname <dren.dk\@gmail.com>",
+			     "$realname <$email>",
 			     "Velkommen som betalende medlem af Open Space Aarhus, $firstname",
 "Hej, $firstname, du får denne mail fordi du har registreret dig som betalende medlem af OSAA.
 OSAAs økonomi er alene baseret på kontingenter, så vi sætter stor pris på din støtte.

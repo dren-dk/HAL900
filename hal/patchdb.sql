@@ -37,3 +37,7 @@ commit;
 begin transaction;
 alter table member add column lastNagMail timestamp;
 commit;
+
+begin transaction;
+alter table member add column lastRFIDMail timestamp;
+commit;

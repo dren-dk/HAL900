@@ -47,6 +47,7 @@ create table member (
        smail varchar(150),
 
        lastNagMail timestamp,
+       lastRFIDMail timestamp,
 
        doorAccess boolean,  
        adminAccess boolean /* Admin access via the web interface */

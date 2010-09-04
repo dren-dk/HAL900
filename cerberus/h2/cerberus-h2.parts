@@ -1,6 +1,6 @@
 Partlist
 
-Exported from cerberus-h2.sch at 8/28/10 2:29 PM
+Exported from cerberus-h2.sch at 9/1/10 5:37 PM
 
 EAGLE Version 5.10.0 Copyright (c) 1988-2010 CadSoft
 
@@ -10,8 +10,8 @@ BOLT     RJHSE-5085        RJHSE-5085             RJ45         amp-rj45-tap-up-w
 C1       100nF             C-EUC0805              C0805        rcl                       1
 C2       100nF             C-EUC0805              C0805        rcl                       1
 C3       10uF              C-EUC1210              C1210        rcl                       1
-C4       16p               C-EUC0805              C0805        rcl                       1
-C5       16p               C-EUC0805              C0805        rcl                       1
+C4       15p               C-EUC0805              C0805        rcl                       1
+C5       15p               C-EUC0805              C0805        rcl                       1
 C6       100nF             C-EUC0805              C0805        rcl                       1
 C7       100nF             C-EUC0805              C0805        rcl                       1
 C8       100nF             C-EUC0805              C0805        rcl                       1
@@ -26,7 +26,7 @@ C16      10uF              C-EUC0805              C0805        rcl              
 C17      1200uF/35V        CPOL-EUE5-13           E5-13        rcl                       1
 C18      1000uF/16V        CPOL-EUE5-13           E5-13        rcl                       1
 C19      100nF             C-EUC0805              C0805        rcl                       1
-C20      2.2 uF            C-EUC1206              C1206        rcl                       1
+C20      2.2 uF            C-EUC0805              C0805        rcl                       1
 C21      2.2 nF            C-EUC0805              C0805        rcl                       1
 C22      33nF              C-EUC0805              C0805        rcl                       1
 C23      100nF             C-EUC0805              C0805        rcl                       1
@@ -72,10 +72,10 @@ LED2                       LEDCHIP-LED0805        CHIP-LED0805 led              
 Q1       25MHz             CRYSTALHC49UP          HC49UP       crystal                   1
 R1       470               R-EU_R0805             R0805        rcl                       1
 R2       470               R-EU_R0805             R0805        rcl                       1
-R3       50                R-EU_R0805             R0805        rcl                       1
-R4       50                R-EU_R0805             R0805        rcl                       1
-R5       50                R-EU_R0805             R0805        rcl                       1
-R6       50                R-EU_R0805             R0805        rcl                       1
+R3       50R               R-EU_R0805             R0805        rcl                       1
+R4       50R               R-EU_R0805             R0805        rcl                       1
+R5       50R               R-EU_R0805             R0805        rcl                       1
+R6       50R               R-EU_R0805             R0805        rcl                       1
 R7       330R              R-EU_R0805             R0805        rcl                       1
 R8       10k               R-EU_R0805             R0805        rcl                       1
 R9       10k               R-EU_R0805             R0805        rcl                       1

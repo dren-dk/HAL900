@@ -465,7 +465,7 @@ int main(void) {
   PCMSK1 = (1<<PCINT8) | (1<<PCINT9) | (1<<PCINT10) | (1<<PCINT11);
   PCICR |= 1<<PCIE1;
   sei();
-
+  
   // 0x476 is PHLCON LEDA=links status, LEDB=receive/transmit
   enc28j60PhyWrite(PHLCON,0x476);
   init_ip_arp_udp_tcp(mymac, myip, 0);
@@ -499,7 +499,7 @@ int main(void) {
 	}	
       }
     }
-
+    
     unsigned char sensors = getSensors();
     if (sensors != oldSensors) {
       oldSensors = sensors;
@@ -519,7 +519,7 @@ int main(void) {
     }
 
     handleTick();
-
+    
     _delay_ms(10);
     led(loop & 1);
     wdt_reset();

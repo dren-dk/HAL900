@@ -37,7 +37,7 @@ unsigned char dataArrayInUse=0;
 unsigned char dataArray[256/8];
 #define PUSH_ONE  { dataArray[dataArrayInUse>>3] |=   1<<(dataArrayInUse & 7);   if (dataArrayInUse>=255) catchend=1; }
 #define PUSH_ZERO { dataArray[dataArrayInUse>>3] &= ~(1<<(dataArrayInUse & 7)) ; if (dataArrayInUse>=255) catchend=1; }
-#define GET_BIT(x) { (dataArray[(x)>>3] &= 1<<((x) & 7)) }  
+#define GET_BIT(x)  (dataArray[(x)>>3] &= 1<<((x) & 7))   
 
 
 // This interrupt is fired on either rising or falling edge of the analog comparator output
@@ -161,10 +161,10 @@ void decode(void) {
   unsigned char start_data[21] = { 1,0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1 };
   unsigned char id_code[11]    = { 0,0,0,0,0,0,0,0,0,0,0 }; 
 
-  unsigned char j=0;
+  unsigned char j=0,i=0;
   for (unsigned char i=0;i<200;i++) {
     for (j=0;j<20;j++) {        
-      if ((GET_BIT(i+j)?1:0) != start_data[j]) {           
+      if ((GET_BIT(i+j)?1:0) != start_data[j])            
         break;
       }
     }
@@ -219,7 +219,7 @@ void decode(void) {
       state=STATE_PROCESS;   
       return;      
     }
-  }
+
   state=STATE_WAITING;
   dataArrayInUse=0;  
 }
@@ -267,3 +267,4 @@ void setupTimer(void) {
   TCCR1B = 0xC5; 
   TCCR0B = 0x02; 
 }
+

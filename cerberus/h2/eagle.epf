@@ -364,7 +364,7 @@ Layer=1
 
 [Win_2]
 Type="Control Panel"
-Loc="813 0 1412 399"
+Loc="1149 0 1748 399"
 State=2
 Number=0
 

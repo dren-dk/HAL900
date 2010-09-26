@@ -82,14 +82,14 @@ void transistor(char on) {
 }
 
 void startWiegandTimeout() {
-    TCCR0B = 0; // Stop timer    
+    TCCR2B = 0; // Stop timer    
 
-    TCCR0A = 0;
-    TCNT0=0; 
-    OCR0A=122; // 10 ms, could probably be 2, but whatever.
-    TIMSK0 = 1<<OCIE0A; // Fire interrupt when done
+    TCCR2A = 0;
+    TCNT2=0; 
+    OCR2A=122; // 10 ms, could probably be 2, but whatever.
+    TIMSK2 = 1<<OCIE2A; // Fire interrupt when done
 
-    TCCR0B = 1<<CS00 | 1<<CS02; // Start timer at the slowest clock (1 / 1024)    
+    TCCR2B = 1<<CS00 | 1<<CS02; // Start timer at the slowest clock (1 / 1024)    
 }
 
 ISR(PCINT1_vect) {
@@ -117,7 +117,7 @@ ISR(PCINT1_vect) {
 }
 
 ISR(TIMER0_COMPA_vect) {
-  TCCR0B = 0; // Stop timer
+  TCCR2B = 0; // Stop timer
 
   // Get rid of the first and last bits (parity)
   rfidValue = (rfidFrame>>1) & ~((unsigned long)1<<24); 

@@ -31,6 +31,7 @@
 #include "config.h"
 #include "telegram.h"
 #include "wiegand.h"
+#include "rfid.h"
 
 // We don't really care about unhandled interrupts.
 EMPTY_INTERRUPT(__vector_default)
@@ -442,7 +443,7 @@ int main(void) {
   PORTD |= (1<<PD2); 
   PORTD |= (1<<PD3); 
   PORTD |= (1<<PD4); 
-  PORTD |= (1<<PD5);  
+  //  PORTD |= (1<<PD5);  
 
   // Inputs:
   DDRC  &=~ (1<<PC0);
@@ -470,6 +471,8 @@ int main(void) {
   enc28j60PhyWrite(PHLCON,0x476);
   init_ip_arp_udp_tcp(mymac, myip, 0);
 
+  rfidSetup();
+
   greenKBDLED(0);
   greenRFIDLED(0);
 
@@ -478,6 +481,9 @@ int main(void) {
   int loop = 0;
   unsigned char oldSensors = 0;
   while(1) {
+
+    //    fprintf(stdout, "%0x %0x %0x %0x %0x %0x\n",TCCR0A, TIMSK0, OCR0A, OCR0B, TCNT0, TCCR0B);
+
     static uint8_t buf[BUFFER_SIZE+1];
 
     uint16_t plen=enc28j60PacketReceive(BUFFER_SIZE, buf);
@@ -516,6 +522,11 @@ int main(void) {
 
     if (isRfidReady()) {
       handleRFID(getRfidValue());
+    }
+
+    unsigned long rfid = rfidValue();
+    if (rfid) {
+      fprintf(stdout, "Got rfid: 0x%0lxx\n", rfid);
     }
 
     handleTick();

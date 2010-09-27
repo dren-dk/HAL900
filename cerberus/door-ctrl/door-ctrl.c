@@ -526,7 +526,7 @@ int main(void) {
 
     unsigned long rfid = rfidValue();
     if (rfid) {
-      fprintf(stdout, "Got rfid: 0x%0lxx\n", rfid);
+      fprintf(stdout, "Got rfid: 0x%0lx\n", rfid);
     }
 
     handleTick();

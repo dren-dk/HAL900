@@ -42,3 +42,7 @@ door-ctrl.obj : door-ctrl.c sleep.c sleep.h uart.c uart.h defines.h net.h ip_con
 clean :
 	rm -f *.hex *.obj *.o
 
+
+
+rfid-manchester-decoder: rfid-manchester-decoder.c
+	gcc -std=c99 -Wall -pedantic-errors -Werror -o $@ $<

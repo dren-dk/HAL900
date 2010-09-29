@@ -89,3 +89,4 @@ device		ohci		# OHCI PCI->USB interface
 device		usb		# USB Bus (required)
 device		ulpt		# Printer
 device		umass		# Disks/Mass storage - Requires scbus and da
+device          u3g		# USB support for 3G modem cards by Option, Novatel, Huawei and Sierra

@@ -43,6 +43,8 @@ clean :
 	rm -f *.hex *.obj *.o
 
 
+mtest: rfid-manchester-decoder
+	./$<
 
 rfid-manchester-decoder: rfid-manchester-decoder.c
-	gcc -std=c99 -Wall -pedantic-errors -Werror -o $@ $<
+	gcc -std=c99 -Wall -g3 -pedantic-errors -Werror -o $@ $<

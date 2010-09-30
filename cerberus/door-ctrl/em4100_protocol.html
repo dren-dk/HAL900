@@ -1,0 +1,779 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+
+  <title>EM4100 protocol description</title>
+
+
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+  <meta content="reading an EM4100 rfid transponder. Here is an example of the data structure used in EM4100 compatible transponders" name="Description">
+
+  <meta content="rfid, buy em4100, em4100 protocol, low cost t5557, T5557 rfid transponder, manchester encoding, rfid design, rfid basics, rfid reader, rfid reader ic, rfid keytags, rfid proximity card, em4100, low cost rfid, em4095, em4095 rfid, em4095 design, rfid transponder, em4100, rfid reader design,access control, inventory control, 125khz" name="Keywords">
+
+  <style type="text/css">
+<style type="text/css">
+.nowrap_style { }
+  </style>
+</head><body style="color: rgb(0, 0, 0); background-color: rgb(225, 225, 225); white-space: nowrap;" link="#0000ff" vlink="#ff00ff" alink="#ee0000">
+
+<div style="text-align: center; font-family: Helvetica,Arial,sans-serif;">
+<div>
+<center>
+<div style="text-align: center; font-family: Helvetica,Arial,sans-serif;">
+<div>
+<center>
+<table style="background-repeat: no-repeat; background-image: url(&quot;./fill.jpg&quot;); min-width: 770px; width: 765px; height: 100px; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+
+    <tr>
+
+      <td style="width: 100%; white-space: nowrap; vertical-align: top; background-color: transparent;"><big><big><big>Priority
+1 Design</big></big></big><br>
+
+Electronics Design and Manufacture<br>
+
+      <small>ABN: 57 995 688 558</small></td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+</center>
+
+</div>
+
+</div>
+
+</center>
+
+</div>
+
+</div>
+
+<div style="text-align: center; font-family: Helvetica,Arial,sans-serif;">
+<div style="text-align: center;">
+<div>
+<table style="width: 750px; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+
+    <tr>
+
+      <td style="width: 100%; white-space: nowrap; text-align: center;"><a href="http://www.priority1design.com.au/index.html">Home</a> &nbsp;| &nbsp;<a rel="nofollow" href="http://www.priority1design.com.au/aboutus.html">About Us</a>
+&nbsp; |
+&nbsp;<a href="http://www.priority1design.com.au/products.html">Products</a>
+&nbsp;| &nbsp;<a rel="nofollow" href="http://www.priority1design.com.au/gallery.html">Gallery</a>
+&nbsp;|&nbsp; <a href="http://www.priority1design.com.au/shopfront/">Shopfront</a>
+&nbsp;| &nbsp;<a rel="nofollow" href="http://www.priority1design.com.au/links.html">Links</a>&nbsp;
+| &nbsp;<a rel="nofollow" href="http://www.priority1design.com.au/feedback.html">Contact
+Us</a>
+&nbsp;| &nbsp;<a href="http://www.priority1design.com.au/siteindex.html">Site Map</a></td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+</div>
+
+</div>
+
+<h1>EM4100 Protocol description.</h1>
+
+<table style="width: 750px; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+
+    <tr>
+
+      <td style="white-space: nowrap; text-align: left;">RFID
+transponders (Tags) are devices carrying digital information that can
+be read from a distance by a<br>
+
+RFID transceiver (Reader). In order to be able to read the information
+stored on the RFID tags the reader<br>
+
+must know how the information is stored and the protocol for extracting
+it. One of the more common data<br>
+
+formats for RFID transponders is the EM4100 protocol, named so because
+the microchip at the heart of <br>
+
+the Tag is based on the controller chip made by the company&nbsp;
+EM Microelectronic.<br>
+
+      <br>
+
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td style="white-space: nowrap; text-align: left;">
+      <h2 style="text-align: left; text-decoration: underline;">Reading
+an EM4100 RFID Transponder.</h2>
+
+EM4100 compatible RFID transponders carry 64 bits of Read Only memory.
+This means that&nbsp; information&nbsp;<br>
+
+can be read from the Tag but no data can be changed, or new data
+&nbsp;written to the card once the card has<br>
+
+been programmed with the initial data. The format&nbsp;of the data
+is as shown here.<br>
+
+      <br>
+
+      <center>
+      <table style="background-color: transparent; width: 360px; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="3" cellspacing="0">
+
+        <tbody>
+
+          <tr>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="white-space: nowrap; text-align: center; background-color: rgb(255, 102, 102);">1</td>
+
+            <td nowrap="nowrap" align="center">&nbsp;
+&nbsp;9 bit &nbsp;header bits, all 1's</td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" nowrap="nowrap" align="center">8 bit version &nbsp;number&nbsp;</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">D00</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">D01</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">D02</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">D03</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">&nbsp;P0&nbsp;
+            </td>
+
+            <td nowrap="nowrap"></td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" nowrap="nowrap" align="center">or customer ID.</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">D04</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">D05</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">D06</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">D07</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">&nbsp;P1&nbsp;</td>
+
+            <td nowrap="nowrap"></td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" style="white-space: nowrap; text-align: center; background-color: rgb(225, 225, 225);"></td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D08</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D09</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D10</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D11</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">&nbsp;P2&nbsp;</td>
+
+            <td nowrap="nowrap" align="center">Each
+group of 4 bits </td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" nowrap="nowrap"></td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D12</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D13</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D14</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D15</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">&nbsp;P3&nbsp;</td>
+
+            <td nowrap="nowrap" align="center">is
+followed by an Even</td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" nowrap="nowrap" align="center">32 Data Bits</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D16</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D17</td>
+
+            <td style="white-space: nowrap; text-align: center; background-color: rgb(204, 255, 255);">D18</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D19</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">&nbsp;P4&nbsp;</td>
+
+            <td nowrap="nowrap" align="center">parity
+bit</td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" style="white-space: nowrap; text-align: center;"></td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D20</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D21</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D22</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D23</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">&nbsp;P5&nbsp;</td>
+
+            <td nowrap="nowrap"></td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" style="white-space: nowrap; text-align: center;"></td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D24</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D25</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D26</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D27</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">&nbsp;P6&nbsp;</td>
+
+            <td nowrap="nowrap"></td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" style="white-space: nowrap; text-align: center;"></td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D28</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D29</td>
+
+            <td style="white-space: nowrap; text-align: center; background-color: rgb(204, 255, 255);">D30</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D31</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">&nbsp;P7&nbsp;</td>
+
+            <td nowrap="nowrap"></td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" nowrap="nowrap"></td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D32</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D33</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D34</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D35</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">&nbsp;P8&nbsp;</td>
+
+            <td nowrap="nowrap"></td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" style="white-space: nowrap; text-align: center;"></td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D36</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D37</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D38</td>
+
+            <td style="background-color: rgb(204, 255, 255);" nowrap="nowrap" align="center">D39</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">&nbsp;P9&nbsp;</td>
+
+            <td nowrap="nowrap"></td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="4" nowrap="nowrap" align="center">4 column Parity bits</td>
+
+            <td style="background-color: rgb(255, 179, 153);" nowrap="nowrap" align="center">PC0</td>
+
+            <td style="background-color: rgb(255, 179, 153);" nowrap="nowrap" align="center">PC1</td>
+
+            <td style="background-color: rgb(255, 179, 153);" nowrap="nowrap" align="center">PC2</td>
+
+            <td style="background-color: rgb(255, 179, 153);" nowrap="nowrap" align="center">PC3</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">S0</td>
+
+            <td style="white-space: nowrap; text-align: left;">&nbsp;
+&nbsp;1 stop bit (0)</td>
+
+          </tr>
+
+        </tbody>
+      </table>
+
+      </center>
+
+      <br>
+
+When the Tag enters the electromagnetic field transmitted by the RFID
+reader it draws power from the field<br>
+
+and will commence transmitting its data as shown above. The first 9
+bits&nbsp;are a logic 1. These bits are used as<br>
+
+a marker sequence to indicate the beginning of the string. &nbsp;As
+Even parity is used
+throughout the data this 9 bit<br>
+
+sequence of 1's will not occur at any other location in the string.
+&nbsp;This is followed by 10
+groups of 4 data and&nbsp;1<br>
+
+even parity bits. Finally there are 4
+bits of&nbsp;column parity (Even) and a stop bit (0). The Tag then
+continues to<br>
+
+repeat this string as long as it has power.<br>
+
+      <br>
+
+Shown here is an example string for a proximity card that has the data
+&nbsp; $06 (version number), and $001259E3<br>
+
+as a data string.<br>
+
+      <br>
+
+      <table style="width: 750px; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="0" cellspacing="0">
+
+        <tbody>
+
+          <tr>
+
+            <td style="white-space: nowrap; text-align: center; background-color: rgb(255, 102, 102);">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="white-space: nowrap; text-align: center; background-color: rgb(255, 255, 204);">0</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="white-space: nowrap; text-align: center; background-color: rgb(255, 255, 204);">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="white-space: nowrap; text-align: center; background-color: rgb(255, 255, 204);">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 255, 204);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 204, 153);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 179, 153);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 179, 153);" nowrap="nowrap" align="center">1</td>
+
+            <td style="background-color: rgb(255, 179, 153);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 179, 153);" nowrap="nowrap" align="center">0</td>
+
+            <td style="background-color: rgb(255, 102, 102);" nowrap="nowrap" align="center">0</td>
+
+          </tr>
+
+          <tr>
+
+            <td colspan="9" nowrap="nowrap"></td>
+
+            <td colspan="4" nowrap="nowrap" align="center">0</td>
+
+            <td nowrap="nowrap"></td>
+
+            <td colspan="4" nowrap="nowrap" align="center">6</td>
+
+            <td nowrap="nowrap"></td>
+
+            <td colspan="4" nowrap="nowrap" align="center">0</td>
+
+            <td nowrap="nowrap"></td>
+
+            <td colspan="4" nowrap="nowrap" align="center">0</td>
+
+            <td nowrap="nowrap"></td>
+
+            <td colspan="4" nowrap="nowrap" align="center">1</td>
+
+            <td nowrap="nowrap"></td>
+
+            <td colspan="4" nowrap="nowrap" align="center">2</td>
+
+            <td nowrap="nowrap"></td>
+
+            <td colspan="4" nowrap="nowrap" align="center">5</td>
+
+            <td nowrap="nowrap"></td>
+
+            <td colspan="4" nowrap="nowrap" align="center">9</td>
+
+            <td nowrap="nowrap"></td>
+
+            <td colspan="4" nowrap="nowrap" align="center">E</td>
+
+            <td nowrap="nowrap"></td>
+
+            <td colspan="4" nowrap="nowrap" align="center">3</td>
+
+            <td nowrap="nowrap"></td>
+
+            <td nowrap="nowrap"></td>
+
+            <td nowrap="nowrap"></td>
+
+            <td nowrap="nowrap"></td>
+
+            <td nowrap="nowrap"></td>
+
+            <td nowrap="nowrap"></td>
+
+          </tr>
+
+        </tbody>
+      </table>
+
+      <h3><a name="Data_modulation"></a>Data
+modulation.</h3>
+
+As discussed in <a href="http://www.priority1design.com.au/rfid_design.html">RFID basics</a>
+&nbsp;the RFID transponder is able to transmit its data by
+modulating the RF field of<br>
+
+the Reader. Here we discuss 3 popular&nbsp;modulation
+schemes.<br>
+
+      <br>
+
+      <div style="margin-left: 80px;">Manchester Encoding.<br>
+
+BiPhase Encoding.<br>
+
+PSK Encoding. </div>
+
+      <br>
+
+The Transponder and Reader use the individual cycles of
+the RF field to syncronize the data transmission<br>
+
+between the two. The frequency of the synchronizing clock
+then simply becomes the frequency of the RF field<br>
+
+used.<br>
+
+RFID system clock frequencies vary according to the application
+required. &nbsp;In low frequency, short distance<br>
+
+sensing of Tags the typical band used is between 100-150Khz. For longer
+range sensing a system frequency<br>
+
+of 13.56Mhz might be used, or other frequency as the application
+requires. <br>
+
+Of course the designer of an RFID system is restricted to using
+particular frequency bands as RFID systems<br>
+
+are radio emitting devices and therefore under the control of the local
+radio frequency regulator bodies.<br>
+
+      <br>
+
+The length of each bit is specified in terms of clock cycles. For the
+EM4100 protocol bit lengths can be either<br>
+
+64, 32, or 16 Clock cycles.<br>
+
+      <br>
+
+      <h4>Manchester Encoding Scheme.</h4>
+
+With&nbsp;Manchester Encoding a Tag will produce a level transition
+in the middle of the bit period. A low to high<br>
+
+transition represents a logic 1 state, while a high to low transition
+represents a logic 0 state.<br>
+
+      <br>
+
+      <img style="width: 750px; height: 181px;" alt="Manchester Encoding Scheme" src="em4100_protocol_files/manchester_encoding.jpg">
+      <br>
+
+      <h4 style="font-family: Helvetica,Arial,sans-serif;">BiPhase
+Encoding Scheme.</h4>
+
+      <span style="font-family: Helvetica,Arial,sans-serif;">Biphase
+Encoding schemes modulate the RF field so that there is a transition at
+the beginning of each bit<br>
+
+boundary. &nbsp;A logic&nbsp;0 state has a&nbsp;transition
+in the
+middle of the bit period, while a logic&nbsp;1 state has no
+transition<br>
+
+during the entire bit period.<br>
+
+      <img style="width: 750px; height: 181px;" alt="Biphase Encoding Scheme" src="em4100_protocol_files/biphase_encoding.jpg">
+      </span>
+      <h4 style="font-family: Helvetica,Arial,sans-serif;">PSK
+Encoding.</h4>
+
+      <span style="font-family: Helvetica,Arial,sans-serif;">With
+PSK (Phase Shift Keying) encoding&nbsp;the RF field is modulated so
+that there is a transition with each clock<br>
+
+period. This means there can be up to
+64, 32, or 16 transitions per bit depending on what bit length the Tag
+is<br>
+
+using. When a phase shift occurs it represents a logic 0 state, while a
+logic 1 state is interpreted when there is<br>
+
+no phase change at the bit boundary.<br>
+
+      <img style="width: 750px; height: 289px;" alt="PSK Encoding Scheme" src="em4100_protocol_files/psk_encoding.jpg"> </span><br style="font-family: Helvetica,Arial,sans-serif;">
+
+      <span style="font-family: Helvetica,Arial,sans-serif;">Priority
+1 Design carries a stock of low cost EM4100 compatible
+Transponders.&nbsp;</span><span style="font-family: Helvetica,Arial,sans-serif;">We also
+carry a stock of<br>
+
+low cost T5557 RFID Read Write
+transponders, &nbsp;You can buy EM4100 and T5557 transponders
+direct from<br>
+
+our online shopfront. </span>See <a href="http://www.priority1design.com.au/t5557_rfid_transponder.html">T5557
+RFID
+transponder</a>
+to learn about reading and writing &nbsp;RFID tags. </td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+</div>
+
+<span style="font-family: Helvetica,Arial,sans-serif;"></span>
+<center>
+<table style="font-family: Helvetica,Arial,sans-serif; width: 450px; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+
+    <tr>
+
+      <td colspan="2" style="white-space: nowrap; text-align: center; vertical-align: bottom;">&nbsp;
+&nbsp; See <a href="http://www.priority1design.com.au/rfid_transponders.html">Specifications</a>.<br>
+
+      <br>
+
+&nbsp; &nbsp; <img src="em4100_protocol_files/fob_small.jpg" alt="RFID keytag 125Khz EM4100 compatible" style="height: 80px; width: 64px;"> &nbsp; &nbsp;
+&nbsp;&nbsp;<img style="width: 100px; height: 68px;" alt="125khz RFID proximity card" src="em4100_protocol_files/proximity_card_small.jpg">
+&nbsp; <br>
+
+      <a target="_blank" href="http://www.priority1design.com.au/shopfront/index.php?main_page=index&amp;cPath=1">View
+Prices</a></td>
+
+      <td style="white-space: nowrap; text-align: left; vertical-align: top;"><br>
+
+&nbsp;<br>
+
+      <br>
+
+&nbsp; We also stock:<br>
+
+      <ul>
+
+        <li><a href="http://www.priority1design.com.au/rfid_reader_modules.html">RFID
+Reader Modules</a></li>
+
+        <li><a href="http://www.priority1design.com.au/em4095_rfid_ic.html">RFID
+reader IC's</a></li>
+
+        <li><a href="http://www.priority1design.com.au/rfid_coil_antenna.html">RFID
+coil antennas</a></li>
+
+      </ul>
+
+      </td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+</center>
+
+<hr style="width: 100%; height: 2px; font-family: Helvetica,Arial,sans-serif;">
+<div style="text-align: center; font-family: Helvetica,Arial,sans-serif;">
+<div style="text-align: center;">This site and all images
+and content within are Copyright&nbsp;© 2007 Priority 1
+Design.&nbsp; All rights reserved.
+</div>
+
+<div style="text-align: center;">This&nbsp;page is
+best viewed at
+800x600 pixel resolution.
+</div>
+
+</div>
+
+</body></html>

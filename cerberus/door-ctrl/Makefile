@@ -46,5 +46,11 @@ clean :
 mtest: rfid-manchester-decoder
 	./$<
 
-rfid-manchester-decoder: rfid-manchester-decoder.c
+rfid-manchester-decoder: rfid-manchester-decoder-buffered.c
+	gcc -std=c99 -Wall -g3 -pedantic-errors -Werror -o $@ $<
+
+utest: rfid-manchester-decoder-unbuffered
+	./$<
+
+rfid-manchester-decoder-unbuffered: rfid-manchester-decoder-unbuffered.c
 	gcc -std=c99 -Wall -g3 -pedantic-errors -Werror -o $@ $<

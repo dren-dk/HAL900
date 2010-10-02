@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
- #include <string.h>
+#include <string.h>
 
 /*
   This function eats edges from the signal.
@@ -13,11 +13,12 @@
 unsigned char headerLength = 0; // The number of short header bits seen.
 char rfidInUse = 0;            // -1 = Looking for the header.
 unsigned char rfid[7];          // Temporary storage for the datagram.
-#define PUSH_ONE  { rfid[rfidInUse>>3] |=  1<<(rfidInUse & 7); rfidInUse++; lastBit = 1;}
-#define PUSH_ZERO { rfid[rfidInUse>>3] &=~ (1<<(rfidInUse & 7)); rfidInUse++; lastBit = 0;}
+#define PUSH_ONE  { rfid[rfidInUse>>3] |=  (1<<(rfidInUse & 7)); rfidInUse++; }
+#define PUSH_ZERO { rfidInUse++; }
 #define GET_BIT(x)  (rfid[(x)>>3] & (1<<((x) & 7)))   
-unsigned char lastBit = 1;
-char bitTime = 0;
+char halfBit = 0;
+
+#define RFID_RESET {rfidInUse=0; headerLength=0; memset(rfid, 0, 7); halfBit=0; }
 
 void addEdge(char length) {
   
@@ -37,15 +38,15 @@ void addEdge(char length) {
   }
 
   if (headerLength == 0) {
-    if (edge > 1) {
+    if (edge < -1) {
       headerLength = 1;
-      fprintf(stdout, "S");
+      fprintf(stdout, "\nH");
     } else {
       fprintf(stdout, "_");
     }
 
-  } else if (headerLength < 18) {
-    if (edge == ((headerLength & 1)?-1:1)) {
+  } else if (headerLength < 18-1) {
+    if (edge == ((headerLength & 1)?1:-1)) {
       headerLength++;
       fprintf(stdout, "h");
     } else {
@@ -54,34 +55,60 @@ void addEdge(char length) {
     }
 
   } else {
-
-    
+    if (rfidInUse==0) {
+      fprintf(stdout, "\nD");
+    }
 
     if (edge > 1) {  // Long low period, rising edge => It's a one
-	PUSH_ONE;
-	fprintf(stdout, "L1\n");
+      
+      if (halfBit) {
+	fprintf(stdout, " <--- Manchester violation\n");
+	RFID_RESET
+
+      } else {
+	PUSH_ZERO;
+	fprintf(stdout, "L");
+	halfBit = 0;
+      }
 
     } else if (edge < -1) { // Long high period, falling edge => It's a zero 
-	PUSH_ZERO;
-	fprintf(stdout, "l0\n");
+
+      if (halfBit) {
+	fprintf(stdout, " <--- Manchester violation\n");
+	RFID_RESET
+	
+      } else {
+	PUSH_ONE;
+	fprintf(stdout, "l");
+	halfBit = 0;
+      }
 
     } else if (edge > 0) {
-      if (lastBit) {
-	PUSH_ONE;
-	fprintf(stdout, "S1\n");
+
+      if (halfBit) {
+	halfBit = 0;
+	fprintf(stdout, "S");
+	PUSH_ZERO;
+      } else {
+	halfBit = edge;
+	fprintf(stdout, "½");	
       }
 
     } else {
-      if (!lastBit) {
-	PUSH_ZERO;
-	fprintf(stdout, "s0\n");
+      if (halfBit) {
+	halfBit = 0;
+	fprintf(stdout, "s");
+	PUSH_ONE;
+      } else {
+	halfBit = edge;
+	fprintf(stdout, "½");	
       }
     }
   }
 
   // Detect that we are done reading, then check parity and stopbits and parse out to output datatypes.
   if (rfidInUse == 5*8+15) { // 5 bytes of data + 15 bits of parity.
-    fprintf(stdout, "Captured datagram:\n"); 
+    fprintf(stdout, "\nCaptured datagram:\n"); 
     for (char i=0;i<rfidInUse;i++) {
       if (GET_BIT(i)) {
 	fprintf(stdout, "1");
@@ -94,32 +121,26 @@ void addEdge(char length) {
     }
 
     // Check row parity:
-    char colParity[4];
-    for (unsigned char col=0;col<4;col++) {
-      colParity[col] = 0;
-    }
-    
-    for (unsigned char row=0;row<10;row++) {
+    char colParity = 0;
+    for (unsigned char row=0;row<11;row++) {
       char rowParity = 0;
-      for (unsigned char col=0;col<4;col++) {
+      for (unsigned char col=0;col<5;col++) {
 	char bit = row*5+col;
 	if (GET_BIT(bit)) {
-	  rowParity = !rowParity;
-	  colParity[col] = !colParity[col];
+	  rowParity ^= 1;
+	  colParity ^= 16>>col;
 	}	
       }
 
-      char tp = GET_BIT(row*5+4);
-      if (!((tp && rowParity) || (!tp && !rowParity))) {
+      if (rowParity) {
 	fprintf(stdout, "Row parity %d: Failed\n", row);	
       } else {
 	fprintf(stdout, "Row parity %d: Ok\n", row);	
       }
     }    
     
-    for (unsigned char col=0;col<4;col++) {
-      char tp = GET_BIT(5*8+10+col);
-      if (!((tp && colParity[col]) || (!tp && !colParity[col]))) {
+    for (unsigned char col=0;col<5;col++) {
+      if (colParity & (16>>col)) {
 	fprintf(stdout, "Col parity %d: Failed\n", col);	
       } else {
 	fprintf(stdout, "Col parity %d: Ok\n", col);	
@@ -133,9 +154,7 @@ void addEdge(char length) {
     }    
 
     // Ready to go again...
-    rfidInUse = 0;
-    lastBit = 1;
-    headerLength = 0;	  
+    RFID_RESET
   }
 }
 

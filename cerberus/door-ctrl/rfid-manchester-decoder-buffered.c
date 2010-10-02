@@ -55,8 +55,10 @@ unsigned int rfidDecode(void) {
 	  row |= 0x01;
 	  rowParity ^= 1;
 	  colParity ^= 16>>col;
+	  fprintf(stderr, "1");
 	  
 	} else if (a > b) {
+	  fprintf(stderr, "0");
 	  // Nothing to do, newly shifted bits are always 0.
 	  
 	} else { // No transistion at the middle of the bitperiod => violates Manchester coding.
@@ -65,6 +67,8 @@ unsigned int rfidDecode(void) {
 	} 
 	i+=2;
       }
+      fprintf(stderr, "\n");
+
       
       if (rowNumber >= 2 && rowNumber < 10) { // Don't include the first byte nor the col-parity row.
 	rfid <<= 4;

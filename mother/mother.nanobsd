@@ -127,6 +127,12 @@ fix_update_scripts() (
 )
 late_customize_cmd fix_update_scripts
 
+# recreate /usr/lib/aout to silence warning at boot
+fix_usr_lib_aout() (
+	mkdir -p ${NANO_WORLDDIR}/usr/lib/aout
+)
+late_customize_cmd fix_usr_lib_aout
+
 # last orders
 last_orders() (
     image=${IMAGE_DIR}/image-`date +%Y-%m-%d`.gz

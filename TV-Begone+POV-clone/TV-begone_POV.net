@@ -1,4 +1,4 @@
-# EESchema Netlist Version 1.1 created  26-10-2010 20:50:17
+# EESchema Netlist Version 1.1 created  27-10-2010 22:29:39
 (
  ( /4CBC0DAF 1pin BATT+1 CONN_1
   ( 1 VCC )
@@ -6,174 +6,178 @@
  ( /4CBC0DB5 1pin BATT-1 CONN_1
   ( 1 GND )
  )
- ( /4CBC07E1 CPR10X16 C1 100µ
+ ( /4CBC07E1 C1V7 C1 100µ
   ( 1 VCC )
   ( 2 GND )
  )
- ( /4CBC07E4 CPR10X16 C2 0.1µ
+ ( /4CBC07E4 C1V5 C2 0.1µ
   ( 1 VCC )
   ( 2 GND )
  )
- ( /4CBC19C3 CPR10X16 C3 10n
-  ( 1 N-000008 )
+ ( /4CBC19C3 C1 C3 10n
+  ( 1 N-000031 )
   ( 2 GND )
  )
  ( /4CBC1B95 PIN_ARRAY_3X1 J1 CONN_3
-  ( 1 N-000008 )
-  ( 2 N-000030 )
-  ( 3 N-000010 )
+  ( 1 N-000031 )
+  ( 2 N-000010 )
+  ( 3 N-000009 )
+ )
+ ( /4CC87F8E pin_array_4x2 J2 CONN_4X2
+  ( 1 N-000031 )
+  ( 2 VCC )
+  ( 3 ? )
+  ( 4 ? )
+  ( 5 ? )
+  ( 6 ? )
+  ( 7 N-000031 )
+  ( 8 GND )
  )
  ( /4CBC06A2 LED-5MM LED1 IR_LED
   ( 1 VCC )
-  ( 2 N-000024 )
+  ( 2 N-000027 )
  )
  ( /4CBC06AC LED-5MM LED2 IR_LED
   ( 1 VCC )
-  ( 2 N-000025 )
+  ( 2 N-000028 )
  )
  ( /4CBC06B5 LED-5MM LED3 IR_LED
   ( 1 VCC )
-  ( 2 N-000027 )
+  ( 2 N-000030 )
  )
  ( /4CBC06AF LED-5MM LED4 IR_LED
   ( 1 VCC )
-  ( 2 N-000026 )
+  ( 2 N-000029 )
  )
  ( /4CBC0559 LED-5MM LED5 LED
-  ( 1 N-000021 )
-  ( 2 N-000011 )
- )
- ( /4CBC0554 LED-5MM LED6 LED
-  ( 1 N-000020 )
-  ( 2 N-000014 )
- )
- ( /4CBC0537 LED-5MM LED7 LED
-  ( 1 N-000019 )
-  ( 2 N-000017 )
- )
- ( /4CBC0542 LED-5MM LED8 LED
-  ( 1 N-000018 )
+  ( 1 N-000024 )
   ( 2 N-000015 )
  )
- ( /4CBC0546 LED-5MM LED9 LED
-  ( 1 N-000012 )
-  ( 2 N-000004 )
+ ( /4CBC0554 LED-5MM LED6 LED
+  ( 1 N-000023 )
+  ( 2 N-000012 )
  )
- ( /4CBC0549 LED-5MM LED10 LED
-  ( 1 N-000013 )
-  ( 2 N-000005 )
- )
- ( /4CBC054B LED-5MM LED11 LED
+ ( /4CBC0537 LED-5MM LED7 LED
   ( 1 N-000022 )
+  ( 2 N-000016 )
+ )
+ ( /4CBC0542 LED-5MM LED8 LED
+  ( 1 N-000019 )
+  ( 2 N-000018 )
+ )
+ ( /4CBC0546 LED-5MM LED9 LED
+  ( 1 N-000013 )
   ( 2 N-000003 )
  )
+ ( /4CBC0549 LED-5MM LED10 LED
+  ( 1 N-000014 )
+  ( 2 N-000004 )
+ )
+ ( /4CBC054B LED-5MM LED11 LED
+  ( 1 N-000025 )
+  ( 2 N-000002 )
+ )
  ( /4CBC054E LED-5MM LED12 LED
-  ( 1 N-000023 )
-  ( 2 N-000028 )
+  ( 1 N-000026 )
+  ( 2 N-000017 )
  )
  ( /4CBC0D13 pin_array_3x2 PROG1 CONN_3X2
-  ( 1 N-000005 )
+  ( 1 N-000004 )
   ( 2 VCC )
-  ( 3 N-000004 )
-  ( 4 N-000003 )
-  ( 5 N-000002 )
+  ( 3 N-000003 )
+  ( 4 N-000002 )
+  ( 5 N-000001 )
   ( 6 GND )
  )
- ( /4CBC1F2D TO92-CBE Q1 BC547
-  ( B N-000006 )
-  ( C N-000024 )
-  ( E GND )
- )
- ( /4CBC1FBB TO92-CBE Q2 BC547
-  ( B N-000006 )
-  ( C N-000025 )
-  ( E GND )
- )
- ( /4CBC1FBD TO92-CBE Q3 BC547
-  ( B N-000006 )
-  ( C N-000026 )
-  ( E GND )
- )
- ( /4CBC1FBF TO92-CBE Q4 BC547
-  ( B N-000006 )
+ ( /4CBC1F2D TO92-EBC Q1 BC547
+  ( B N-000032 )
   ( C N-000027 )
   ( E GND )
  )
- ( /4CBC207E TO92-CBE Q5 BC557
-  ( B N-000009 )
-  ( C N-000006 )
+ ( /4CBC1FBB TO92-EBC Q2 BC547
+  ( B N-000032 )
+  ( C N-000028 )
+  ( E GND )
+ )
+ ( /4CBC1FBD TO92-EBC Q3 BC547
+  ( B N-000032 )
+  ( C N-000029 )
+  ( E GND )
+ )
+ ( /4CBC1FBF TO92-EBC Q4 BC547
+  ( B N-000032 )
+  ( C N-000030 )
+  ( E GND )
+ )
+ ( /4CBC207E TO92-EBC Q5 BC557
+  ( B N-000011 )
+  ( C N-000032 )
   ( E VCC )
  )
  ( /4CBC15B0 R3 R1 1K
-  ( 1 N-000010 )
-  ( 2 N-000009 )
+  ( 1 N-000009 )
+  ( 2 N-000011 )
  )
  ( /4CBC05DA R3 R2 47
   ( 1 VCC )
-  ( 2 N-000021 )
+  ( 2 N-000024 )
  )
  ( /4CBC05D7 R3 R3 47
   ( 1 VCC )
-  ( 2 N-000020 )
+  ( 2 N-000023 )
  )
  ( /4CBC05CE R3 R4 47
   ( 1 VCC )
-  ( 2 N-000019 )
+  ( 2 N-000022 )
  )
  ( /4CBC05CB R3 R5 47
   ( 1 VCC )
-  ( 2 N-000018 )
+  ( 2 N-000019 )
  )
  ( /4CBC05A8 R3 R6 47
   ( 1 VCC )
-  ( 2 N-000012 )
+  ( 2 N-000013 )
  )
  ( /4CBC05BE R3 R7 47
   ( 1 VCC )
-  ( 2 N-000013 )
+  ( 2 N-000014 )
  )
  ( /4CBC0614 R3 R8 47
   ( 1 VCC )
-  ( 2 N-000022 )
+  ( 2 N-000025 )
  )
  ( /4CBC0618 R3 R9 47
   ( 1 VCC )
-  ( 2 N-000023 )
+  ( 2 N-000026 )
  )
  ( /4CBDE3D1 R3 R10 1K
-  ( 1 N-000030 )
+  ( 1 N-000010 )
   ( 2 VCC )
  )
- ( /4CBC0E31 PUSH_BUTT_SHAPE1 SW1 SW_PUSH
-  ( 1 N-000028 )
+ ( /4CBC0E31 SW_PUSH_SMALL SW1 SW_PUSH
+  ( 1 N-000017 )
   ( 2 GND )
- )
- ( /4CBC197D PIN_ARRAY_2X2 SW2 CONN_2X2
-  ( 1 VCC )
-  ( 2 GND )
-  ( 3 N-000008 )
-  ( 4 N-000008 )
  )
  ( /4CBC0511 DIP-14__300 U1 ATTINY24-44-84/DIP-SO
   ( 1 VCC )
-  ( 2 N-000001 )
-  ( 3 N-000016 )
-  ( 4 N-000002 )
-  ( 5 N-000030 )
-  ( 6 N-000028 )
-  ( 7 N-000003 )
-  ( 8 N-000005 )
-  ( 9 N-000004 )
-  ( 10 N-000015 )
-  ( 11 N-000017 )
-  ( 12 N-000014 )
-  ( 13 N-000011 )
+  ( 2 N-000021 )
+  ( 3 N-000020 )
+  ( 4 N-000001 )
+  ( 5 N-000010 )
+  ( 6 N-000017 )
+  ( 7 N-000002 )
+  ( 8 N-000004 )
+  ( 9 N-000003 )
+  ( 10 N-000018 )
+  ( 11 N-000016 )
+  ( 12 N-000012 )
+  ( 13 N-000015 )
   ( 14 GND )
  )
  ( /4CBC0AA7 PIN_ARRAY_3X1 X1 8MHz
-  ( 1 N-000001 )
+  ( 1 N-000021 )
   ( 2 GND )
-  ( 3 N-000016 )
+  ( 3 N-000020 )
  )
 )
 *

@@ -1,4 +1,4 @@
-update=26-10-2010 21:30:46
+update=27-10-2010 23:05:48
 version=1
 last_client=pcbnew
 [cvpcb]
@@ -47,7 +47,7 @@ SimCmd=
 UseNetN=0
 LabSize=60
 PrintMonochrome=0
-ShowSheetReferenceAndTitleBlock=1
+ShowSheetReferenceAndTitleBlock=0
 [eeschema/libraries]
 LibName1=power
 LibName2=device

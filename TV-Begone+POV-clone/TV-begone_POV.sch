@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 27-10-2010 21:50:11
+EESchema Schematic File Version 2  date 28-10-2010 10:43:23
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -37,7 +37,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title ""
-Date "27 oct 2010"
+Date "28 oct 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -45,6 +45,10 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Wire Wire Line
+	2550 950  2550 850 
+Wire Wire Line
+	2550 850  2500 850 
 Wire Wire Line
 	1500 4425 1425 4425
 Wire Wire Line
@@ -125,12 +129,6 @@ Wire Wire Line
 Wire Wire Line
 	7150 5000 6900 5000
 Wire Wire Line
-	900  975  900  1050
-Wire Wire Line
-	900  1225 900  1175
-Wire Wire Line
-	900  1175 675  1175
-Wire Wire Line
 	2000 6325 1725 6325
 Wire Wire Line
 	2925 6450 2925 6325
@@ -208,8 +206,6 @@ Wire Wire Line
 	2000 6225 1725 6225
 Wire Wire Line
 	1700 6125 2000 6125
-Wire Wire Line
-	900  1050 675  1050
 Wire Wire Line
 	7150 6800 6900 6800
 Connection ~ 7150 6800
@@ -300,6 +296,46 @@ Wire Wire Line
 	1500 3425 1500 3800
 Wire Wire Line
 	1500 3800 1425 3800
+Wire Wire Line
+	1900 850  1850 850 
+Wire Wire Line
+	1850 850  1850 800 
+$Comp
+L GND #PWR?
+U 1 1 4CC93783
+P 2550 950
+F 0 "#PWR?" H 2550 950 30  0001 C CNN
+F 1 "GND" H 2550 880 30  0001 C CNN
+	1    2550 950 
+	1    0    0    -1  
+$EndComp
+$Comp
+L VCC #PWR?
+U 1 1 4CC9377A
+P 1850 800
+F 0 "#PWR?" H 1850 900 30  0001 C CNN
+F 1 "VCC" H 1850 900 30  0000 C CNN
+	1    1850 800 
+	1    0    0    -1  
+$EndComp
+$Comp
+L BATTERY BT1
+U 1 1 4CC9376A
+P 2200 850
+F 0 "BT1" H 2200 1050 50  0000 C CNN
+F 1 "BATTERY" H 2200 660 50  0000 C CNN
+	1    2200 850 
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C2
+U 1 1 4CC935ED
+P 1525 1075
+F 0 "C2" H 1575 1175 50  0000 L CNN
+F 1 "100n" H 1575 975 50  0000 L CNN
+	1    1525 1075
+	1    0    0    -1  
+$EndComp
 $Comp
 L CONN_4X2 J2
 U 1 1 4CC87F8E
@@ -496,42 +532,6 @@ F 1 "GND" H 5575 3430 30  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR08
-U 1 1 4CBC0DDF
-P 900 975
-F 0 "#PWR08" H 900 1075 30  0001 C CNN
-F 1 "VCC" H 900 1075 30  0000 C CNN
-	1    900  975 
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR09
-U 1 1 4CBC0DDA
-P 900 1225
-F 0 "#PWR09" H 900 1225 30  0001 C CNN
-F 1 "GND" H 900 1155 30  0001 C CNN
-	1    900  1225
-	1    0    0    -1  
-$EndComp
-$Comp
-L CONN_1 BATT-1
-U 1 1 4CBC0DB5
-P 675 1325
-F 0 "BATT-1" H 755 1325 40  0000 L CNN
-F 1 "CONN_1" H 675 1380 30  0001 C CNN
-	1    675  1325
-	0    1    1    0   
-$EndComp
-$Comp
-L CONN_1 BATT+1
-U 1 1 4CBC0DAF
-P 675 900
-F 0 "BATT+1" H 755 900 40  0000 L CNN
-F 1 "CONN_1" H 675 955 30  0001 C CNN
-	1    675  900 
-	0    -1   -1   0   
-$EndComp
-$Comp
 L GND #PWR010
 U 1 1 4CBC0D36
 P 2925 6450
@@ -602,15 +602,6 @@ P 1350 775
 F 0 "#PWR015" H 1350 875 30  0001 C CNN
 F 1 "VCC" H 1350 875 30  0000 C CNN
 	1    1350 775 
-	1    0    0    -1  
-$EndComp
-$Comp
-L CP1 C2
-U 1 1 4CBC07E4
-P 1525 1075
-F 0 "C2" H 1575 1175 50  0000 L CNN
-F 1 "0.1µ" H 1575 975 50  0000 L CNN
-	1    1525 1075
 	1    0    0    -1  
 $EndComp
 $Comp

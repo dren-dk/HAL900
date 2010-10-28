@@ -325,7 +325,7 @@ UsedLibrary="pulse-pe-68517-ethernet-trafo.lbr"
 
 [Win_1]
 Type="Control Panel"
-Loc="1264 0 1863 1052"
+Loc="1264 0 1863 706"
 State=2
 Number=0
 

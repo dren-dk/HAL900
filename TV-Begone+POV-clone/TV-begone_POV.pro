@@ -1,4 +1,4 @@
-update=29-10-2010 11:31:27
+update=02-11-2010 17:03:27
 version=1
 last_client=pcbnew
 [cvpcb]
@@ -84,9 +84,9 @@ LibName32=atmel_2
 LibName33=Resonator
 [pcbnew]
 version=1
-PadDrlX=320
+PadDrlX=0
 PadDimH=600
-PadDimV=600
+PadDimV=1181
 BoardThickness=630
 SgPcb45=1
 TxtPcbV=800

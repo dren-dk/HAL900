@@ -1,4 +1,4 @@
-# EESchema Netlist Version 1.1 created  29-10-2010 09:38:07
+# EESchema Netlist Version 1.1 created  02-11-2010 16:16:14
 (
  ( /4CC9376A PIN_ARRAY_2X1 BT1 BATTERY
   ( 1 VCC )
@@ -31,19 +31,19 @@
   ( 7 N-000030 )
   ( 8 GND )
  )
- ( /4CBC06A2 LED-5MM LED1 IR_LED
+ ( /4CBC06A2 LED-5MM+rect_pads LED1 IR_LED
   ( 1 VCC )
   ( 2 N-000026 )
  )
- ( /4CBC06AC LED-5MM LED2 IR_LED
+ ( /4CBC06AC LED-5MM+rect_pads LED2 IR_LED
   ( 1 VCC )
   ( 2 N-000027 )
  )
- ( /4CBC06B5 LED-5MM LED3 IR_LED
+ ( /4CBC06B5 LED-5MM+rect_pads LED3 IR_LED
   ( 1 VCC )
   ( 2 N-000029 )
  )
- ( /4CBC06AF LED-5MM LED4 IR_LED
+ ( /4CBC06AF LED-5MM+rect_pads LED4 IR_LED
   ( 1 VCC )
   ( 2 N-000028 )
  )

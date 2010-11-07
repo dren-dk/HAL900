@@ -46,6 +46,23 @@ EMPTY_INTERRUPT(__vector_default)
 #define EEPROM_SEQ 0
 #define EEPROM_KEYS 23
 
+#if NODE == 1
+
+const unsigned char AES_KEY[32] = {0x64, 0x4c, 0x3a, 0xd1, 0x96, 0x7, 0x8f, 0xbc, 0xe7, 0xc, 0x4e, 0x27, 0x20, 0xc2, 0x43, 0xb2, 0x5b, 0xa9, 0x38, 0x7f, 0x15, 0xaa, 0xc, 0x58, 0x83, 0x37, 0x0, 0x20, 0x56, 0x70, 0x8d, 0x59};
+
+#elif NODE == 2
+
+const unsigned char AES_KEY[32] = {0x82, 0xdd, 0xce, 0x97, 0x12, 0xfe, 0xf5, 0x7a, 0xfa, 0x53, 0x82, 0x6c, 0x5b, 0xfb, 0x8f, 0x68, 0x71, 0x1, 0x62, 0x38, 0x3d, 0x85, 0x79, 0xc9, 0x44, 0x95, 0x7, 0x49, 0xc5, 0xd4, 0x6d, 0xf0};
+
+#else
+#error No NODE macro defined.
+#endif
+
+const unsigned char *getAESKEY() {
+  return AES_KEY;
+}
+
+
 /**********************************************************************************************/
 unsigned int logSeq=0;
 void broadcastLog(struct LogTelegram *lt) {
@@ -53,6 +70,9 @@ void broadcastLog(struct LogTelegram *lt) {
   lt->seq = logSeq++;
 
   lt->crc32 = crc32((unsigned char*)lt, 12);
+
+  //  fprintf(stdout, "Log, seq:%d, crc: %lu, type:%c\n", lt->seq, lt->crc32, lt->logType);
+
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_encrypt_ecb(&ctx, (unsigned char *)lt);
@@ -128,7 +148,7 @@ void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on t
 
   // Affix crc in the right place.
   *((unsigned long *)(telegram+12)) = crc32((unsigned char*)telegram, 12);
-  //  fprintf(stdout, "Sending reply UDP package, crc is: %lu\n", *((unsigned long *)(telegram+12)));
+  //fprintf(stdout, "Sending reply UDP package, crc is: %lu\n", *((unsigned long *)(telegram+12)));
 
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
@@ -174,7 +194,7 @@ void handleAddKey(unsigned char *request, struct AddDeleteKeyTelegram *payload) 
   unsigned int currentSeq = eeprom_read_word((uint16_t *)EEPROM_SEQ);
   if (currentSeq != 0xffff && currentSeq > payload->seq) {
     reply.result = 2; // NACK
-    fprintf(stdout, "Ignoring write of key, because sequence number %u < %u\n", payload->seq, currentSeq);    
+    //fprintf(stdout, "Ignoring write of key, because sequence number %u < %u\n", payload->seq, currentSeq);    
   } else {
     
     // Find the first free slot in EEPROM
@@ -188,11 +208,11 @@ void handleAddKey(unsigned char *request, struct AddDeleteKeyTelegram *payload) 
     }
 
     if (free >= 250) {
-      fprintf(stdout, "Failed to find free space for key\n");    
+      //fprintf(stdout, "Failed to find free space for key\n");    
       reply.result = 3; // NACK, no room      
 
     } else {
-      fprintf(stdout, "Found free space for key at %u (seq: %u)\n", free, payload->seq);    
+      //fprintf(stdout, "Found free space for key at %u (seq: %u)\n", free, payload->seq);    
       
       eeprom_write_dword((uint32_t *)(EEPROM_KEYS+ (free<<2)), payload->hash);
       eeprom_write_word((uint16_t *)EEPROM_SEQ, payload->seq);
@@ -213,7 +233,7 @@ void handleDeleteKey(unsigned char *request, struct AddDeleteKeyTelegram *payloa
   unsigned int currentSeq = eeprom_read_word((uint16_t *)EEPROM_SEQ);
   if (currentSeq != 0xffff && currentSeq > payload->seq) {
     reply.result = 2; // NACK
-    fprintf(stdout, "Ignoring delete of key, because sequence number %u < %u\n", payload->seq, currentSeq);    
+    //fprintf(stdout, "Ignoring delete of key, because sequence number %u < %u\n", payload->seq, currentSeq);    
 
   } else {
     // Find and nuke the key in EEPROM
@@ -228,7 +248,7 @@ void handleDeleteKey(unsigned char *request, struct AddDeleteKeyTelegram *payloa
     }   
 
     if (reply.result != 1) {
-      fprintf(stdout, "Failed to find existing key to nuke.\n");    
+      //fprintf(stdout, "Failed to find existing key to nuke.\n");    
       reply.result = 3; // NACK, not found
     }
   }
@@ -243,12 +263,12 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
   aes256_decrypt_ecb(&ctx, payload);
 
   char *type = (char *)payload;
-  unsigned int *seq = (unsigned int *)(payload+1);    
+  //  unsigned int *seq = (unsigned int *)(payload+1);    
   unsigned long *crc  = (unsigned long *)(payload+12);
   unsigned long realCRC = crc32((unsigned char *)payload, 12);
   
   if (*crc == realCRC) {
-    fprintf(stdout, "Got package of type: '%c' seq: %d crc is ok: %lu\n", *type, *seq, realCRC);
+    //fprintf(stdout, "Got package of type: '%c' seq: %d crc is ok: %lu\n", *type, *seq, realCRC);
 
     if (*type == 'p') {
       handlePing(request, (struct PingPongTelegram *)payload);
@@ -263,11 +283,10 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
       handleDeleteKey(request, (struct AddDeleteKeyTelegram *)payload);
 
     } else {
-      fprintf(stdout, "Got package of invalid type: '%c'\n", *type);
+      //fprintf(stdout, "Got package of invalid type: '%c'\n", *type);
     }  
   } else {
-    fprintf(stdout, "Got package of type: '%c' seq: %d crc should be: %lu crc is: %lu\n",
-	    *type, *seq, *crc, realCRC);  
+    //fprintf(stdout, "Got package of type: '%c' seq: %d crc should be: %lu crc is: %lu\n", *type, *seq, *crc, realCRC);  
   }
 }
 
@@ -334,7 +353,7 @@ void handleKey(unsigned char key) {
 	    if (hash == v) {
 	      logUnlock(hash);
 
-	      fprintf(stdout, "Found hit at %d\n", i);  	      
+	      //fprintf(stdout, "Found hit at %d\n", i);  	      
 	      
 	      idleCount = 0;
 	      userState = OPEN;
@@ -423,6 +442,14 @@ void handleTick() {
 int main(void) {
   wdt_enable(WDTO_4S);
 
+  // Outputs:
+  DDRD |= 1<<PD2;
+  DDRD |= 1<<PD3;
+  DDRD |= 1<<PD4;
+  DDRD |= 1<<PD7;
+  DDRB |= 1<<PB1;
+  DDRC |= 1<<PC2;
+
   uint8_t mymac[6] = {0x42,0x42, 10,37,37,NODE};
   uint8_t myip[4]  =            {10,37,37,NODE};
 
@@ -430,14 +457,6 @@ int main(void) {
   enc28j60clkout(2); // change clkout from 6.25MHz to 12.5MHz
   _delay_loop_1(0); // 60us
 
-
-  // Outputs:
-  DDRD |= 1<<PD2;
-  DDRD |= 1<<PD3;
-  DDRD |= 1<<PD4;
-  DDRD |= 1<<PD5;
-  DDRD |= 1<<PD7;
-  DDRB |= 1<<PB1;
 
   // Set all outputs high, both LEDs and beepers are active low.
   PORTD |= (1<<PD2); 
@@ -448,12 +467,12 @@ int main(void) {
   // Inputs:
   DDRC  &=~ (1<<PC0);
   DDRC  &=~ (1<<PC1);
-  DDRC  &=~ (1<<PC2);
   DDRC  &=~ (1<<PC3);
   DDRB  &=~ (1<<PB0);
   DDRD  &=~ (1<<PD6);
   DDRB  &=~ (1<<PB7);
   PORTB |= (1<<PB7);  
+
 
   greenKBDLED(1);
   uart_init();
@@ -477,6 +496,7 @@ int main(void) {
   greenRFIDLED(0);
 
   logPowerUp();
+
   
   int loop = 0;
   unsigned char oldSensors = 0;
@@ -532,7 +552,8 @@ int main(void) {
     handleTick();
     
     _delay_ms(10);
-    led(loop & 1);
+    greenKBDLED(loop & 1);
+    //    led(loop & 1);
     wdt_reset();
     loop++;
   }	

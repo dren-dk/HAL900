@@ -143,7 +143,7 @@ void addEdge(char edge) {
 	if (getBit(bit)) {
 	  rowParity ^= 1;
 	  colParity ^= 16>>col;
-	}	
+	}
       }
 
       if (rowParity) {
@@ -166,6 +166,20 @@ void addEdge(char edge) {
     } else {	
       fprintf(stdout, "Stop bit: Ok\n");
     }    
+   
+    unsigned long output = 0;
+    char bit = 10;
+    for (unsigned char row=2;row<10;row++) {
+      for (unsigned char col=0;col<4;col++) {
+	output <<= 1;
+	if (getBit(bit++)) {
+	  output |= 1;
+	}
+      }
+      bit++; // Skip row parity.
+    }
+    
+    fprintf(stdout, "Got result: %ld\n", output);
 
     // Ready to go again...
     resetRfidState();

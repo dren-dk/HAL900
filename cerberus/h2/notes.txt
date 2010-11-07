@@ -59,17 +59,23 @@ https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=71-303-54;
 NPN:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=71-302-97;
 
+SMA shcottky:
+https://www.elfaelektronik.dk/elfa3~dk_en/elfa/init.do?item=70-087-07&toc=18973
+
+Choke:
+https://www.elfaelektronik.dk/elfa3~dk_en/elfa/init.do?item=58-578-19&toc=20326
+
+Current sense 0.22 Ohm:
+https://www.elfaelektronik.dk/elfa3~dk_en/elfa/init.do?item=60-155-49&toc=0
+
+100 uF filter cap:
+https://www.elfaelektronik.dk/elfa3~dk_en/elfa/init.do?item=67-134-40
+
+
 
 Eagle names:
-
 r-eu_r0805
 c-euc0805
-
-
-
-
-
-Husk header til I²C
 
 
 
@@ -114,3 +120,22 @@ Lock:      PD6, PB0, PD7
 PB1: Relay/LED 1
 PD5: Relay/LED 2
 
+
+
+
+------------------------------------------------------------------------------------------------
+
+
+Power:
+
+12V:
+KBD:   80-190
+RFID:  32
+BOLT:  100-1000
+
+Total: 220-1300 mA
+
+3.3V:
+200 mA
+
+3.3W - Peak: 16.25W

@@ -1,4 +1,4 @@
-# EESchema Netlist Version 1.1 created  02-11-2010 22:15:04
+# EESchema Netlist Version 1.1 created  08-11-2010 11:51:49
 (
  ( /4CC9376A PIN_ARRAY_2X1 BT1 BATTERY
   ( 1 VCC )
@@ -152,7 +152,7 @@
   ( 1 N-000004 )
   ( 2 VCC )
  )
- ( /4CBC0E31 SW_PUSH_SMALL SW1 SW_PUSH
+ ( /4CBC0E31 SW_PUSH_SMALL-4terminal_for_safe_mounting SW1 SW_PUSH
   ( 1 N-000031 )
   ( 2 GND )
  )
@@ -172,7 +172,7 @@
   ( 13 N-000014 )
   ( 14 GND )
  )
- ( /4CBC0AA7 PIN_ARRAY_3X1 X1 8MHz
+ ( /4CBC0AA7 PIN_ARRAY_3X1-ref_moved X1 8MHz
   ( 1 N-000020 )
   ( 2 GND )
   ( 3 N-000019 )

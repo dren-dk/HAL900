@@ -1,11 +1,15 @@
-#CC=/opt/avr-gcc-4.2.1/bin/avr-gcc
+PART=atmega168
+#PART=atmega328p
+
+#PROGRAMMER = usbtiny
+PROGRAMMER = jtag2isp -P usb
+
+
 CC=avr-gcc
-#CFLAGS=-Os -Wall -pedantic-errors -Werror -mcall-prologues -mmcu=atmega328p -std=c99
-CFLAGS=-Os -Wall -pedantic-errors -Werror -mcall-prologues -mmcu=atmega168 -std=c99
+CFLAGS=-Os -Wall -pedantic-errors -Werror -mcall-prologues -mmcu=${PART} -std=c99
 OBJ2HEX=avr-objcopy 
 
-#AVRDUDE = avrdude -c usbtiny -p m328p
-AVRDUDE = avrdude -c usbtiny -p m168
+AVRDUDE = avrdude -c ${PROGRAMMER} -p ${PART}
 
 default:
 	echo Please use one of the following targets:

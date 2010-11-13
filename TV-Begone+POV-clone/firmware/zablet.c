@@ -35,12 +35,29 @@ void setLED(unsigned char leds) {
 
 int main() {
     PORTA = 0; // LEDS are active low.
+    DDRB = _BV(PB2);
     
-    unsigned char i = 0;
+    char i = 0;
+    char d = 1;
     
     while (1) {
-      setLED(i++);
       
-      delay_ten_us(1000);
+      PORTB &=~ _BV(PB2);
+
+      i += d;
+      if (i >= 8) {
+	i = 7;
+	d = -1;
+      }
+      if (i < 0) {
+	i = 0;
+	d = 1;
+      }
+      
+      setLED(1<<i);	
+
+      PORTB |= _BV(PB2);
+      
+      delay_ten_us(10000);
     }
 }

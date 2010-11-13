@@ -92,7 +92,7 @@ void xmitCodeElement(uint16_t ontime, uint16_t offtime, uint8_t PWM_code )
   // start Timer0 outputting the carrier frequency to IR emitters on and OC0A 
   // (PB0, pin 5)
   TCNT0 = 0; // reset the timers so they are aligned
-  TIFR = 0;  // clean out the timer flags
+  TIFR0 = 0;  // clean out the timer flags
 
   if(PWM_code) {
     // 99% of codes are PWM codes, they are pulses of a carrier frequecy
@@ -189,23 +189,22 @@ that index into another table in ROM that actually stores the on/off times
 int main(void) {
   uint16_t ontime, offtime;
   uint8_t i,j, Loop;
-  uint8_t region = US;     // by default our code is US
+  uint8_t region = EU;     // by default our code is US
   
-  Loop = 0;                // by default we are not going to loop
+  Loop = 1;                // by default we are not going to loop
 
-  TCCR1 = 0;		   // Turn off PWM/freq gen, should be off already
+  TCCR1A = 0;		   // Turn off PWM/freq gen, should be off already
+  TCCR1B = 0;		   // Turn off PWM/freq gen, should be off already
   TCCR0A = 0;
   TCCR0B = 0;
 
   i = MCUSR;                     // Save reset reason
   MCUSR = 0;                     // clear watchdog flag
-  WDTCR = _BV(WDCE) | _BV(WDE);  // enable WDT disable
+  WDTCSR = _BV(WDCE) | _BV(WDE);  // enable WDT disable
+  WDTCSR = 0;                     // disable WDT while we setup
 
-  WDTCR = 0;                     // disable WDT while we setup
-
-  DDRB = _BV(LED) | _BV(IRLED);   // set the visible and IR LED pins to outputs
-  PORTB = _BV(LED) |              //  visible LED is off when pin is high
-          _BV(IRLED) |            // IR LED is off when pin is high
+  DDRB = _BV(IRLED);   // set the visible and IR LED pins to outputs
+  PORTB = _BV(IRLED) |            // IR LED is off when pin is high
           _BV(REGIONSWITCH);     // Turn on pullup on region switch pin
 
   DEBUGP(putstring_nl("Hello!"));
@@ -227,6 +226,7 @@ int main(void) {
     region = EU;
     DEBUGP(putstring_nl("EU"));
   }
+  region = EU;
 
   // Tell the user what region we're in  - 3 is US 4 is EU
   quickflashLEDx(3+region);
@@ -361,8 +361,7 @@ void tvbgone_sleep( void )
   // Shut down everything and put the CPU to sleep
   TCCR0A = 0;           // turn off frequency generator (should be off already)
   TCCR0B = 0;           // turn off frequency generator (should be off already)
-  PORTB |= _BV(LED) |       // turn off visible LED
-           _BV(IRLED);     // turn off IR LED
+  PORTB |= _BV(IRLED);     // turn off IR LED
 
   wdt_disable();           // turn off the watchdog (since we want to sleep
   delay_ten_us(1000);      // wait 10 millisec
@@ -397,9 +396,12 @@ void delay_ten_us(uint16_t us) {
 // This function quickly pulses the visible LED (connected to PB0, pin 5)
 // This will indicate to the user that a code is being transmitted
 void quickflashLED( void ) {
+  /*
+   TODO
   PORTB &= ~_BV(LED);   // turn on visible LED at PB0 by pulling pin to ground
   delay_ten_us(3000);   // 30 millisec delay
   PORTB |= _BV(LED);    // turn off visible LED at PB0 by pulling pin to +3V
+  */
 }
 
 // This function just flashes the visible LED a couple times, used to
@@ -422,11 +424,11 @@ void flashslowLEDx( uint8_t num_blinks )
   for(i=0;i<num_blinks;i++)
     {
       // turn on visible LED at PB0 by pulling pin to ground
-      PORTB &= ~_BV(LED);    
+      //PORTB &= ~_BV(LED);     TODO
       delay_ten_us(50000);         // 500 millisec delay
       wdt_reset();                 // kick the dog
       // turn off visible LED at PB0 by pulling pin to +3V
-      PORTB |= _BV(LED);          
+      //PORTB |= _BV(LED);          TODO
       delay_ten_us(50000);	   // 500 millisec delay
       wdt_reset();                 // kick the dog
     }

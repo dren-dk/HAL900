@@ -1,5 +1,5 @@
 # MCU name
-MCU = attiny85
+MCU = attiny84
 F_CPU = 8000000
 
 # Output format. (can be srec, ihex, binary)
@@ -96,10 +96,11 @@ LDFLAGS += -lm
 #
 #
 
-AVRDUDE_PROGRAMMER = usbtiny
+#AVRDUDE_PROGRAMMER = usbtiny
+AVRDUDE_PROGRAMMER = jtag2isp
 #AVRDUDE_PROGRAMMER = stk500v2
 
-AVRDUDE_PORT = com3        # programmer connected to serial device
+AVRDUDE_PORT = usb
 
 AVRDUDE_WRITE_FLASH = -B 1 -U flash:w:$(TARGET).hex
 #AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).eep

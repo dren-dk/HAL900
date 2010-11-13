@@ -1,6 +1,6 @@
 // What pins do what
-#define LED PB2
-#define IRLED PB0
+#define LED PA0
+#define IRLED PB2
 #define REGIONSWITCH PB1
 
 // Two regions!

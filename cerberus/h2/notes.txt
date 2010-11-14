@@ -1,3 +1,10 @@
+Eagle names:
+r-eu_r0805
+c-euc0805
+
+
+
+
 RJ45 connector:
 https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#toc=19662;item=42-482-66;
 

@@ -92,17 +92,33 @@ sub indexPage {
     }
     $fr->finish;
 
-    $html .= "<h2>Medlems antal efter type og status</h2><table><tr><th>Medlems type</th><th>Status</th><th>Antal</th></tr>\n";
-    $i = 0;
-    for my $type (sort keys %status) {
-	my $status = $status{$type};
-	for my $s (sort keys %$status) {
-	    my $count = $status->{$s};
-	    my $class = ($i++ & 1) ? 'class="odd"' : 'class="even"';
-	    $html .= "<tr $class><td>$type</td><td>$s</td><td>$count</td></tr>";
-	}
+    # TODO: Cash state.
+    my ($saldot) = (0,0,0);
+    $html .= "<h2>Quick economic status</h2><table><tr><th>Account Type</th><th>Total In</th><th>Total Out</th><th>Total Saldo</th></tr>\n";
+    for my $accountTypeId (1,2,3) {	
+	my $ans = db->sql("select typeName from accountType where id=?", $accountTypeId);
+	my ($accountType) = $ans->fetchrow_array;
+	$ans->finish;
+
+	my $inr = db->sql("select sum(amount) from accountTransaction t, account a where a.type_id=? and a.id=t.target_account_id", $accountTypeId);		
+	my ($in) = $inr->fetchrow_array;
+	$inr->finish;
+	
+	my $outr = db->sql("select sum(amount) from accountTransaction t, account a where a.type_id=? and a.id=t.source_account_id", $accountTypeId);		
+	my ($out) = $outr->fetchrow_array;
+	$outr->finish;
+
+	$in =~ s/\.00$//;
+	$out =~ s/\.00$//;
+	
+	my $saldo = ($in//0)-($out//0);
+	
+	$html .= qq'<tr><td>$accountType</td><td>$in</td><td>$out</td><td>$saldo</td></tr>\n';
+
+	$saldot += $saldo;
     }
-    $html .= "</table>";
+    $html .= qq'<tr><td>Grand total</td><td></td><td></td><td>$saldot</td></tr>\n';
+    $html .= "</table>\n";
 
     $html .= '<h2>Diverse</h2>';
     $html .= qq'<p><a href="/hal/admin/load">Load nye poster fra Nordea</a></p>';

@@ -41,9 +41,10 @@ int main() {
     char d = 1;
     
     while (1) {
-      
-      PORTB &=~ _BV(PB2);
 
+      PORTB &=~ _BV(PB2);
+      PORTB |= _BV(PB2);
+      
       i += d;
       if (i >= 8) {
 	i = 7;
@@ -56,8 +57,8 @@ int main() {
       
       setLED(1<<i);	
 
-      PORTB |= _BV(PB2);
       
-      delay_ten_us(10000);
+      //delay_ten_us(10000);
+      delay_ten_us(10);
     }
 }

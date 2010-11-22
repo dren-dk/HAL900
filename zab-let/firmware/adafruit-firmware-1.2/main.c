@@ -190,8 +190,17 @@ int main(void) {
   uint16_t ontime, offtime;
   uint8_t i,j, Loop;
   uint8_t region = EU;     // by default our code is US
-  
+
+  char ledIndex = 0;
+  char ledDir = 1;
+
   Loop = 1;                // by default we are not going to loop
+
+#if (DEBUG == 1)
+  DDRA = _BV(PA6); // DEBUG output
+#endif
+
+  PORTA = 0x00;
 
   TCCR1A = 0;		   // Turn off PWM/freq gen, should be off already
   TCCR1B = 0;		   // Turn off PWM/freq gen, should be off already
@@ -206,19 +215,24 @@ int main(void) {
   DDRB = _BV(IRLED);   // set the visible and IR LED pins to outputs
   PORTB = _BV(IRLED) |            // IR LED is off when pin is high
           _BV(REGIONSWITCH);     // Turn on pullup on region switch pin
-
+  
   DEBUGP(putstring_nl("Hello!"));
+
+  PORTA &=~ _BV(6); // LEDS are active low.
 
   // check the reset flags
   if (i & _BV(BORF)) {    // Brownout
     // Flash out an error and go to sleep
     flashslowLEDx(2);	
-    tvbgone_sleep();  
+    //    tvbgone_sleep();  
   }
 
   delay_ten_us(5000);            // Let everything settle for a bit
 
   // determine region
+  region = US; // US
+  DEBUGP(putstring_nl("US"));
+    /*
   if (PINB & _BV(REGIONSWITCH)) {
     region = US; // US
     DEBUGP(putstring_nl("US"));
@@ -227,13 +241,14 @@ int main(void) {
     DEBUGP(putstring_nl("EU"));
   }
   region = EU;
+    */
 
   // Tell the user what region we're in  - 3 is US 4 is EU
   quickflashLEDx(3+region);
   
   // Starting execution loop
   delay_ten_us(25000);
-  
+
   // turn on watchdog timer immediately, this protects against
   // a 'stuck' system by resetting it
   wdt_enable(WDTO_8S); // 1 second long timeout
@@ -253,6 +268,17 @@ int main(void) {
 
     // for every POWER code in our collection
     for(i=0 ; i < j; i++) {   
+
+      ledIndex += ledDir;
+      if (ledIndex >= 6) {
+	ledIndex = 5;
+	ledDir = -1;
+      }
+      if (ledIndex < 0) {
+	ledIndex = 0;
+	ledDir = 1;
+      }      
+      DDRA = _BV(PA6) | (1<<ledIndex);	
 
       // print out the code # we are about to transmit
       DEBUGP(putstring("\n\r\n\rCode #: "); putnum_ud(i));

@@ -3,8 +3,8 @@
 #include "main.h"
 #include "util.h"
 
-#define TXPORT PORTB
-#define TX 2
+#define TXPORT PORTA
+#define TX 6
 
 #if (DEBUG == 1)
 

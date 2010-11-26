@@ -1,3 +1,4 @@
+#PART=atmega324p
 PART=atmega168
 #PART=atmega328p
 
@@ -40,7 +41,7 @@ fuses:
 #	$(CC) $(CFLAGS) -DNODE=$(NODE) $< -o $@
 
 door-ctrl.obj : door-ctrl.c sleep.c sleep.h uart.c uart.h defines.h net.h ip_config.h ip_arp_udp_tcp.h enc28j60.h ip_arp_udp_tcp.c enc28j60.c aes256.h aes256.c crc32.h crc32.c wiegand.h wiegand.c rfid.c rfid.h Makefile
-	$(CC) $(CFLAGS) -DNODE=$(NODE) uart.c sleep.c ip_arp_udp_tcp.c enc28j60.c aes256.c crc32.c wiegand.c door-ctrl.c rfid.c -o $@
+	$(CC) $(CFLAGS) -DNODE=$(NODE) uart.c sleep.c ip_arp_udp_tcp.c enc28j60.c crc32.c wiegand.c door-ctrl.c rfid.c -o $@
 	avr-size -C $@
 
 %.hex : %.obj

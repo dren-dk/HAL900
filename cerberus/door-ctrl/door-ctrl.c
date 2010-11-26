@@ -26,7 +26,7 @@
 #include "ip_arp_udp_tcp.h"
 #include "enc28j60.h"
 #include "net.h"
-#include "aes256.h"
+//#include "aes256.h"
 #include "crc32.h"
 #include "config.h"
 #include "telegram.h"
@@ -72,11 +72,11 @@ void broadcastLog(struct LogTelegram *lt) {
   lt->crc32 = crc32((unsigned char*)lt, 12);
 
   //  fprintf(stdout, "Log, seq:%d, crc: %lu, type:%c\n", lt->seq, lt->crc32, lt->logType);
-
+  /*
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_encrypt_ecb(&ctx, (unsigned char *)lt);
-  
+  */
   unsigned char transmitBuffer[UDP_DATA_P+32];
   spam_udp(transmitBuffer, (char *)lt, 16, UDP_PORT, 4747);  
 }
@@ -149,10 +149,11 @@ void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on t
   // Affix crc in the right place.
   *((unsigned long *)(telegram+12)) = crc32((unsigned char*)telegram, 12);
   //fprintf(stdout, "Sending reply UDP package, crc is: %lu\n", *((unsigned long *)(telegram+12)));
-
+  /*
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_encrypt_ecb(&ctx, (unsigned char *)telegram);
+  */
 
   //unsigned char transmitBuffer[UDP_DATA_P+32];
   //  send_udp(transmitBuffer, telegram, 16, UDP_PORT, dip, dport);  
@@ -257,10 +258,12 @@ void handleDeleteKey(unsigned char *request, struct AddDeleteKeyTelegram *payloa
 }
 
 
-void handleTelegram(unsigned char *request, unsigned char *payload) {
+void handleTelegram(unsigned char *request, unsigned char *payload) {  
+  /*
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
-  aes256_decrypt_ecb(&ctx, payload);
+  aes256_decrypt_ecb(&ctx, payload);  
+  */
 
   char *type = (char *)payload;
   //  unsigned int *seq = (unsigned int *)(payload+1);    
@@ -501,7 +504,7 @@ int main(void) {
   int loop = 0;
   unsigned char oldSensors = 0;
   while(1) {
-
+    
     //    fprintf(stdout, "%0x %0x %0x %0x %0x %0x\n",TCCR0A, TIMSK0, OCR0A, OCR0B, TCNT0, TCCR0B);
 
     static uint8_t buf[BUFFER_SIZE+1];
@@ -515,17 +518,16 @@ int main(void) {
 	  buf[UDP_DST_PORT_H_P]==(UDP_PORT>>8) &&
 	  buf[UDP_DST_PORT_L_P]==(UDP_PORT&0xff)) {
 	
-	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
 	unsigned char *payload = buf + UDP_DATA_P;
-
-	//	fprintf(stdout, "Handling UDP package of %d bytes\n", payloadlen);
-	
+	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
+	fprintf(stdout, "Handling UDP package of %d bytes\n", payloadlen);
+		
 	if (payloadlen == 16) {
 	  handleTelegram(buf, payload);
-	}	
+	}			
       }
     }
-    
+        
     unsigned char sensors = getSensors();
     if (sensors != oldSensors) {
       oldSensors = sensors;
@@ -543,7 +545,7 @@ int main(void) {
     if (isRfidReady()) {
       handleRFID(getRfidValue());
     }
-
+    
     unsigned long rfid = rfidValue();
     if (rfid) {
       fprintf(stdout, "Got rfid: 0x%0lx\n", rfid);
@@ -551,7 +553,8 @@ int main(void) {
 
     handleTick();
     
-    _delay_ms(10);
+
+    _delay_ms(100);
     greenKBDLED(loop & 1);
     //    led(loop & 1);
     wdt_reset();

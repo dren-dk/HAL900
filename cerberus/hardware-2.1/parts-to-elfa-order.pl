@@ -1,0 +1,172 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin $Script);
+use WWW::Mechanize;
+use Storable qw(nstore retrieve);
+
+die "Syntax: $Script <eagle bom file> <output csv>" unless @ARGV == 2;
+my ($input, $output) = @ARGV;
+
+my %PACKAGES = (
+  'C0805' => '0805',
+  'C1210' => '1210',
+  'R0805' => '0805',
+  'SOT23-BEC' => 'SOT-23',
+);
+
+my %parts;
+open EAGLE, "<$input" or die "Failed to read input file $input: $!";
+
+# First find the header:
+#Part     Value             Device                 Package      Library                   Sheet
+my %cols;
+while (my $line = <EAGLE>) {
+  chomp $line;
+  next unless $line =~ /^Part\s+/;
+  
+  my @CN = qw(Part Value Device Package Library);
+  my @ci;
+  for my $col (@CN) {
+    my $index = index($line, $col);
+    die "Failed to find column header for $col" unless $index >= 0;
+    push @ci, $index;
+  }
+  
+  for my $i (0..@CN-2) {
+    my $n = $CN[$i];
+    $cols{$n} = {
+      start=>$ci[$i],
+      size =>$ci[$i+1]-$ci[$i]-1,
+    }
+  }
+
+  last;  
+}
+
+die "Failed to find the header line" unless %cols;
+
+
+while (my $line = <EAGLE>) {
+  chomp $line;
+  next unless $line =~ /\s\d$/;
+  
+  my $name   = substr($line, $cols{Part}{start},    $cols{Part}{size});
+  my $value  = substr($line, $cols{Value}{start},   $cols{Value}{size});
+  my $package= substr($line, $cols{Package}{start}, $cols{Package}{size}); 
+
+  $name =~ s/\s+$//;
+  $value =~ s/\s+$//;
+  $package =~ s/\s+$//;
+
+  if ($PACKAGES{$package}) {
+    $package = $PACKAGES{$package};
+  }
+  
+  my $type = $value ne '' ? "$value $package" : $package;
+
+  push @{$parts{$type}}, $name;
+}
+close EAGLE;
+
+my %elfa;
+if (open EE, "<$Bin/eagle2elfa.parts") {
+  while (my $e = <EE>) {
+    chomp $e;
+    my ($eagle, $elfa) = split("\t", $e);
+    $elfa{$eagle} = $elfa;    
+  }
+  close EE;
+}
+
+my $skipKnown = 1;
+for my $type (sort keys %parts) {
+
+  next if $elfa{$type} and $skipKnown;
+
+  my @names = @{$parts{$type}};
+  my $count = @names;
+  print "$type count=$count ",
+    join(' ', @names), 
+    "\n", 
+    "https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN&query=$type",
+    "\n";
+    
+  my $ep;
+
+  while (1) {
+    if ($elfa{$type}) {
+      print "ELFA part number (default: $elfa{$type}): ";
+    
+    } else {
+      print "ELFA part number: ";
+    }
+    $ep = <STDIN>;
+    $ep =~ s/^\s+//;
+    $ep =~ s/\s+$//;
+    if ($ep =~ /^\d{2}-\d{3}-\d{2}$/) {
+      $elfa{$type} = $ep;
+      open EE, ">$Bin/eagle2elfa.parts" or die "urgh: $!";
+      for my $e (sort keys %elfa) {
+	print EE "$e\t$elfa{$e}\n";
+      }
+      close EE;
+      
+      print "Ok, saved\n";
+      last;
+    } 
+    if ($ep eq 's') {
+      print "Skipped\n";
+      last;
+    }
+    if ($ep eq 'S') {
+      print "Skipped, skipping all with defaults\n";
+      $skipKnown = 1;
+      last;
+    }
+    if ($elfa{$type} and ($ep eq '')) {
+      print "Keeping default\n";
+      last;
+    }
+        
+    print "heh? Try again\n";
+  }
+}
+
+my $priceStore = "$Bin/elfa-prices.stored";
+my $priceCache = -f $priceStore ? retrieve($priceStore) : {};
+open OUT, ">$output" or die "Failed to write $output: $!";
+for my $type (sort keys %parts) {
+  my @names = @{$parts{$type}};
+  my $count = @names;
+  my $elfa = $elfa{$type} or die "Urgh $type";
+  
+  my $price = $priceCache->{$elfa};
+  
+  if (!$price) {
+    print "Looking up price for $elfa\n";
+    my $m = WWW::Mechanize->new();
+    $m->get("https://www.elfa.se/elfa3~dk_en/elfa/init.do?item=$elfa");
+    my $html = $m->content();
+
+    my @prices;
+    my ($priceList) = $html =~ m!<td[^>]*id="item-pricelist">\s*<table>\s*(.+?)\s*</table>\s*</td>!s;
+    if ($priceList) {
+      @prices = $priceList =~ m!<td class="price">([^>]+)</td>!g;
+      die "Failed to find prices in $priceList" unless @prices;
+    } else  {
+      @prices = $html =~ m!<td[^>]*id="item-pricelist">\s*<span>\s*(.+?)\s*</span>\s*</td>!s or die "Failed to find price for $elfa";      
+    }
+    my $normalPrice = $prices[0];
+    my $osaaPrice = $prices[@prices-1];
+    
+    $price = $priceCache->{$elfa} = [ $normalPrice, $osaaPrice ];
+    
+    nstore($priceCache, $priceStore);
+    sleep(1);
+  }   
+  
+  print OUT join("\t", $type, join(' ', @names), $elfa, $count, $price->[0], $price->[1],
+    "https://www.elfa.se/elfa3~dk_en/elfa/init.do?item=$elfa"), "\n";
+}
+close OUT;

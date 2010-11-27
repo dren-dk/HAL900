@@ -130,7 +130,7 @@ PD5: Relay/LED 2
 
 
 
-------------------------------------------------------------------------------------------------
+------------------------------------------------------------------
 
 
 Power:
@@ -146,3 +146,55 @@ Total: 220-1300 mA
 200 mA
 
 3.3W - Peak: 16.25W
+
+-----------------------------------------------------------
+
+Port-0:
+  PB0
+  PB2
+  PA0
+  PA1
+  led1: PC2(TCK)
+  led2: PC3(TMS)
+
+Port-1:
+  Coil A / PB1(T1) 
+  Coil B / PD6(ICP)
+  PA4
+  PA5
+  led1: PC6
+  led2: PC7
+
+Port-2:
+  PB3
+  PB4
+  PA2
+  PA3
+  led1: PC4(TDO)
+  led2: PC5(TDI)
+
+Relay 1: PD2
+Relay 2: PD3
+
+Ext:
+  GND
+  +3V3
+  PA6
+  PA7
+  PD4
+  PD5
+  PD7
+  coil-a
+
+  GND
+  +12V
+  SDA
+  SCL
+  TXD
+  RXD
+  !RESET
+  coil-b
+  
+
+
+

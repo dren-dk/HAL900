@@ -154,8 +154,8 @@ Port-0:
   PB2
   PA0
   PA1
-  led1: PC2(TCK)
-  led2: PC3(TMS)
+  led1: PD4
+  led2: PD5
 
 Port-1:
   Coil A / PB1(T1) 
@@ -170,8 +170,8 @@ Port-2:
   PB4
   PA2
   PA3
-  led1: PC4(TDO)
-  led2: PC5(TDI)
+  led1: PD7
+  led2: PA7
 
 Relay 1: PD2
 Relay 2: PD3

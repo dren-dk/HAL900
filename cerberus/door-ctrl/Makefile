@@ -7,7 +7,8 @@ PROGRAMMER = jtag2isp -P usb
 
 
 CC=avr-gcc
-CFLAGS=-Os -Wall -pedantic-errors -Werror -mcall-prologues -mmcu=${PART} -std=c99
+CFLAGS=-Os -Wall -pedantic-errors -Werror -mcall-prologues -mmcu=${PART} -std=c99 -Wl,-u,vfprintf -lprintf_min
+
 OBJ2HEX=avr-objcopy 
 
 AVRDUDE = avrdude -c ${PROGRAMMER} -p ${PART}
@@ -40,8 +41,11 @@ fuses:
 #%.obj : %.c
 #	$(CC) $(CFLAGS) -DNODE=$(NODE) $< -o $@
 
+%.obj : %.asm
+	avra -fO $< -o $@
+
 door-ctrl.obj : door-ctrl.c sleep.c sleep.h uart.c uart.h defines.h net.h ip_config.h ip_arp_udp_tcp.h enc28j60.h ip_arp_udp_tcp.c enc28j60.c aes256.h aes256.c crc32.h crc32.c wiegand.h wiegand.c rfid.c rfid.h Makefile
-	$(CC) $(CFLAGS) -DNODE=$(NODE) uart.c sleep.c ip_arp_udp_tcp.c enc28j60.c crc32.c wiegand.c door-ctrl.c rfid.c -o $@
+	$(CC) $(CFLAGS) -DUSE_AES=$(USE_AES) -DNODE=$(NODE) uart.c sleep.c ip_arp_udp_tcp.c enc28j60.c crc32.c wiegand.c door-ctrl.c rfid.c aes256.c config.c -o $@
 	avr-size -C $@
 
 %.hex : %.obj

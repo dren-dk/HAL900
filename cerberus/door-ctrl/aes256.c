@@ -22,7 +22,7 @@
 #define F(x)   (((x)<<1) ^ ((((x)>>7) & 1) * 0x1b))
 #define FD(x)  (((x) >> 1) ^ (((x) & 1) ? 0x8d : 0))
 
-// #define BACK_TO_TABLES
+//#define BACK_TO_TABLES
 #ifdef BACK_TO_TABLES
 
 const unsigned char sbox[256] = {

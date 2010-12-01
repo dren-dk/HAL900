@@ -26,7 +26,7 @@
 #include "ip_arp_udp_tcp.h"
 #include "enc28j60.h"
 #include "net.h"
-//#include "aes256.h"
+#include "aes256.h"
 #include "crc32.h"
 #include "config.h"
 #include "telegram.h"
@@ -46,23 +46,6 @@ EMPTY_INTERRUPT(__vector_default)
 #define EEPROM_SEQ 0
 #define EEPROM_KEYS 23
 
-#if NODE == 1
-
-const unsigned char AES_KEY[32] = {0x64, 0x4c, 0x3a, 0xd1, 0x96, 0x7, 0x8f, 0xbc, 0xe7, 0xc, 0x4e, 0x27, 0x20, 0xc2, 0x43, 0xb2, 0x5b, 0xa9, 0x38, 0x7f, 0x15, 0xaa, 0xc, 0x58, 0x83, 0x37, 0x0, 0x20, 0x56, 0x70, 0x8d, 0x59};
-
-#elif NODE == 2
-
-const unsigned char AES_KEY[32] = {0x82, 0xdd, 0xce, 0x97, 0x12, 0xfe, 0xf5, 0x7a, 0xfa, 0x53, 0x82, 0x6c, 0x5b, 0xfb, 0x8f, 0x68, 0x71, 0x1, 0x62, 0x38, 0x3d, 0x85, 0x79, 0xc9, 0x44, 0x95, 0x7, 0x49, 0xc5, 0xd4, 0x6d, 0xf0};
-
-#else
-#error No NODE macro defined.
-#endif
-
-const unsigned char *getAESKEY() {
-  return AES_KEY;
-}
-
-
 /**********************************************************************************************/
 unsigned int logSeq=0;
 void broadcastLog(struct LogTelegram *lt) {
@@ -72,11 +55,11 @@ void broadcastLog(struct LogTelegram *lt) {
   lt->crc32 = crc32((unsigned char*)lt, 12);
 
   //  fprintf(stdout, "Log, seq:%d, crc: %lu, type:%c\n", lt->seq, lt->crc32, lt->logType);
-  /*
+#if USE_AES  
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_encrypt_ecb(&ctx, (unsigned char *)lt);
-  */
+#endif  
   unsigned char transmitBuffer[UDP_DATA_P+32];
   spam_udp(transmitBuffer, (char *)lt, 16, UDP_PORT, 4747);  
 }
@@ -149,11 +132,11 @@ void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on t
   // Affix crc in the right place.
   *((unsigned long *)(telegram+12)) = crc32((unsigned char*)telegram, 12);
   //fprintf(stdout, "Sending reply UDP package, crc is: %lu\n", *((unsigned long *)(telegram+12)));
-  /*
+#if USE_AES  
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_encrypt_ecb(&ctx, (unsigned char *)telegram);
-  */
+#endif
 
   //unsigned char transmitBuffer[UDP_DATA_P+32];
   //  send_udp(transmitBuffer, telegram, 16, UDP_PORT, dip, dport);  
@@ -259,11 +242,11 @@ void handleDeleteKey(unsigned char *request, struct AddDeleteKeyTelegram *payloa
 
 
 void handleTelegram(unsigned char *request, unsigned char *payload) {  
-  /*
+#if USE_AES  
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_decrypt_ecb(&ctx, payload);  
-  */
+#endif
 
   char *type = (char *)payload;
   //  unsigned int *seq = (unsigned int *)(payload+1);    
@@ -513,6 +496,8 @@ int main(void) {
     buf[BUFFER_SIZE]='\0';
     unsigned int tcpPacketSize = packetloop_icmp_tcp(buf,plen);
     if (plen && !tcpPacketSize){ 
+      fprintf(stdout, "Handling package of %d bytes\n", plen);
+
       if (eth_type_is_ip_and_my_ip(buf,plen) && 
 	  buf[IP_PROTO_P]==IP_PROTO_UDP_V &&
 	  buf[UDP_DST_PORT_H_P]==(UDP_PORT>>8) &&
@@ -520,7 +505,7 @@ int main(void) {
 	
 	unsigned char *payload = buf + UDP_DATA_P;
 	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
-	fprintf(stdout, "Handling UDP package of %d bytes\n", payloadlen);
+	//	fprintf("Handling UDP package of %d bytes\n", payloadlen);
 		
 	if (payloadlen == 16) {
 	  handleTelegram(buf, payload);
@@ -554,7 +539,7 @@ int main(void) {
     handleTick();
     
 
-    _delay_ms(100);
+    _delay_ms(10);
     greenKBDLED(loop & 1);
     //    led(loop & 1);
     wdt_reset();

@@ -1,4 +1,4 @@
-update=14-11-2010 13:36:37
+update=02-12-2010 12:05:12
 version=1
 last_client=pcbnew
 [cvpcb]
@@ -85,8 +85,8 @@ LibName33=Resonator
 [pcbnew]
 version=1
 PadDrlX=320
-PadDimH=550
-PadDimV=550
+PadDimH=787
+PadDimV=787
 BoardThickness=630
 SgPcb45=1
 TxtPcbV=800
@@ -99,7 +99,7 @@ DrawLar=150
 EdgeLar=150
 TxtLar=120
 MSegLar=150
-LastNetListRead=TV-begone_POV.net
+LastNetListRead=zab-let.net
 [pcbnew/libraries]
 LibDir=
 LibName1=sockets

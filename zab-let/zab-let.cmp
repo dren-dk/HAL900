@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-05-05 BZR 2356)-stable date = 08-11-2010 11:51:49
+Cmp-Mod V01 Created by CvPCB (2010-05-05 BZR 2356)-stable date = 02-12-2010 11:50:18
 
 BeginCmp
 TimeStamp = /4CC9376A;
@@ -137,35 +137,35 @@ BeginCmp
 TimeStamp = /4CBC1F2D;
 Reference = Q1;
 ValeurCmp = BC547;
-IdModule  = TO92-EBC;
+IdModule  = TO92-EBC-straight;
 EndCmp
 
 BeginCmp
 TimeStamp = /4CBC1FBB;
 Reference = Q2;
 ValeurCmp = BC547;
-IdModule  = TO92-EBC;
+IdModule  = TO92-EBC-straight;
 EndCmp
 
 BeginCmp
 TimeStamp = /4CBC1FBD;
 Reference = Q3;
 ValeurCmp = BC547;
-IdModule  = TO92-EBC;
+IdModule  = TO92-EBC-straight;
 EndCmp
 
 BeginCmp
 TimeStamp = /4CBC1FBF;
 Reference = Q4;
 ValeurCmp = BC547;
-IdModule  = TO92-EBC;
+IdModule  = TO92-EBC-straight;
 EndCmp
 
 BeginCmp
 TimeStamp = /4CBC207E;
 Reference = Q5;
 ValeurCmp = BC557;
-IdModule  = TO92-EBC;
+IdModule  = TO92-EBC-straight;
 EndCmp
 
 BeginCmp

@@ -1,0 +1,280 @@
+# EESchema Netlist Version 1.1 created  2010-12-06T22:11:28 CET
+(
+ ( /4CFAB038 SM0805 C1 16_pF
+  ( 1 N-000003 )
+  ( 2 GND )
+ )
+ ( /4CFAB04B SM0805 C2 16_pF
+  ( 1 /CLOCK )
+  ( 2 GND )
+ )
+ ( /4CFD3072/4CFD35FD SM0805 C3 3.3nF
+  ( 1 N-000050 )
+  ( 2 GND )
+ )
+ ( /4CFD3072/4CFD361C SM0805 C4 1nF
+  ( 1 N-000049 )
+  ( 2 GND )
+ )
+ ( /4CFD3072/4CFD3639 SM0805 C5 100nF
+  ( 1 N-000048 )
+  ( 2 N-000049 )
+ )
+ ( /4CFD3072/4CFD3643 SM0805 C6 1nF
+  ( 1 N-000047 )
+  ( 2 GND )
+ )
+ ( /4CFD3072/4CFD372E SM0805 C7 C
+  ( 1 N-000044 )
+  ( 2 N-000045 )
+ )
+ ( /4CFD3072/4CFD3713 SM0805 C8 C
+  ( 1 N-000046 )
+  ( 2 GND )
+ )
+ ( /4CF6BD17 pin_array_3x2 CON1 AVR-ISP-6
+  ( 1 /PB6 )
+  ( 2 +3.3V )
+  ( 3 /PB7 )
+  ( 4 /PB5 )
+  ( 5 /RESET )
+  ( 6 GND )
+ )
+ ( /4CF6BD20 PIN_ARRAY_5x2 CON2 AVR-JTAG-10
+  ( 1 /PC2 )
+  ( 2 GND )
+  ( 3 /PC4 )
+  ( 4 +3.3V )
+  ( 5 /PC3 )
+  ( 6 /RESET )
+  ( 7 ? )
+  ( 8 ? )
+  ( 9 /PC5 )
+  ( 10 GND )
+ )
+ ( /4CFD3072/4CFD360C micromelf D1 DIODE
+  ( 1 /doorctr1 )
+  ( 2 N-000049 )
+ )
+ ( /4CF6BD02 TQFP44 IC1 ATMEGA324P-A
+  ( 1 /PB5 )
+  ( 2 /PB6 )
+  ( 3 /PB7 )
+  ( 4 /RESET )
+  ( 5 +3.3V )
+  ( 6 GND )
+  ( 7 N-000003 )
+  ( 8 /CLOCK )
+  ( 9 ? )
+  ( 10 ? )
+  ( 11 ? )
+  ( 12 ? )
+  ( 13 ? )
+  ( 14 ? )
+  ( 15 ? )
+  ( 16 ? )
+  ( 17 +3.3V )
+  ( 18 GND )
+  ( 19 ? )
+  ( 20 ? )
+  ( 21 /PC2 )
+  ( 22 /PC3 )
+  ( 23 /PC4 )
+  ( 24 /PC5 )
+  ( 25 ? )
+  ( 26 ? )
+  ( 27 +3.3V )
+  ( 28 GND )
+  ( 29 +3.3V )
+  ( 30 ? )
+  ( 31 ? )
+  ( 32 ? )
+  ( 33 ? )
+  ( 34 ? )
+  ( 35 ? )
+  ( 36 ? )
+  ( 37 ? )
+  ( 38 +3.3V )
+  ( 39 GND )
+  ( 40 ? )
+  ( 41 ? )
+  ( 42 ? )
+  ( 43 ? )
+  ( 44 ? )
+ )
+ ( /4CFD3072/4CFD4AE8 SOT23-bec Q1 BC817
+  ( 1 /doorctr2 )
+  ( 2 /doorctr3 )
+  ( 3 +3.3V )
+ )
+ ( /4CFD3072/4CFD4AF1 SOT23-bec Q2 BC807
+  ( 1 /doorctr2 )
+  ( 2 /doorctr3 )
+  ( 3 GND )
+ )
+ ( /4CFD3072/4CFD35F2 SM0805 R1 10R
+  ( 1 /doorctr1 )
+  ( 2 N-000050 )
+ )
+ ( /4CFD3072/4CFD3627 SM0805 R2 100k
+  ( 1 N-000049 )
+  ( 2 GND )
+ )
+ ( /4CFD3072/4CFD362F SM0805 R3 10k
+  ( 1 N-000047 )
+  ( 2 N-000048 )
+ )
+ ( /4CFD3072/4CFD364B SM0805 R4 100k
+  ( 1 N-000047 )
+  ( 2 GND )
+ )
+ ( /4CFD3072/4CFD3746 SM0805 R5 470R
+  ( 1 N-000045 )
+  ( 2 GND )
+ )
+ ( /4CFD3072/4CFD373D SM0805 R6 22k
+  ( 1 N-000044 )
+  ( 2 N-000045 )
+ )
+ ( /4CFD3072/4CFD36E1 SM0805 R7 R
+  ( 1 N-000051 )
+  ( 2 N-000044 )
+ )
+ ( /4CFD3072/4CFD370D SM0805 R8 R
+  ( 1 N-000046 )
+  ( 2 N-000044 )
+ )
+ ( /4CFD3072/4CFD36D4 SM0805 R9 R
+  ( 1 /doorctr4 )
+  ( 2 N-000051 )
+ )
+ ( /4CFD3072/4CFD36C2 SO8E U1 LM358
+  ( 1 N-000044 )
+  ( 2 N-000045 )
+  ( 3 N-000047 )
+  ( 4 GND )
+  ( 5 N-000051 )
+  ( 6 N-000046 )
+  ( 7 /doorctr4 )
+  ( 8 +3.3V )
+ )
+ ( /4CFAAFBA Q_49U3HMS X1 12_MHz
+  ( 1 /CLOCK )
+  ( 2 N-000003 )
+ )
+)
+*
+{ Allowed footprints by component:
+$component C1
+ SM*
+ C?
+ C1-1
+$endlist
+$component C2
+ SM*
+ C?
+ C1-1
+$endlist
+$component C3
+ SM*
+ C?
+ C1-1
+$endlist
+$component C4
+ SM*
+ C?
+ C1-1
+$endlist
+$component C5
+ SM*
+ C?
+ C1-1
+$endlist
+$component C6
+ SM*
+ C?
+ C1-1
+$endlist
+$component C7
+ SM*
+ C?
+ C1-1
+$endlist
+$component C8
+ SM*
+ C?
+ C1-1
+$endlist
+$component CON2
+ AVR-JTAG-10
+$endlist
+$component D1
+ D?
+ S*
+$endlist
+$component IC1
+ 40DIP-ELL600
+ 40dip600
+$endlist
+$component Q1
+ sot23-bec
+$endlist
+$component Q2
+ sot23-bec
+$endlist
+$component R1
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R2
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R3
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R4
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R5
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R6
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R7
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R8
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R9
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$endfootprintlist
+}

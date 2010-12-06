@@ -1,4 +1,4 @@
-update=02-12-2010 12:05:12
+update=06-12-2010 11:15:25
 version=1
 last_client=pcbnew
 [cvpcb]
@@ -85,8 +85,8 @@ LibName33=Resonator
 [pcbnew]
 version=1
 PadDrlX=320
-PadDimH=787
-PadDimV=787
+PadDimH=800
+PadDimV=800
 BoardThickness=630
 SgPcb45=1
 TxtPcbV=800

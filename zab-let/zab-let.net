@@ -1,10 +1,10 @@
-# EESchema Netlist Version 1.1 created  02-12-2010 11:50:18
+# EESchema Netlist Version 1.1 created  06-12-2010 10:39:17
 (
  ( /4CC9376A PIN_ARRAY_2X1 BT1 BATTERY
   ( 1 VCC )
   ( 2 GND )
  )
- ( /4CBC07E1 C1V7 C1 100µ
+ ( /4CBC07E1 C1V7H C1 100µ
   ( 1 VCC )
   ( 2 GND )
  )

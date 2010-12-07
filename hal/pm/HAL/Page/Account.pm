@@ -149,7 +149,7 @@ Tlf. $phone
     $html .= "</ul></div>\n";
     $html .= "<td></tr></table> <!-- Yes I'm using a table for layout, so sue me! -->";
 
-    if ($memberDoorAccess) {
+    if ($doorAccess) {
 	$html .= qq'<h2>Rabat hos ELFA</h2>
 <p>Som betalende medlem af OSAA får du rabat på køb hos <a href="https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#page=about/shops.html;">ELFA</a>,
 rabatten består i at du får højeste pricebreak for alle varer, med andre ord får du den højeste mængderabat uanset hvor meget du køber, dette kan være op til

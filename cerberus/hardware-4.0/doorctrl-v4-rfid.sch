@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-06T22:12:19 CET
+EESchema Schematic File Version 2  date 2010-12-07T16:59:15 CET
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -31,13 +31,12 @@ LIBS:contrib
 LIBS:valves
 LIBS:bc807
 LIBS:bc817
-LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 4 6
 Title ""
-Date "6 dec 2010"
+Date "7 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -312,7 +311,7 @@ L C C7
 U 1 1 4CFD372E
 P 7300 3700
 F 0 "C7" H 7350 3800 50  0000 L CNN
-F 1 "C" H 7350 3600 50  0000 L CNN
+F 1 "1nF" H 7350 3600 50  0000 L CNN
 	1    7300 3700
 	0    1    1    0   
 $EndComp
@@ -321,7 +320,7 @@ L C C8
 U 1 1 4CFD3713
 P 8650 3550
 F 0 "C8" H 8700 3650 50  0000 L CNN
-F 1 "C" H 8700 3450 50  0000 L CNN
+F 1 "100nF" H 8700 3450 50  0000 L CNN
 	1    8650 3550
 	1    0    0    -1  
 $EndComp
@@ -330,7 +329,7 @@ L R R8
 U 1 1 4CFD370D
 P 8300 3200
 F 0 "R8" V 8380 3200 50  0000 C CNN
-F 1 "R" V 8300 3200 50  0000 C CNN
+F 1 "100k" V 8300 3200 50  0000 C CNN
 	1    8300 3200
 	0    1    1    0   
 $EndComp
@@ -339,7 +338,7 @@ L R R7
 U 1 1 4CFD36E1
 P 8300 3000
 F 0 "R7" V 8380 3000 50  0000 C CNN
-F 1 "R" V 8300 3000 50  0000 C CNN
+F 1 "1k" V 8300 3000 50  0000 C CNN
 	1    8300 3000
 	0    1    1    0   
 $EndComp
@@ -348,7 +347,7 @@ L R R9
 U 1 1 4CFD36D4
 P 9100 2400
 F 0 "R9" V 9180 2400 50  0000 C CNN
-F 1 "R" V 9100 2400 50  0000 C CNN
+F 1 "10k" V 9100 2400 50  0000 C CNN
 	1    9100 2400
 	0    1    1    0   
 $EndComp

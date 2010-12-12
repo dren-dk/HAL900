@@ -1,0 +1,32 @@
+EESchema-LIBRARY Version 2.3  29/04/2008-12:22:27
+# Converted with eagle2kicad.ulp Version 0.9
+# Device count = 1
+#
+# Dev Name: L4960
+# Package Name: HEPTAWATT
+# Dev Tech: ''
+# Dev Prefix: IC
+# Gate count = 1
+#
+DEF L4960 IC 0 40 Y Y 1 L N
+# Gate Name: G$1
+# Symbol Name: HEPTAWATT7
+F0 "IC" -400 500 50 H V L B
+F1 "L4960" -400 200 50 H V L B
+F2 "l4960-HEPTAWATT" 0 150 50 H I C C
+DRAW
+P 2 1 0 0 -800 400 -800 -400
+P 2 1 0 0 -800 -400 800 -400
+P 2 1 0 0 800 -400 800 400
+P 2 1 0 0 800 400 -800 400
+X FBIN 2 600 700 300 D 40 40 1 1 I 
+X FC 3 -600 700 300 D 40 40 1 1 w 
+X GND 4 0 -700 300 U 40 40 1 1 w 
+X OSC 5 -600 -700 300 U 40 40 1 1 I C
+X SOFT 6 600 -700 300 U 40 40 1 1 I 
+X VIN 1 -1100 0 300 R 40 40 1 1 I 
+X VOUT 7 1100 0 300 L 40 40 1 1 O 
+ENDDRAW
+ENDDEF
+
+#End Library

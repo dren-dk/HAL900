@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-07T16:59:15 CET
+EESchema Schematic File Version 2  date 2010-12-12T18:56:18 CET
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -31,12 +31,16 @@ LIBS:contrib
 LIBS:valves
 LIBS:bc807
 LIBS:bc817
+LIBS:amp-rj45-tap-up-with-leds
+LIBS:l4960
+LIBS:borniers
+LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
-Sheet 1 6
+Sheet 2 6
 Title ""
-Date "7 dec 2010"
+Date "12 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -44,4 +48,482 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Wire Wire Line
+	5550 1100 6600 1100
+Wire Wire Line
+	9900 3000 9900 3150
+Wire Wire Line
+	9900 3150 10000 3150
+Wire Wire Line
+	5050 2300 4950 2300
+Wire Wire Line
+	5050 1700 4950 1700
+Connection ~ 6350 1100
+Wire Wire Line
+	6350 1100 6350 1550
+Connection ~ 5800 2300
+Wire Wire Line
+	5800 2300 5800 2200
+Connection ~ 6100 1100
+Wire Wire Line
+	6100 1100 6100 1200
+Wire Wire Line
+	6600 1100 6600 1550
+Connection ~ 6100 1700
+Wire Wire Line
+	6100 1900 6100 1500
+Connection ~ 5800 1700
+Connection ~ 2600 4650
+Wire Wire Line
+	2600 4400 2600 4700
+Wire Wire Line
+	2600 4400 1800 4400
+Connection ~ 2850 5250
+Wire Wire Line
+	2850 5350 2850 5150
+Wire Wire Line
+	2000 5050 1800 5050
+Wire Wire Line
+	2000 4700 1800 4700
+Wire Wire Line
+	2850 4750 2650 4750
+Wire Wire Line
+	2650 4750 2650 4900
+Wire Wire Line
+	2650 4900 2500 4900
+Wire Wire Line
+	2500 4550 2850 4550
+Wire Wire Line
+	2750 4950 2850 4950
+Wire Wire Line
+	2850 2800 2850 2900
+Wire Wire Line
+	2850 2700 2600 2700
+Wire Wire Line
+	2600 2700 2600 2850
+Wire Wire Line
+	2600 2850 2500 2850
+Wire Wire Line
+	2500 2500 2850 2500
+Wire Wire Line
+	2000 2850 1800 2850
+Wire Wire Line
+	1800 2500 2000 2500
+Wire Wire Line
+	2000 1300 1800 1300
+Wire Wire Line
+	2000 950  1800 950 
+Wire Wire Line
+	2850 1000 2550 1000
+Wire Wire Line
+	2550 1000 2550 1150
+Wire Wire Line
+	2550 1150 2500 1150
+Wire Wire Line
+	2850 1300 2500 1300
+Wire Wire Line
+	2750 1200 2850 1200
+Connection ~ 2850 1500
+Wire Wire Line
+	2850 1400 2850 1600
+Wire Wire Line
+	2850 1200 2850 1100
+Wire Wire Line
+	2500 800  2850 800 
+Wire Wire Line
+	2500 950  2500 900 
+Wire Wire Line
+	2500 900  2850 900 
+Wire Wire Line
+	1800 1150 2000 1150
+Wire Wire Line
+	2000 2650 1800 2650
+Wire Wire Line
+	1800 3000 2000 3000
+Wire Wire Line
+	2500 2650 2550 2650
+Wire Wire Line
+	2550 2650 2550 2600
+Wire Wire Line
+	2550 2600 2850 2600
+Wire Wire Line
+	2850 2900 2700 2900
+Wire Wire Line
+	2500 3000 2850 3000
+Wire Wire Line
+	2850 3300 2850 3100
+Connection ~ 2850 3200
+Wire Wire Line
+	2850 5050 2500 5050
+Wire Wire Line
+	2850 4950 2850 4850
+Wire Wire Line
+	2600 4700 2500 4700
+Wire Wire Line
+	2850 4650 2600 4650
+Wire Wire Line
+	1800 4550 2000 4550
+Wire Wire Line
+	1800 4900 2000 4900
+Wire Wire Line
+	1800 4250 2700 4250
+Wire Wire Line
+	2700 4250 2700 4550
+Connection ~ 2700 4550
+Wire Wire Line
+	6100 1700 5550 1700
+Wire Wire Line
+	5800 1900 5800 1500
+Wire Wire Line
+	6600 1850 6600 2300
+Wire Wire Line
+	5800 1100 5800 1200
+Connection ~ 5800 1100
+Wire Wire Line
+	6100 2300 6100 2200
+Connection ~ 6100 2300
+Wire Wire Line
+	6350 1850 6350 2300
+Connection ~ 6350 2300
+Wire Wire Line
+	4950 1100 5050 1100
+Wire Wire Line
+	9900 3500 9900 3350
+Wire Wire Line
+	9900 3350 10000 3350
+Wire Wire Line
+	1800 800  2000 800 
+Wire Wire Line
+	6600 2300 5550 2300
+$Comp
+L GND #PWR08
+U 1 1 4D04DDDA
+P 9900 3500
+F 0 "#PWR08" H 9900 3500 30  0001 C CNN
+F 1 "GND" H 9900 3430 30  0001 C CNN
+	1    9900 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L +12V #PWR09
+U 1 1 4D04DDD3
+P 9900 3000
+F 0 "#PWR09" H 9900 2950 20  0001 C CNN
+F 1 "+12V" H 9900 3100 30  0000 C CNN
+	1    9900 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_2_V P1
+U 1 1 4D04DDC0
+P 10350 3250
+F 0 "P1" H 10270 3475 40  0000 C CNN
+F 1 "CONN_2_V" H 10320 3430 40  0000 C CNN
+	1    10350 3250
+	1    0    0    -1  
+$EndComp
+Text HLabel 4950 2300 0    60   Input ~ 0
+LED-3
+Text HLabel 4950 1700 0    60   Input ~ 0
+LED-2
+Text HLabel 4950 1100 0    60   Input ~ 0
+LED-1
+$Comp
+L R R35
+U 1 1 4D04C0ED
+P 5300 2300
+F 0 "R35" V 5380 2300 50  0000 C CNN
+F 1 "330R" V 5300 2300 50  0000 C CNN
+	1    5300 2300
+	0    1    1    0   
+$EndComp
+$Comp
+L R R34
+U 1 1 4D04C0E0
+P 5300 1700
+F 0 "R34" V 5380 1700 50  0000 C CNN
+F 1 "330R" V 5300 1700 50  0000 C CNN
+	1    5300 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L R R33
+U 1 1 4D04C0D1
+P 5300 1100
+F 0 "R33" V 5380 1100 50  0000 C CNN
+F 1 "330R" V 5300 1100 50  0000 C CNN
+	1    5300 1100
+	0    1    1    0   
+$EndComp
+$Comp
+L RJHSE-5085 CON4
+U 2 1 4D04A957
+P 6100 2100
+F 0 "CON4" H 6050 2400 60  0000 C CNN
+F 1 "RJHSE-5085" H 6700 2500 60  0000 C CNN
+	2    6100 2100
+	-1   0    0    1   
+$EndComp
+$Comp
+L RJHSE-5085 CON4
+U 3 1 4D04AB2F
+P 5800 2000
+F 0 "CON4" H 5750 1600 60  0000 C CNN
+F 1 "RJHSE-5085" H 5500 1500 60  0000 C CNN
+	3    5800 2000
+	1    0    0    -1  
+$EndComp
+Text HLabel 1800 4400 0    60   BiDi ~ 0
+port3-2d
+Text HLabel 1800 4250 0    60   BiDi ~ 0
+port3-1d
+$Comp
+L GND #PWR010
+U 1 1 4D04BA37
+P 2850 5350
+F 0 "#PWR010" H 2850 5350 30  0001 C CNN
+F 1 "GND" H 2850 5280 30  0001 C CNN
+	1    2850 5350
+	1    0    0    -1  
+$EndComp
+Text HLabel 1800 5050 0    60   Input ~ 0
+port3-6
+Text HLabel 1800 4900 0    60   Input ~ 0
+port3-3
+Text HLabel 1800 4700 0    60   Input ~ 0
+port3-2
+Text HLabel 1800 4550 0    60   Input ~ 0
+port3-1
+$Comp
+L +12V #PWR011
+U 1 1 4D04B962
+P 2750 4950
+F 0 "#PWR011" H 2750 4900 20  0001 C CNN
+F 1 "+12V" H 2750 5050 30  0000 C CNN
+	1    2750 4950
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R25
+U 1 1 4D04B94E
+P 2250 5050
+F 0 "R25" V 2330 5050 50  0000 C CNN
+F 1 "1k" V 2250 5050 50  0000 C CNN
+	1    2250 5050
+	0    1    1    0   
+$EndComp
+$Comp
+L R R24
+U 1 1 4D04B94A
+P 2250 4900
+F 0 "R24" V 2330 4900 50  0000 C CNN
+F 1 "1k" V 2250 4900 50  0000 C CNN
+	1    2250 4900
+	0    1    1    0   
+$EndComp
+$Comp
+L R R23
+U 1 1 4D04B93E
+P 2250 4700
+F 0 "R23" V 2330 4700 50  0000 C CNN
+F 1 "1k" V 2250 4700 50  0000 C CNN
+	1    2250 4700
+	0    1    1    0   
+$EndComp
+$Comp
+L R R22
+U 1 1 4D04B937
+P 2250 4550
+F 0 "R22" V 2330 4550 50  0000 C CNN
+F 1 "1k" V 2250 4550 50  0000 C CNN
+	1    2250 4550
+	0    1    1    0   
+$EndComp
+$Comp
+L RJHSE-5085 CON5
+U 3 1 4D04AB2B
+P 6350 1650
+F 0 "CON5" V 6450 1850 60  0000 C CNN
+F 1 "RJHSE-5085" H 5500 800 60  0000 C CNN
+	3    6350 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L RJHSE-5085 CON5
+U 1 1 4D04AB28
+P 3050 4850
+F 0 "CON5" H 3300 5150 60  0000 C CNN
+F 1 "RJHSE-5085" H 3150 5250 60  0000 C CNN
+	1    3050 4850
+	1    0    0    -1  
+$EndComp
+Text HLabel 1800 3000 0    60   Input ~ 0
+port2-6
+Text HLabel 1800 2850 0    60   Input ~ 0
+port2-3
+Text HLabel 1800 2650 0    60   Input ~ 0
+port2-2
+Text HLabel 1800 2500 0    60   Input ~ 0
+port2-1
+$Comp
+L R R19
+U 1 1 4D04AA24
+P 2250 3000
+F 0 "R19" V 2330 3000 50  0000 C CNN
+F 1 "1k" V 2250 3000 50  0000 C CNN
+	1    2250 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L R R18
+U 1 1 4D04AA1D
+P 2250 2850
+F 0 "R18" V 2330 2850 50  0000 C CNN
+F 1 "1k" V 2250 2850 50  0000 C CNN
+	1    2250 2850
+	0    1    1    0   
+$EndComp
+$Comp
+L R R17
+U 1 1 4D04AA15
+P 2250 2650
+F 0 "R17" V 2330 2650 50  0000 C CNN
+F 1 "1k" V 2250 2650 50  0000 C CNN
+	1    2250 2650
+	0    1    1    0   
+$EndComp
+$Comp
+L R R16
+U 1 1 4D04A9EE
+P 2250 2500
+F 0 "R16" V 2330 2500 50  0000 C CNN
+F 1 "1k" V 2250 2500 50  0000 C CNN
+	1    2250 2500
+	0    1    1    0   
+$EndComp
+$Comp
+L +12V #PWR012
+U 1 1 4D04A9E3
+P 2700 2900
+F 0 "#PWR012" H 2700 2850 20  0001 C CNN
+F 1 "+12V" H 2700 3000 30  0000 C CNN
+	1    2700 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR013
+U 1 1 4D04A9DA
+P 2850 3300
+F 0 "#PWR013" H 2850 3300 30  0001 C CNN
+F 1 "GND" H 2850 3230 30  0001 C CNN
+	1    2850 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L RJHSE-5085 CON5
+U 2 1 4D04A95A
+P 6600 1750
+F 0 "CON5" V 6500 1450 60  0000 C CNN
+F 1 "RJHSE-5085" H 7700 2500 60  0000 C CNN
+	2    6600 1750
+	-1   0    0    1   
+$EndComp
+$Comp
+L RJHSE-5085 CON4
+U 1 1 4D04A953
+P 3050 2800
+F 0 "CON4" H 3300 3100 60  0000 C CNN
+F 1 "RJHSE-5085" H 3150 3200 60  0000 C CNN
+	1    3050 2800
+	1    0    0    -1  
+$EndComp
+Text HLabel 1800 1300 0    60   Input ~ 0
+port1-6
+Text HLabel 1800 1150 0    60   Input ~ 0
+port1-3
+Text HLabel 1800 950  0    60   Input ~ 0
+port1-2
+Text HLabel 1800 800  0    60   Input ~ 0
+port1-1
+$Comp
+L R R13
+U 1 1 4D04A655
+P 2250 1300
+F 0 "R13" V 2330 1300 50  0000 C CNN
+F 1 "1k" V 2250 1300 50  0000 C CNN
+	1    2250 1300
+	0    1    1    0   
+$EndComp
+$Comp
+L R R12
+U 1 1 4D04A64D
+P 2250 1150
+F 0 "R12" V 2330 1150 50  0000 C CNN
+F 1 "1k" V 2250 1150 50  0000 C CNN
+	1    2250 1150
+	0    1    1    0   
+$EndComp
+$Comp
+L R R11
+U 1 1 4D04A642
+P 2250 950
+F 0 "R11" V 2330 950 50  0000 C CNN
+F 1 "1k" V 2250 950 50  0000 C CNN
+	1    2250 950 
+	0    1    1    0   
+$EndComp
+$Comp
+L R R10
+U 1 1 4D04A63A
+P 2250 800
+F 0 "R10" V 2330 800 50  0000 C CNN
+F 1 "1k" V 2250 800 50  0000 C CNN
+	1    2250 800 
+	0    1    1    0   
+$EndComp
+$Comp
+L +12V #PWR014
+U 1 1 4D04A4F5
+P 2750 1200
+F 0 "#PWR014" H 2750 1150 20  0001 C CNN
+F 1 "+12V" H 2750 1300 30  0000 C CNN
+	1    2750 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR015
+U 1 1 4D04A4D9
+P 2850 1600
+F 0 "#PWR015" H 2850 1600 30  0001 C CNN
+F 1 "GND" H 2850 1530 30  0001 C CNN
+	1    2850 1600
+	1    0    0    -1  
+$EndComp
+$Comp
+L RJHSE-5085 CON3
+U 3 1 4D04A396
+P 5800 1300
+F 0 "CON3" H 5750 1550 60  0000 C CNN
+F 1 "RJHSE-5085" H 5500 100 60  0000 C CNN
+	3    5800 1300
+	1    0    0    -1  
+$EndComp
+$Comp
+L RJHSE-5085 CON3
+U 2 1 4D04A392
+P 6100 1400
+F 0 "CON3" H 6050 1050 60  0000 C CNN
+F 1 "RJHSE-5085" H 6700 2500 60  0000 C CNN
+	2    6100 1400
+	-1   0    0    1   
+$EndComp
+$Comp
+L RJHSE-5085 CON3
+U 1 1 4D04A38A
+P 3050 1100
+F 0 "CON3" H 3300 1400 60  0000 C CNN
+F 1 "RJHSE-5085" H 3150 1500 60  0000 C CNN
+	1    3050 1100
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

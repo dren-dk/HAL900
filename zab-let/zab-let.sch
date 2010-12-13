@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 08-11-2010 17:45:19
+EESchema Schematic File Version 2  date 13-12-2010 11:04:57
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -31,13 +31,13 @@ LIBS:contrib
 LIBS:valves
 LIBS:attiny
 LIBS:atmel_2
-LIBS:TV-begone_POV-cache
+LIBS:zab-let-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title ""
-Date "8 nov 2010"
+Date "13 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -45,6 +45,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Notes 7650 1100 0    60   ~ 0
+input voltage : 4,5V\nnominal forward voltage: 20mA\nvoltage drop: 2,0-2,5 set to 2V\n\nresistor= (4,5V-2V)/20mA = 125ohm
 Wire Wire Line
 	2550 950  2550 850 
 Wire Wire Line
@@ -674,7 +676,7 @@ L R R9
 U 1 1 4CBC0618
 P 6800 3175
 F 0 "R9" V 6880 3175 50  0000 C CNN
-F 1 "47" V 6800 3175 50  0000 C CNN
+F 1 "125" V 6800 3175 50  0000 C CNN
 	1    6800 3175
 	0    1    1    0   
 $EndComp
@@ -683,7 +685,7 @@ L R R8
 U 1 1 4CBC0614
 P 6800 2875
 F 0 "R8" V 6880 2875 50  0000 C CNN
-F 1 "47" V 6800 2875 50  0000 C CNN
+F 1 "125" V 6800 2875 50  0000 C CNN
 	1    6800 2875
 	0    1    1    0   
 $EndComp
@@ -692,7 +694,7 @@ L R R2
 U 1 1 4CBC05DA
 P 6800 1075
 F 0 "R2" V 6880 1075 50  0000 C CNN
-F 1 "47" V 6800 1075 50  0000 C CNN
+F 1 "125" V 6800 1075 50  0000 C CNN
 	1    6800 1075
 	0    1    1    0   
 $EndComp
@@ -701,7 +703,7 @@ L R R3
 U 1 1 4CBC05D7
 P 6800 1375
 F 0 "R3" V 6880 1375 50  0000 C CNN
-F 1 "47" V 6800 1375 50  0000 C CNN
+F 1 "125" V 6800 1375 50  0000 C CNN
 	1    6800 1375
 	0    1    1    0   
 $EndComp
@@ -710,7 +712,7 @@ L R R4
 U 1 1 4CBC05CE
 P 6800 1675
 F 0 "R4" V 6880 1675 50  0000 C CNN
-F 1 "47" V 6800 1675 50  0000 C CNN
+F 1 "125" V 6800 1675 50  0000 C CNN
 	1    6800 1675
 	0    1    1    0   
 $EndComp
@@ -719,7 +721,7 @@ L R R5
 U 1 1 4CBC05CB
 P 6800 1975
 F 0 "R5" V 6880 1975 50  0000 C CNN
-F 1 "47" V 6800 1975 50  0000 C CNN
+F 1 "125" V 6800 1975 50  0000 C CNN
 	1    6800 1975
 	0    1    1    0   
 $EndComp
@@ -728,7 +730,7 @@ L R R7
 U 1 1 4CBC05BE
 P 6800 2575
 F 0 "R7" V 6880 2575 50  0000 C CNN
-F 1 "47" V 6800 2575 50  0000 C CNN
+F 1 "125" V 6800 2575 50  0000 C CNN
 	1    6800 2575
 	0    1    1    0   
 $EndComp
@@ -737,7 +739,7 @@ L R R6
 U 1 1 4CBC05A8
 P 6800 2275
 F 0 "R6" V 6880 2275 50  0000 C CNN
-F 1 "47" V 6800 2275 50  0000 C CNN
+F 1 "125" V 6800 2275 50  0000 C CNN
 	1    6800 2275
 	0    1    1    0   
 $EndComp

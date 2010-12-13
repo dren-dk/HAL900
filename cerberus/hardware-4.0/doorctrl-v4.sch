@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-12T18:56:18 CET
+EESchema Schematic File Version 2  date 2010-12-13T21:30:20 CET
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -34,13 +34,14 @@ LIBS:bc817
 LIBS:amp-rj45-tap-up-with-leds
 LIBS:l4960
 LIBS:borniers
+LIBS:g5sb
 LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 6
 Title ""
-Date "12 dec 2010"
+Date "13 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -294,28 +295,28 @@ PB6
 Text Label 1800 5700 0    60   ~ 0
 PB5
 $Comp
-L +3.3V #PWR01
+L +3.3V #PWR4
 U 1 1 4CFAB301
 P 2150 2275
-F 0 "#PWR01" H 2150 2235 30  0001 C CNN
+F 0 "#PWR4" H 2150 2235 30  0001 C CNN
 F 1 "+3.3V" H 2150 2385 30  0000 C CNN
 	1    2150 2275
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR02
+L GND #PWR3
 U 1 1 4CFAB0A0
 P 1850 2475
-F 0 "#PWR02" H 1850 2475 30  0001 C CNN
+F 0 "#PWR3" H 1850 2475 30  0001 C CNN
 F 1 "GND" H 1850 2405 30  0001 C CNN
 	1    1850 2475
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR03
+L GND #PWR1
 U 1 1 4CFAB098
 P 1050 2475
-F 0 "#PWR03" H 1050 2475 30  0001 C CNN
+F 0 "#PWR1" H 1050 2475 30  0001 C CNN
 F 1 "GND" H 1050 2405 30  0001 C CNN
 	1    1050 2475
 	1    0    0    -1  
@@ -428,19 +429,19 @@ $EndComp
 Text Label 2750 5600 2    60   ~ 0
 PC2
 $Comp
-L +3.3V #PWR04
+L +3.3V #PWR7
 U 1 1 4CFA7FD7
 P 3675 5700
-F 0 "#PWR04" H 3675 5660 30  0001 C CNN
+F 0 "#PWR7" H 3675 5660 30  0001 C CNN
 F 1 "+3.3V" H 3675 5810 30  0000 C CNN
 	1    3675 5700
 	0    1    1    0   
 $EndComp
 $Comp
-L +3.3V #PWR05
+L +3.3V #PWR2
 U 1 1 4CFA5CC7
 P 1800 5600
-F 0 "#PWR05" H 1800 5560 30  0001 C CNN
+F 0 "#PWR2" H 1800 5560 30  0001 C CNN
 F 1 "+3.3V" H 1800 5710 30  0000 C CNN
 	1    1800 5600
 	1    0    0    -1  
@@ -454,19 +455,19 @@ gnd
 Text Label 950  5800 2    60   ~ 0
 RESET
 $Comp
-L GND #PWR06
+L GND #PWR5
 U 1 1 4CF6BFD7
 P 3050 5075
-F 0 "#PWR06" H 3050 5075 30  0001 C CNN
+F 0 "#PWR5" H 3050 5075 30  0001 C CNN
 F 1 "GND" H 3050 5005 30  0001 C CNN
 	1    3050 5075
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR07
+L +3.3V #PWR6
 U 1 1 4CF6BFC6
 P 3125 675
-F 0 "#PWR07" H 3125 635 30  0001 C CNN
+F 0 "#PWR6" H 3125 635 30  0001 C CNN
 F 1 "+3.3V" H 3125 785 30  0000 C CNN
 	1    3125 675 
 	1    0    0    -1  

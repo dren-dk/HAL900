@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-13T21:30:20 CET
+EESchema Schematic File Version 2  date 2010-12-14T19:18:35 CET
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -39,9 +39,9 @@ LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
-Sheet 2 6
+Sheet 5 5
 Title ""
-Date "13 dec 2010"
+Date "14 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""

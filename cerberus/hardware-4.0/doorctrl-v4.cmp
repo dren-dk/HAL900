@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-03-14)-final date = 2010-12-12T18:33:24 CET
+Cmp-Mod V01 Created by CvPCB (2010-03-14)-final date = 2010-12-14T20:45:06 CET
 
 BeginCmp
 TimeStamp = /4CFAB038;
@@ -260,10 +260,66 @@ IdModule  = DO214AC;
 EndCmp
 
 BeginCmp
+TimeStamp = /4CFD3197/4D079B8E;
+Reference = D4;
+ValeurCmp = LED;
+IdModule  = LED-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D07A05F;
+Reference = D5;
+ValeurCmp = LED;
+IdModule  = LED-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D079B5D;
+Reference = D6;
+ValeurCmp = DIODE;
+IdModule  = micromelf;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D07A035;
+Reference = D7;
+ValeurCmp = DIODE;
+IdModule  = micromelf;
+EndCmp
+
+BeginCmp
 TimeStamp = /4CF6BD02;
 Reference = IC1;
 ValeurCmp = ATMEGA324P-A;
 IdModule  = TQFP44;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D068151;
+Reference = K1;
+ValeurCmp = G5SB;
+IdModule  = g5sb;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D079D9B;
+Reference = K2;
+ValeurCmp = CONN_3_V;
+IdModule  = bornier3_V;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D079FD5;
+Reference = K3;
+ValeurCmp = CONN_3_V;
+IdModule  = bornier3_V;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D079FBB;
+Reference = K4;
+ValeurCmp = G5SB;
+IdModule  = g5sb;
 EndCmp
 
 BeginCmp
@@ -298,6 +354,20 @@ BeginCmp
 TimeStamp = /4CFD3072/4CFD4AF1;
 Reference = Q2;
 ValeurCmp = BC807;
+IdModule  = SOT23-bec;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D079B69;
+Reference = Q3;
+ValeurCmp = BC817;
+IdModule  = SOT23-bec;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D07A03F;
+Reference = Q4;
+ValeurCmp = BC817;
 IdModule  = SOT23-bec;
 EndCmp
 
@@ -519,6 +589,34 @@ IdModule  = SM0805;
 EndCmp
 
 BeginCmp
+TimeStamp = /4CFD3197/4D079B7E;
+Reference = R36;
+ValeurCmp = 4k7;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D079B84;
+Reference = R37;
+ValeurCmp = 470R;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D07A04A;
+Reference = R38;
+ValeurCmp = 4k7;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D07A054;
+Reference = R39;
+ValeurCmp = 470R;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
 TimeStamp = /4CFD3072/4CFD36C2;
 Reference = U1;
 ValeurCmp = LM358;
@@ -537,6 +635,13 @@ TimeStamp = /4CFD3054/4D04D789;
 Reference = U3;
 ValeurCmp = L4960;
 IdModule  = l4960-HEPTAWATT;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD2FB8/4D07C0AC;
+Reference = U4;
+ValeurCmp = ENC28J60;
+IdModule  = ssop28;
 EndCmp
 
 BeginCmp

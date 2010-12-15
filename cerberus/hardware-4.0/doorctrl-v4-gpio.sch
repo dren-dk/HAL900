@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-15T20:38:13 CET
+EESchema Schematic File Version 2  date 2010-12-15T21:22:19 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -36,6 +36,7 @@ LIBS:amp-rj45-tap-up-with-leds
 LIBS:l4960
 LIBS:borniers
 LIBS:g5sb
+LIBS:pulse-pe-68517-ethernet-trafo
 LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END

@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-15T21:22:19 CET
+EESchema Schematic File Version 2  date 2010-12-15T21:23:41 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -281,7 +281,7 @@ L C C?
 U 1 1 4D09230A
 P 6075 4550
 F 0 "C?" H 6125 4650 50  0000 L CNN
-F 1 "C" H 6125 4450 50  0000 L CNN
+F 1 "1nF" H 6125 4450 50  0000 L CNN
 	1    6075 4550
 	1    0    0    -1  
 $EndComp
@@ -290,7 +290,7 @@ L R R?
 U 1 1 4D0922FC
 P 6175 3975
 F 0 "R?" V 6255 3975 50  0000 C CNN
-F 1 "R" V 6175 3975 50  0000 C CNN
+F 1 "75R" V 6175 3975 50  0000 C CNN
 	1    6175 3975
 	1    0    0    -1  
 $EndComp
@@ -299,7 +299,7 @@ L R R?
 U 1 1 4D0922F7
 P 5975 3975
 F 0 "R?" V 6055 3975 50  0000 C CNN
-F 1 "R" V 5975 3975 50  0000 C CNN
+F 1 "75R" V 5975 3975 50  0000 C CNN
 	1    5975 3975
 	1    0    0    -1  
 $EndComp

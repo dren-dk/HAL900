@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-15T21:23:41 CET
+EESchema Schematic File Version 2  date 2010-12-16T22:33:40 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -37,13 +37,14 @@ LIBS:l4960
 LIBS:borniers
 LIBS:g5sb
 LIBS:pulse-pe-68517-ethernet-trafo
+LIBS:sn65hvd1x
 LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 5
 Title ""
-Date "15 dec 2010"
+Date "16 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -269,14 +270,14 @@ F19 "port1-2" I L 6100 1600 60
 F20 "port1-1" I L 6100 1500 60 
 $EndSheet
 $Sheet
-S 9300 3400 1600 1000
+S 9250 4850 1600 1000
 U 4CFD3072
 F0 "doorctrl-v4-rfid" 60
 F1 "doorctrl-v4-rfid.sch" 60
-F2 "RFID" O L 9300 3850 60 
-F3 "Coil-B" B L 9300 4050 60 
-F4 "Coil-A" B L 9300 4200 60 
-F5 "Carrier" I L 9300 3650 60 
+F2 "RFID" O L 9250 5300 60 
+F3 "Coil-B" B L 9250 5500 60 
+F4 "Coil-A" B L 9250 5650 60 
+F5 "Carrier" I L 9250 5100 60 
 $EndSheet
 $Sheet
 S 9300 800  1600 1000
@@ -285,10 +286,19 @@ F0 "doorctrl-v4-psu" 60
 F1 "doorctrl-v4-psu.sch" 60
 $EndSheet
 $Sheet
-S 9300 2100 1600 1100
+S 9300 2100 1600 2050
 U 4CFD2FB8
 F0 "doorctrl-v4-net" 60
 F1 "doorctrl-v4-net.sch" 60
+F2 "RX-LED" I L 9300 2250 60 
+F3 "TXENABLE" I L 9300 2400 60 
+F4 "TXD" I L 9300 2550 60 
+F5 "RXD" I L 9300 2700 60 
+F6 "SCK" I L 9300 3400 60 
+F7 "MISO" O L 9300 3550 60 
+F8 "MOSI" I L 9300 3700 60 
+F9 "~CS" I L 9300 3850 60 
+F10 "Clock out" O L 9300 4000 60 
 $EndSheet
 NoConn ~ 3300 5900
 NoConn ~ 3050 5900
@@ -305,28 +315,28 @@ PB6
 Text Label 1800 5700 0    60   ~ 0
 PB5
 $Comp
-L +3.3V #PWR01
+L +3.3V #PWR4
 U 1 1 4CFAB301
 P 2150 2275
-F 0 "#PWR01" H 2150 2235 30  0001 C CNN
+F 0 "#PWR4" H 2150 2235 30  0001 C CNN
 F 1 "+3.3V" H 2150 2385 30  0000 C CNN
 	1    2150 2275
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR02
+L GND #PWR3
 U 1 1 4CFAB0A0
 P 1850 2475
-F 0 "#PWR02" H 1850 2475 30  0001 C CNN
+F 0 "#PWR3" H 1850 2475 30  0001 C CNN
 F 1 "GND" H 1850 2405 30  0001 C CNN
 	1    1850 2475
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR03
+L GND #PWR1
 U 1 1 4CFAB098
 P 1050 2475
-F 0 "#PWR03" H 1050 2475 30  0001 C CNN
+F 0 "#PWR1" H 1050 2475 30  0001 C CNN
 F 1 "GND" H 1050 2405 30  0001 C CNN
 	1    1050 2475
 	1    0    0    -1  
@@ -439,19 +449,19 @@ $EndComp
 Text Label 2750 5600 2    60   ~ 0
 PC2
 $Comp
-L +3.3V #PWR04
+L +3.3V #PWR7
 U 1 1 4CFA7FD7
 P 3675 5700
-F 0 "#PWR04" H 3675 5660 30  0001 C CNN
+F 0 "#PWR7" H 3675 5660 30  0001 C CNN
 F 1 "+3.3V" H 3675 5810 30  0000 C CNN
 	1    3675 5700
 	0    1    1    0   
 $EndComp
 $Comp
-L +3.3V #PWR05
+L +3.3V #PWR2
 U 1 1 4CFA5CC7
 P 1800 5600
-F 0 "#PWR05" H 1800 5560 30  0001 C CNN
+F 0 "#PWR2" H 1800 5560 30  0001 C CNN
 F 1 "+3.3V" H 1800 5710 30  0000 C CNN
 	1    1800 5600
 	1    0    0    -1  
@@ -465,19 +475,19 @@ gnd
 Text Label 950  5800 2    60   ~ 0
 RESET
 $Comp
-L GND #PWR06
+L GND #PWR5
 U 1 1 4CF6BFD7
 P 3050 5075
-F 0 "#PWR06" H 3050 5075 30  0001 C CNN
+F 0 "#PWR5" H 3050 5075 30  0001 C CNN
 F 1 "GND" H 3050 5005 30  0001 C CNN
 	1    3050 5075
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR07
+L +3.3V #PWR6
 U 1 1 4CF6BFC6
 P 3125 675
-F 0 "#PWR07" H 3125 635 30  0001 C CNN
+F 0 "#PWR6" H 3125 635 30  0001 C CNN
 F 1 "+3.3V" H 3125 785 30  0000 C CNN
 	1    3125 675 
 	1    0    0    -1  

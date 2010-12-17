@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-16T22:33:40 CET
+EESchema Schematic File Version 2  date 2010-12-17T21:22:49 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -38,13 +38,14 @@ LIBS:borniers
 LIBS:g5sb
 LIBS:pulse-pe-68517-ethernet-trafo
 LIBS:sn65hvd1x
+LIBS:i2c
 LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
-Sheet 1 5
+Sheet 1 6
 Title ""
-Date "16 dec 2010"
+Date "17 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -52,8 +53,63 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Notes 4400 1850 0    60   ~ 0
+Port 2 - 6
+Text Notes 4400 1750 0    60   ~ 0
+Port 2 - 3
+Text Notes 4400 1650 0    60   ~ 0
+Port 2 - 2
+Text Notes 4400 1550 0    60   ~ 0
+Port 2 - 1
+Text Notes 4400 1450 0    60   ~ 0
+Port 1 - 6
+Text Notes 4400 1350 0    60   ~ 0
+Port 1 - 3
+Text Notes 4400 1250 0    60   ~ 0
+Port 1 - 2
+Text Notes 4400 1150 0    60   ~ 0
+Port 1 - 1
 Wire Wire Line
-	4250 3350 6100 3350
+	5925 2075 6100 2075
+Wire Wire Line
+	5925 1775 6100 1775
+Wire Wire Line
+	5925 1375 6100 1375
+Wire Wire Line
+	6100 1075 5925 1075
+Wire Wire Line
+	5925 2500 6100 2500
+Wire Wire Line
+	5925 2800 6100 2800
+Wire Wire Line
+	5925 4175 6100 4175
+Wire Wire Line
+	5950 3500 6100 3500
+Wire Wire Line
+	5950 3250 6100 3250
+Wire Wire Line
+	9075 5525 9300 5525
+Wire Wire Line
+	9075 5175 9300 5175
+Wire Wire Line
+	7050 4425 9325 4425
+Wire Wire Line
+	9100 3875 9325 3875
+Wire Wire Line
+	9300 2700 9100 2700
+Wire Wire Line
+	9300 2400 9100 2400
+Wire Wire Line
+	2500 6125 2500 6200
+Wire Wire Line
+	2500 6200 2325 6200
+Wire Wire Line
+	3100 5700 3100 5825
+Wire Wire Line
+	3100 6675 3100 6825
+Connection ~ 2600 6375
+Wire Wire Line
+	1825 4375 1825 4275
 Wire Wire Line
 	1850 2350 1850 2475
 Wire Wire Line
@@ -95,30 +151,27 @@ Wire Wire Line
 Connection ~ 4225 3150
 Wire Wire Line
 	4150 3150 4225 3150
-Connection ~ 2750 5600
-Connection ~ 2750 5700
-Connection ~ 2750 5800
-Connection ~ 2750 6000
-Connection ~ 3675 6000
-Connection ~ 3825 5800
-Connection ~ 3675 5600
+Connection ~ 900  3875
+Connection ~ 900  3975
+Connection ~ 900  4075
+Connection ~ 900  4275
+Connection ~ 1975 4075
 Wire Wire Line
-	3675 5700 3300 5700
+	1825 3975 1450 3975
 Wire Wire Line
-	3050 5600 2750 5600
+	1200 3875 900  3875
 Wire Wire Line
-	3050 5800 2750 5800
+	1200 4075 900  4075
 Wire Wire Line
-	3050 6000 2750 6000
-Connection ~ 950  5600
-Connection ~ 950  5700
-Connection ~ 950  5800
-Connection ~ 1800 5800
-Connection ~ 1800 5700
+	1200 4275 900  4275
+Connection ~ 900  3225
+Connection ~ 900  3325
+Connection ~ 900  3425
+Connection ~ 1750 3325
 Wire Wire Line
-	1250 5800 950  5800
+	1200 3425 900  3425
 Wire Wire Line
-	1250 5600 950  5600
+	1200 3225 900  3225
 Connection ~ 3000 775 
 Wire Wire Line
 	3000 775  3000 850 
@@ -138,11 +191,11 @@ Wire Wire Line
 Wire Wire Line
 	2900 4950 2900 4850
 Wire Wire Line
-	1500 5700 1800 5700
+	1450 3325 1750 3325
 Wire Wire Line
-	1500 5600 1800 5600
+	1450 3225 1750 3225
 Wire Wire Line
-	1500 5800 1800 5800
+	1450 3425 1750 3425
 Wire Wire Line
 	3100 4950 3100 4850
 Connection ~ 3100 4950
@@ -156,15 +209,15 @@ Wire Wire Line
 	3125 775  3125 675 
 Connection ~ 3125 775 
 Wire Wire Line
-	1250 5700 950  5700
+	1200 3325 900  3325
 Wire Wire Line
-	3300 5800 3825 5800
+	1450 4075 1975 4075
 Wire Wire Line
-	3300 6000 3675 6000
+	1825 4275 1450 4275
 Wire Wire Line
-	3050 5700 2750 5700
+	1200 3975 900  3975
 Wire Wire Line
-	3675 5600 3300 5600
+	1825 3875 1450 3875
 Wire Wire Line
 	2150 1150 2100 1150
 Wire Wire Line
@@ -241,43 +294,313 @@ Wire Wire Line
 	1050 2350 1050 2475
 Connection ~ 1050 1950
 Wire Wire Line
-	4250 3450 6100 3450
+	1750 3425 1750 3525
 Wire Wire Line
-	4250 3250 6100 3250
+	2600 6825 2600 6275
+Connection ~ 2600 6475
+Wire Wire Line
+	3550 6825 3550 6375
+Wire Wire Line
+	2500 6025 2325 6025
+Wire Wire Line
+	9100 2250 9300 2250
+Wire Wire Line
+	9300 2550 9100 2550
+Wire Wire Line
+	9300 2850 9100 2850
+Wire Wire Line
+	9100 4075 9325 4075
+Wire Wire Line
+	7050 4275 9325 4275
+Wire Wire Line
+	9075 5350 9300 5350
+Wire Wire Line
+	9075 5700 9300 5700
+Wire Wire Line
+	6100 3375 5950 3375
+Wire Wire Line
+	5925 4325 6100 4325
+Wire Wire Line
+	5925 2950 6100 2950
+Wire Wire Line
+	5925 2650 6100 2650
+Wire Wire Line
+	5925 925  6100 925 
+Wire Wire Line
+	5925 1225 6100 1225
+Wire Wire Line
+	5925 1625 6100 1625
+Wire Wire Line
+	5925 1925 6100 1925
+Text GLabel 5925 2075 0    60   Input ~ 0
+PA7
+Text GLabel 5925 1925 0    60   Input ~ 0
+PA6
+Text GLabel 5925 1775 0    60   Input ~ 0
+PA5
+Text GLabel 5925 1625 0    60   Input ~ 0
+PA4
+Text GLabel 5925 1375 0    60   Input ~ 0
+PA3
+Text GLabel 5925 1225 0    60   Input ~ 0
+PA2
+Text GLabel 5925 1075 0    60   Input ~ 0
+PA1
+Text GLabel 5925 925  0    60   Input ~ 0
+PA0
+Text Notes 4425 3550 0    60   ~ 0
+Relay 2
+Text Notes 4425 3650 0    60   ~ 0
+Relay 1
+Text Notes 4425 4250 0    60   ~ 0
+Port 3 - 6
+Text Notes 4425 4350 0    60   ~ 0
+Port 3 - 3
+Text GLabel 5925 4325 0    60   Input ~ 0
+PC7
+Text GLabel 5925 4175 0    60   Input ~ 0
+PC6
+Text GLabel 5925 2950 0    60   Input ~ 0
+PD4
+Text GLabel 5925 2800 0    60   Input ~ 0
+PD5
+Text GLabel 5925 2650 0    60   Input ~ 0
+PD6
+Text GLabel 5925 2500 0    60   Input ~ 0
+PB1
+Text Notes 4425 4150 0    60   ~ 0
+Serial - TXD
+Text Notes 4425 4050 0    60   ~ 0
+Serial - RXD
+Text Notes 4425 3050 0    60   ~ 0
+i2c - SDA
+Text Notes 4425 2950 0    60   ~ 0
+i2c - SCL
+Text Notes 4425 2750 0    60   ~ 0
+Net - SCK
+Text Notes 4425 2650 0    60   ~ 0
+Net - MISO
+Text Notes 4425 2550 0    60   ~ 0
+Net - MOSI
+Text Notes 4425 2450 0    60   ~ 0
+Net - ~CS
+Text Notes 4425 4450 0    60   ~ 0
+RFID - demodulated
+Text Notes 4425 2150 0    60   ~ 0
+RFID carrier (125 kHz)
+Text Notes 4425 3425 0    60   ~ 0
+gpio - LED1
+Text Notes 4425 3325 0    60   ~ 0
+gpio - LED2
+Text Notes 4425 3225 0    60   ~ 0
+gpio - LED3
+Text Notes 4425 3150 0    60   ~ 0
+rs485 - LED
+Text Notes 4425 4550 0    60   ~ 0
+rs485 - tx-enable
+Text Notes 4425 3950 0    60   ~ 0
+rs485 - tx
+Text Notes 4425 3825 0    60   ~ 0
+rs485 - rx
+Text GLabel 5950 3250 0    60   Input ~ 0
+PC3
+Text GLabel 5950 3500 0    60   Input ~ 0
+PC5
+Text GLabel 5950 3375 0    60   Input ~ 0
+PC4
+Text GLabel 9075 5525 0    60   Input ~ 0
+PD7
+Text GLabel 9075 5350 0    60   Input ~ 0
+PD1
+Text GLabel 9075 5175 0    60   Input ~ 0
+PD0
+Text Label 4225 3950 0    60   ~ 0
+PD1
+Text Label 4225 3850 0    60   ~ 0
+PD0
+Text GLabel 9075 5700 0    60   Input ~ 0
+PC2
+Text GLabel 9100 4075 0    60   Input ~ 0
+PD6
+Text GLabel 9100 3875 0    60   Input ~ 0
+PB1
+Text GLabel 9100 2850 0    60   Input ~ 0
+CLOCK
+Text GLabel 9100 2700 0    60   Input ~ 0
+PB4
+Text GLabel 9100 2550 0    60   Input ~ 0
+PB5
+Text GLabel 9100 2400 0    60   Input ~ 0
+PB6
+Text GLabel 9100 2250 0    60   Input ~ 0
+PB7
+$Comp
+L +5V #PWR?
+U 1 1 4D0BBC2E
+P 2150 2275
+F 0 "#PWR?" H 2150 2365 20  0001 C CNN
+F 1 "+5V" H 2150 2365 30  0000 C CNN
+	1    2150 2275
+	1    0    0    -1  
+$EndComp
+Text GLabel 2325 6200 0    60   Input ~ 0
+PC0
+Text GLabel 2325 6025 0    60   Input ~ 0
+PC1
+$Comp
+L +5V #PWR?
+U 1 1 4D0BB852
+P 3100 5700
+F 0 "#PWR?" H 3100 5790 20  0001 C CNN
+F 1 "+5V" H 3100 5790 30  0000 C CNN
+	1    3100 5700
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 4D0BB830
+P 2600 6825
+F 0 "#PWR?" H 2600 6825 30  0001 C CNN
+F 1 "GND" H 2600 6755 30  0001 C CNN
+	1    2600 6825
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 4D0BB82C
+P 3100 6825
+F 0 "#PWR?" H 3100 6825 30  0001 C CNN
+F 1 "GND" H 3100 6755 30  0001 C CNN
+	1    3100 6825
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 4D0BB822
+P 3550 6825
+F 0 "#PWR?" H 3550 6825 30  0001 C CNN
+F 1 "GND" H 3550 6755 30  0001 C CNN
+	1    3550 6825
+	1    0    0    -1  
+$EndComp
+$Comp
+L 24LC64 U?
+U 1 1 4D0BB80A
+P 3100 6275
+F 0 "U?" H 3400 6475 60  0000 C CNN
+F 1 "24LC64" H 3550 6575 60  0000 C CNN
+	1    3100 6275
+	1    0    0    -1  
+$EndComp
+$Sheet
+S 9300 2100 1600 1000
+U 4CFD2FB8
+F0 "doorctrl-v4-net" 60
+F1 "doorctrl-v4-net.sch" 60
+F2 "SCK" I L 9300 2250 60 
+F3 "MISO" O L 9300 2400 60 
+F4 "MOSI" I L 9300 2550 60 
+F5 "~CS" I L 9300 2700 60 
+F6 "Clock out" O L 9300 2850 60 
+$EndSheet
+$Sheet
+S 9300 5025 1625 850 
+U 4D0BB1C7
+F0 "doorctrl-rs485" 60
+F1 "doorctrl-rs485.sch" 60
+F2 "RXD" I L 9300 5175 60 
+F3 "TXD" I L 9300 5350 60 
+F4 "TXENABLE" I L 9300 5525 60 
+F5 "RX-LED" I L 9300 5700 60 
+$EndSheet
+$Comp
+L GND #PWR8
+U 1 1 4D0BAF81
+P 1825 3875
+F 0 "#PWR8" H 1825 3875 30  0001 C CNN
+F 1 "GND" H 1825 3805 30  0001 C CNN
+	1    1825 3875
+	0    -1   -1   0   
+$EndComp
+$Comp
+L +5V #PWR9
+U 1 1 4D0BAF77
+P 1825 3975
+F 0 "#PWR9" H 1825 4065 20  0001 C CNN
+F 1 "+5V" H 1825 4065 30  0000 C CNN
+	1    1825 3975
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR10
+U 1 1 4D0BAF62
+P 1825 4375
+F 0 "#PWR10" H 1825 4375 30  0001 C CNN
+F 1 "GND" H 1825 4305 30  0001 C CNN
+	1    1825 4375
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR3
+U 1 1 4D0BAF4F
+P 1750 3525
+F 0 "#PWR3" H 1750 3525 30  0001 C CNN
+F 1 "GND" H 1750 3455 30  0001 C CNN
+	1    1750 3525
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR2
+U 1 1 4D0BAF48
+P 1750 3225
+F 0 "#PWR2" H 1750 3315 20  0001 C CNN
+F 1 "+5V" H 1750 3315 30  0000 C CNN
+	1    1750 3225
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR7
+U 1 1 4D0BAF41
+P 3125 675
+F 0 "#PWR7" H 3125 765 20  0001 C CNN
+F 1 "+5V" H 3125 765 30  0000 C CNN
+	1    3125 675 
+	1    0    0    -1  
+$EndComp
 $Sheet
 S 6100 800  950  3850
 U 4CFD3197
 F0 "doorctrl-v4-gpio" 60
 F1 "doorctrl-v4-gpio.sch" 60
-F2 "port3-2d" I R 7050 3650 60 
-F3 "port3-1d" I R 7050 3550 60 
+F2 "port3-2d" I R 7050 4425 60 
+F3 "port3-1d" I R 7050 4275 60 
 F4 "LED-3" I L 6100 3250 60 
-F5 "LED-2" I L 6100 3350 60 
-F6 "LED-1" I L 6100 3450 60 
-F7 "Relay2" I L 6100 3000 60 
-F8 "Relay1" I L 6100 2900 60 
-F9 "port3-6" I L 6100 2800 60 
-F10 "port3-3" I L 6100 2700 60 
-F11 "port3-2" I L 6100 2600 60 
+F5 "LED-2" I L 6100 3375 60 
+F6 "LED-1" I L 6100 3500 60 
+F7 "Relay2" I L 6100 4175 60 
+F8 "Relay1" I L 6100 4325 60 
+F9 "port3-6" I L 6100 2950 60 
+F10 "port3-3" I L 6100 2800 60 
+F11 "port3-2" I L 6100 2650 60 
 F12 "port3-1" I L 6100 2500 60 
-F13 "port2-6" I L 6100 2300 60 
-F14 "port2-3" I L 6100 2200 60 
-F15 "port2-2" I L 6100 2100 60 
-F16 "port2-1" I L 6100 2000 60 
-F17 "port1-6" I L 6100 1800 60 
-F18 "port1-3" I L 6100 1700 60 
-F19 "port1-2" I L 6100 1600 60 
-F20 "port1-1" I L 6100 1500 60 
+F13 "port2-6" I L 6100 2075 60 
+F14 "port2-3" I L 6100 1925 60 
+F15 "port2-2" I L 6100 1775 60 
+F16 "port2-1" I L 6100 1625 60 
+F17 "port1-6" I L 6100 1375 60 
+F18 "port1-3" I L 6100 1225 60 
+F19 "port1-2" I L 6100 1075 60 
+F20 "port1-1" I L 6100 925 60 
 $EndSheet
 $Sheet
-S 9250 4850 1600 1000
+S 9325 3625 1600 1000
 U 4CFD3072
 F0 "doorctrl-v4-rfid" 60
 F1 "doorctrl-v4-rfid.sch" 60
-F2 "RFID" O L 9250 5300 60 
-F3 "Coil-B" B L 9250 5500 60 
-F4 "Coil-A" B L 9250 5650 60 
-F5 "Carrier" I L 9250 5100 60 
+F2 "RFID" O L 9325 4075 60 
+F3 "Coil-B" B L 9325 4275 60 
+F4 "Coil-A" B L 9325 4425 60 
+F5 "Carrier" I L 9325 3875 60 
 $EndSheet
 $Sheet
 S 9300 800  1600 1000
@@ -285,49 +608,25 @@ U 4CFD3054
 F0 "doorctrl-v4-psu" 60
 F1 "doorctrl-v4-psu.sch" 60
 $EndSheet
-$Sheet
-S 9300 2100 1600 2050
-U 4CFD2FB8
-F0 "doorctrl-v4-net" 60
-F1 "doorctrl-v4-net.sch" 60
-F2 "RX-LED" I L 9300 2250 60 
-F3 "TXENABLE" I L 9300 2400 60 
-F4 "TXD" I L 9300 2550 60 
-F5 "RXD" I L 9300 2700 60 
-F6 "SCK" I L 9300 3400 60 
-F7 "MISO" O L 9300 3550 60 
-F8 "MOSI" I L 9300 3700 60 
-F9 "~CS" I L 9300 3850 60 
-F10 "Clock out" O L 9300 4000 60 
-$EndSheet
-NoConn ~ 3300 5900
-NoConn ~ 3050 5900
-Text Label 2750 6000 2    60   ~ 0
+NoConn ~ 1450 4175
+NoConn ~ 1200 4175
+Text Label 900  4275 2    60   ~ 0
 PC5
-Text Label 2750 5800 2    60   ~ 0
+Text Label 900  4075 2    60   ~ 0
 PC3
-Text Label 2750 5700 2    60   ~ 0
+Text Label 900  3975 2    60   ~ 0
 PC4
-Text Label 950  5700 2    60   ~ 0
+Text Label 900  3325 2    60   ~ 0
 PB7
-Text Label 950  5600 2    60   ~ 0
+Text Label 900  3225 2    60   ~ 0
 PB6
-Text Label 1800 5700 0    60   ~ 0
+Text Label 1750 3325 0    60   ~ 0
 PB5
 $Comp
-L +3.3V #PWR4
-U 1 1 4CFAB301
-P 2150 2275
-F 0 "#PWR4" H 2150 2235 30  0001 C CNN
-F 1 "+3.3V" H 2150 2385 30  0000 C CNN
-	1    2150 2275
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR3
+L GND #PWR4
 U 1 1 4CFAB0A0
 P 1850 2475
-F 0 "#PWR3" H 1850 2475 30  0001 C CNN
+F 0 "#PWR4" H 1850 2475 30  0001 C CNN
 F 1 "GND" H 1850 2405 30  0001 C CNN
 	1    1850 2475
 	1    0    0    -1  
@@ -364,7 +663,7 @@ L CRYSTAL X1
 U 1 1 4CFAAFBA
 P 1450 1950
 F 0 "X1" H 1450 2100 60  0000 C CNN
-F 1 "12 MHz" H 1450 1800 60  0000 C CNN
+F 1 "20 MHz" H 1450 1800 60  0000 C CNN
 	1    1450 1950
 	-1   0    0    1   
 $EndComp
@@ -394,10 +693,6 @@ Text Label 4225 2250 0    60   ~ 0
 PB2
 Text Label 4225 2150 0    60   ~ 0
 PB1
-Text Label 4225 3950 0    60   ~ 0
-TXD
-Text Label 4225 3850 0    60   ~ 0
-RXD
 Text Label 4225 2050 0    60   ~ 0
 PB0
 Text Label 4225 1850 0    60   ~ 0
@@ -446,72 +741,43 @@ F 2 "TQFP44" H 2500 1000 50  0001 C CNN
 	1    3150 2850
 	1    0    0    -1  
 $EndComp
-Text Label 2750 5600 2    60   ~ 0
+Text Label 900  3875 2    60   ~ 0
 PC2
-$Comp
-L +3.3V #PWR7
-U 1 1 4CFA7FD7
-P 3675 5700
-F 0 "#PWR7" H 3675 5660 30  0001 C CNN
-F 1 "+3.3V" H 3675 5810 30  0000 C CNN
-	1    3675 5700
-	0    1    1    0   
-$EndComp
-$Comp
-L +3.3V #PWR2
-U 1 1 4CFA5CC7
-P 1800 5600
-F 0 "#PWR2" H 1800 5560 30  0001 C CNN
-F 1 "+3.3V" H 1800 5710 30  0000 C CNN
-	1    1800 5600
-	1    0    0    -1  
-$EndComp
-Text Label 3675 6000 0    60   ~ 0
+Text Label 1825 4275 0    60   ~ 0
 gnd
-Text Label 3825 5800 0    60   ~ 0
+Text Label 1975 4075 0    60   ~ 0
 RESET
-Text Label 3675 5600 0    60   ~ 0
-gnd
-Text Label 950  5800 2    60   ~ 0
+Text Label 900  3425 2    60   ~ 0
 RESET
 $Comp
-L GND #PWR5
+L GND #PWR6
 U 1 1 4CF6BFD7
 P 3050 5075
-F 0 "#PWR5" H 3050 5075 30  0001 C CNN
+F 0 "#PWR6" H 3050 5075 30  0001 C CNN
 F 1 "GND" H 3050 5005 30  0001 C CNN
 	1    3050 5075
 	1    0    0    -1  
 $EndComp
-$Comp
-L +3.3V #PWR6
-U 1 1 4CF6BFC6
-P 3125 675
-F 0 "#PWR6" H 3125 635 30  0001 C CNN
-F 1 "+3.3V" H 3125 785 30  0000 C CNN
-	1    3125 675 
-	1    0    0    -1  
-$EndComp
-Text Label 1800 5800 0    60   ~ 0
+Text Label 1750 3425 0    60   ~ 0
 gnd
 $Comp
 L AVR-JTAG-10 CON2
 U 1 1 4CF6BD20
-P 3250 5800
-F 0 "CON2" H 3080 6130 50  0000 C CNN
-F 1 "AVR-JTAG-10" H 2910 5470 50  0000 L BNN
-F 2 "AVR-JTAG-10" V 2680 5820 50  0001 C CNN
-	1    3250 5800
+P 1400 4075
+F 0 "CON2" H 1230 4405 50  0000 C CNN
+F 1 "AVR-JTAG-10" H 1060 3745 50  0000 L BNN
+F 2 "AVR-JTAG-10" V 830 4095 50  0001 C CNN
+	1    1400 4075
 	1    0    0    -1  
 $EndComp
 $Comp
 L AVR-ISP-6 CON1
 U 1 1 4CF6BD17
-P 1375 5700
-F 0 "CON1" H 1295 5940 50  0000 C CNN
-F 1 "AVR-ISP-6" H 1135 5470 50  0000 L BNN
-F 2 "AVR-ISP-6" V 855 5740 50  0001 C CNN
-	1    1375 5700
+P 1325 3325
+F 0 "CON1" H 1245 3565 50  0000 C CNN
+F 1 "AVR-ISP-6" H 1085 3095 50  0000 L BNN
+F 2 "AVR-ISP-6" V 805 3365 50  0001 C CNN
+	1    1325 3325
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

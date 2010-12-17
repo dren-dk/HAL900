@@ -1,4 +1,4 @@
-update=2010-12-16T21:29:29 CET
+update=2010-12-17T20:20:37 CET
 last_client=eeschema
 [general]
 version=1
@@ -125,3 +125,4 @@ LibName36=borniers
 LibName37=g5sb
 LibName38=pulse-pe-68517-ethernet-trafo
 LibName39=sn65hvd1x
+LibName40=i2c

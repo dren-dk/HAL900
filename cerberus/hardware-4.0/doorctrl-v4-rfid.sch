@@ -1,10 +1,9 @@
-EESchema Schematic File Version 2  date 2010-12-17T21:31:15 CET
+EESchema Schematic File Version 2  date 2010-12-18T14:25:32 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
 LIBS:transistors
 LIBS:conn
-LIBS:linear
 LIBS:regul
 LIBS:74xx
 LIBS:cmos4000
@@ -39,6 +38,7 @@ LIBS:g5sb
 LIBS:pulse-pe-68517-ethernet-trafo
 LIBS:sn65hvd1x
 LIBS:i2c
+LIBS:linear
 LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END

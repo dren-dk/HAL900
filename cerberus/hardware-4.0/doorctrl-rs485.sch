@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-18T14:25:32 CET
+EESchema Schematic File Version 2  date 2010-12-18T14:49:05 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -26,7 +26,6 @@ LIBS:display
 LIBS:cypress
 LIBS:siliconi
 LIBS:opto
-LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:bc807
@@ -39,13 +38,14 @@ LIBS:pulse-pe-68517-ethernet-trafo
 LIBS:sn65hvd1x
 LIBS:i2c
 LIBS:linear
+LIBS:atmel
 LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 3 6
 Title ""
-Date "17 dec 2010"
+Date "18 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""

@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-18T14:25:32 CET
+EESchema Schematic File Version 2  date 2010-12-18T14:49:05 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -26,7 +26,6 @@ LIBS:display
 LIBS:cypress
 LIBS:siliconi
 LIBS:opto
-LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:bc807
@@ -39,13 +38,14 @@ LIBS:pulse-pe-68517-ethernet-trafo
 LIBS:sn65hvd1x
 LIBS:i2c
 LIBS:linear
+LIBS:atmel
 LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 6
 Title ""
-Date "17 dec 2010"
+Date "18 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -178,7 +178,13 @@ Wire Wire Line
 Wire Wire Line
 	3300 850  3300 775 
 Wire Wire Line
-	3300 775  2800 775 
+	3300 775  3125 775 
+Wire Wire Line
+	3125 775  3000 775 
+Wire Wire Line
+	3000 775  2900 775 
+Wire Wire Line
+	2900 775  2800 775 
 Wire Wire Line
 	2800 775  2800 850 
 Connection ~ 3000 4950
@@ -187,7 +193,13 @@ Wire Wire Line
 Wire Wire Line
 	3200 4850 3200 4950
 Wire Wire Line
-	3200 4950 2900 4950
+	3200 4950 3100 4950
+Wire Wire Line
+	3100 4950 3050 4950
+Wire Wire Line
+	3050 4950 3000 4950
+Wire Wire Line
+	3000 4950 2900 4950
 Wire Wire Line
 	2900 4950 2900 4850
 Wire Wire Line
@@ -284,7 +296,11 @@ Connection ~ 4225 4550
 Connection ~ 2100 1150
 Connection ~ 2100 1950
 Wire Wire Line
-	1750 1950 2150 1950
+	1750 1950 1850 1950
+Wire Wire Line
+	1850 1950 2100 1950
+Wire Wire Line
+	2100 1950 2150 1950
 Connection ~ 1850 1950
 Wire Wire Line
 	1050 1950 1050 1550
@@ -296,7 +312,11 @@ Connection ~ 1050 1950
 Wire Wire Line
 	1750 3425 1750 3525
 Wire Wire Line
-	2600 6825 2600 6275
+	2600 6825 2600 6475
+Wire Wire Line
+	2600 6475 2600 6375
+Wire Wire Line
+	2600 6375 2600 6275
 Connection ~ 2600 6475
 Wire Wire Line
 	3550 6825 3550 6375

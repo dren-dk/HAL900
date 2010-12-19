@@ -1,0 +1,9 @@
+PCBNEW-LibDoc----V1  2010-12-19T21:32:54 CET
+#
+$MODULE 3mm-hole
+Li 3mm-hole
+Cd 3mm screw hole.
+Kw DEV
+$EndMODULE
+#
+$EndLIBDOC

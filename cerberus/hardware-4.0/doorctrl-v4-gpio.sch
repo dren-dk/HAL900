@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-18T14:49:05 CET
+EESchema Schematic File Version 2  date 2010-12-19T21:45:09 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -45,7 +45,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 4 6
 Title ""
-Date "18 dec 2010"
+Date "19 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -53,6 +53,18 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Label 8050 2800 0    60   ~ 0
+k1c
+Text Label 8250 3000 0    60   ~ 0
+k1b
+Text Label 8250 2600 0    60   ~ 0
+k1a
+Text Label 8050 4850 0    60   ~ 0
+k4c
+Text Label 8250 5050 0    60   ~ 0
+k4b
+Text Label 8250 4650 0    60   ~ 0
+k4a
 Text Notes 1550 6950 0    60   ~ 0
 R22 and R23 must NOT be mounted along with the on-board RFID reader.
 Wire Wire Line
@@ -224,7 +236,7 @@ Wire Wire Line
 Wire Wire Line
 	5450 3800 5450 4200
 Wire Wire Line
-	6250 4150 6250 4600
+	6250 4600 6250 4150
 Wire Wire Line
 	5450 3400 5450 3500
 Connection ~ 5450 3400
@@ -243,7 +255,7 @@ Wire Wire Line
 Wire Wire Line
 	1800 2000 2000 2000
 Wire Wire Line
-	6250 4600 5200 4600
+	5200 4600 6250 4600
 Wire Wire Line
 	8050 2700 8250 2700
 Wire Wire Line
@@ -271,10 +283,10 @@ Wire Wire Line
 Text HLabel 10150 5450 2    60   Input ~ 0
 Relay2
 $Comp
-L GND #PWR69
+L GND #PWR046
 U 1 1 4D07A06D
 P 8950 5950
-F 0 "#PWR69" H 8950 5950 30  0001 C CNN
+F 0 "#PWR046" H 8950 5950 30  0001 C CNN
 F 1 "GND" H 8950 5880 30  0001 C CNN
 	1    8950 5950
 	1    0    0    -1  
@@ -325,10 +337,10 @@ F 1 "DIODE" H 9300 4750 40  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L +12V #PWR68
+L +12V #PWR047
 U 1 1 4D07A02C
 P 8950 4400
-F 0 "#PWR68" H 8950 4350 20  0001 C CNN
+F 0 "#PWR047" H 8950 4350 20  0001 C CNN
 F 1 "+12V" H 8950 4500 30  0000 C CNN
 	1    8950 4400
 	1    0    0    -1  
@@ -340,7 +352,7 @@ P 7700 4850
 F 0 "K3" H 7600 5100 50  0000 C CNN
 F 1 "CONN_3_V" H 7700 5040 40  0000 C CNN
 	1    7700 4850
-	-1   0    0    1   
+	-1   0    0    -1  
 $EndComp
 $Comp
 L G5SB K4
@@ -371,22 +383,22 @@ P 7700 2800
 F 0 "K2" H 7600 3050 50  0000 C CNN
 F 1 "CONN_3_V" H 7700 2990 40  0000 C CNN
 	1    7700 2800
-	-1   0    0    1   
+	-1   0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR66
+L +12V #PWR048
 U 1 1 4D079D91
 P 8950 2300
-F 0 "#PWR66" H 8950 2250 20  0001 C CNN
+F 0 "#PWR048" H 8950 2250 20  0001 C CNN
 F 1 "+12V" H 8950 2400 30  0000 C CNN
 	1    8950 2300
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR67
+L GND #PWR049
 U 1 1 4D079B9C
 P 8950 3900
-F 0 "#PWR67" H 8950 3900 30  0001 C CNN
+F 0 "#PWR049" H 8950 3900 30  0001 C CNN
 F 1 "GND" H 8950 3830 30  0001 C CNN
 	1    8950 3900
 	1    0    0    -1  
@@ -455,19 +467,19 @@ F 1 "G5SB" H 9000 2900 50  0000 L BNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR65
+L GND #PWR050
 U 1 1 4D04DDDA
 P 8150 1950
-F 0 "#PWR65" H 8150 1950 30  0001 C CNN
+F 0 "#PWR050" H 8150 1950 30  0001 C CNN
 F 1 "GND" H 8150 1880 30  0001 C CNN
 	1    8150 1950
 	1    0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR64
+L +12V #PWR051
 U 1 1 4D04DDD3
 P 8150 1450
-F 0 "#PWR64" H 8150 1400 20  0001 C CNN
+F 0 "#PWR051" H 8150 1400 20  0001 C CNN
 F 1 "+12V" H 8150 1550 30  0000 C CNN
 	1    8150 1450
 	1    0    0    -1  
@@ -537,10 +549,10 @@ port3-2d
 Text HLabel 1800 5450 0    60   BiDi ~ 0
 port3-1d
 $Comp
-L GND #PWR63
+L GND #PWR052
 U 1 1 4D04BA37
 P 2850 6550
-F 0 "#PWR63" H 2850 6550 30  0001 C CNN
+F 0 "#PWR052" H 2850 6550 30  0001 C CNN
 F 1 "GND" H 2850 6480 30  0001 C CNN
 	1    2850 6550
 	1    0    0    -1  
@@ -554,10 +566,10 @@ port3-2
 Text HLabel 1800 5750 0    60   Input ~ 0
 port3-1
 $Comp
-L +12V #PWR60
+L +12V #PWR053
 U 1 1 4D04B962
 P 2750 6150
-F 0 "#PWR60" H 2750 6100 20  0001 C CNN
+F 0 "#PWR053" H 2750 6100 20  0001 C CNN
 F 1 "+12V" H 2750 6250 30  0000 C CNN
 	1    2750 6150
 	1    0    0    -1  
@@ -661,19 +673,19 @@ F 1 "1k" V 2250 3700 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L +12V #PWR58
+L +12V #PWR054
 U 1 1 4D04A9E3
 P 2700 4100
-F 0 "#PWR58" H 2700 4050 20  0001 C CNN
+F 0 "#PWR054" H 2700 4050 20  0001 C CNN
 F 1 "+12V" H 2700 4200 30  0000 C CNN
 	1    2700 4100
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR62
+L GND #PWR055
 U 1 1 4D04A9DA
 P 2850 4500
-F 0 "#PWR62" H 2850 4500 30  0001 C CNN
+F 0 "#PWR055" H 2850 4500 30  0001 C CNN
 F 1 "GND" H 2850 4430 30  0001 C CNN
 	1    2850 4500
 	1    0    0    -1  
@@ -741,19 +753,19 @@ F 1 "1k" V 2250 2000 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L +12V #PWR59
+L +12V #PWR056
 U 1 1 4D04A4F5
 P 2750 2400
-F 0 "#PWR59" H 2750 2350 20  0001 C CNN
+F 0 "#PWR056" H 2750 2350 20  0001 C CNN
 F 1 "+12V" H 2750 2500 30  0000 C CNN
 	1    2750 2400
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR61
+L GND #PWR057
 U 1 1 4D04A4D9
 P 2850 2800
-F 0 "#PWR61" H 2850 2800 30  0001 C CNN
+F 0 "#PWR057" H 2850 2800 30  0001 C CNN
 F 1 "GND" H 2850 2730 30  0001 C CNN
 	1    2850 2800
 	1    0    0    -1  

@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-03-14)-final date = 2010-12-19T21:34:14 CET
+Cmp-Mod V01 Created by CvPCB (2010-03-14)-final date = 2010-12-20T21:52:44 CET
 
 BeginCmp
 TimeStamp = /4CFAB038;
@@ -323,13 +323,6 @@ IdModule  = amp-rj45-tap-up-with-leds-RJ45;
 EndCmp
 
 BeginCmp
-TimeStamp = /4CFD3072/4CFD360C;
-Reference = D1;
-ValeurCmp = DIODE;
-IdModule  = micromelf;
-EndCmp
-
-BeginCmp
 TimeStamp = /4CFD3054/4D04D88B;
 Reference = D2;
 ValeurCmp = SK_86;
@@ -358,24 +351,31 @@ IdModule  = LED-0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /4CFD3197/4D079B5D;
-Reference = D6;
-ValeurCmp = DIODE;
-IdModule  = micromelf;
-EndCmp
-
-BeginCmp
-TimeStamp = /4CFD3197/4D07A035;
-Reference = D7;
-ValeurCmp = DIODE;
-IdModule  = micromelf;
-EndCmp
-
-BeginCmp
 TimeStamp = /4CFD2FB8/4D0BB158;
 Reference = D8;
 ValeurCmp = SK_34SMA;
 IdModule  = DO214;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3072/4D0FB594;
+Reference = D9;
+ValeurCmp = LS_914B;
+IdModule  = diode-MINIMELF;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D0FB4EA;
+Reference = D10;
+ValeurCmp = LS_914B;
+IdModule  = diode-MINIMELF;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D0FB50F;
+Reference = D11;
+ValeurCmp = LS_914B;
+IdModule  = diode-MINIMELF;
 EndCmp
 
 BeginCmp
@@ -484,14 +484,14 @@ IdModule  = SOT23-bec;
 EndCmp
 
 BeginCmp
-TimeStamp = /4CFD3197/4D079B69;
+TimeStamp = /4CFD3197/4D0FB771;
 Reference = Q3;
 ValeurCmp = BC817;
 IdModule  = SOT23-bec;
 EndCmp
 
 BeginCmp
-TimeStamp = /4CFD3197/4D07A03F;
+TimeStamp = /4CFD3197/4D0FB782;
 Reference = Q4;
 ValeurCmp = BC817;
 IdModule  = SOT23-bec;

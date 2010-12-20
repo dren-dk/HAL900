@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-19T21:45:09 CET
+EESchema Schematic File Version 2  date 2010-12-20T22:26:04 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -39,13 +39,14 @@ LIBS:sn65hvd1x
 LIBS:i2c
 LIBS:linear
 LIBS:atmel
+LIBS:diode
 LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 5 6
 Title ""
-Date "19 dec 2010"
+Date "20 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -53,51 +54,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L +5V #PWR058
-U 1 1 4D0BAFCB
-P 9150 2650
-F 0 "#PWR058" H 9150 2740 20  0001 C CNN
-F 1 "+5V" H 9150 2740 30  0000 C CNN
-	1    9150 2650
-	1    0    0    -1  
-$EndComp
-$Comp
-L +5V #PWR059
-U 1 1 4D0BAFC8
-P 7250 2550
-F 0 "#PWR059" H 7250 2640 20  0001 C CNN
-F 1 "+5V" H 7250 2640 30  0000 C CNN
-	1    7250 2550
-	1    0    0    -1  
-$EndComp
-$Comp
-L +5V #PWR060
-U 1 1 4D0BAFBC
-P 2950 2550
-F 0 "#PWR060" H 2950 2640 20  0001 C CNN
-F 1 "+5V" H 2950 2640 30  0000 C CNN
-	1    2950 2550
-	1    0    0    -1  
-$EndComp
-$Comp
-L BC807 Q2
-U 1 1 4CFD4AF1
-P 2850 3500
-F 0 "Q2" H 2850 3350 60  0000 R CNN
-F 1 "BC807" H 2850 3650 60  0000 R CNN
-	1    2850 3500
-	1    0    0    1   
-$EndComp
-$Comp
-L BC817 Q1
-U 1 1 4CFD4AE8
-P 2850 2900
-F 0 "Q1" H 2850 2750 50  0000 R CNN
-F 1 "BC817" H 2850 3050 50  0000 R CNN
-	1    2850 2900
-	1    0    0    -1  
-$EndComp
+Wire Wire Line
+	4050 2900 5000 2900
 Wire Wire Line
 	4300 3750 4300 4200
 Wire Wire Line
@@ -152,14 +110,10 @@ Wire Wire Line
 Wire Wire Line
 	2950 3700 2950 4200
 Wire Wire Line
-	3750 2900 3450 2900
-Wire Wire Line
 	3050 3200 2950 3200
 Connection ~ 2950 3200
 Wire Wire Line
 	3600 4100 3600 4200
-Wire Wire Line
-	4150 2900 5000 2900
 Connection ~ 4300 2900
 Wire Wire Line
 	4800 4200 4800 3800
@@ -199,6 +153,63 @@ Wire Wire Line
 	7250 2550 7250 2600
 Wire Wire Line
 	4300 2900 4300 3350
+Wire Wire Line
+	3850 2900 3450 2900
+$Comp
+L DIODE-MINIMELF D9
+U 1 1 4D0FB594
+P 3950 2900
+F 0 "D9" H 4050 2919 50  0000 L BNN
+F 1 "LS 914B" H 3850 2750 50  0000 L BNN
+F 2 "diode-MINIMELF" H 3950 3050 50  0001 C CNN
+	1    3950 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR058
+U 1 1 4D0BAFCB
+P 9150 2650
+F 0 "#PWR058" H 9150 2740 20  0001 C CNN
+F 1 "+5V" H 9150 2740 30  0000 C CNN
+	1    9150 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR059
+U 1 1 4D0BAFC8
+P 7250 2550
+F 0 "#PWR059" H 7250 2640 20  0001 C CNN
+F 1 "+5V" H 7250 2640 30  0000 C CNN
+	1    7250 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR060
+U 1 1 4D0BAFBC
+P 2950 2550
+F 0 "#PWR060" H 2950 2640 20  0001 C CNN
+F 1 "+5V" H 2950 2640 30  0000 C CNN
+	1    2950 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L BC807 Q2
+U 1 1 4CFD4AF1
+P 2850 3500
+F 0 "Q2" H 2850 3350 60  0000 R CNN
+F 1 "BC807" H 2850 3650 60  0000 R CNN
+	1    2850 3500
+	1    0    0    1   
+$EndComp
+$Comp
+L BC817 Q1
+U 1 1 4CFD4AE8
+P 2850 2900
+F 0 "Q1" H 2850 2750 50  0000 R CNN
+F 1 "BC817" H 2850 3050 50  0000 R CNN
+	1    2850 2900
+	1    0    0    -1  
+$EndComp
 Text HLabel 9950 3100 2    60   Output ~ 0
 RFID
 Text HLabel 3450 2900 0    60   BiDi ~ 0
@@ -430,15 +441,6 @@ P 4300 3550
 F 0 "C4" H 4350 3650 50  0000 L CNN
 F 1 "1nF" H 4350 3450 50  0000 L CNN
 	1    4300 3550
-	1    0    0    -1  
-$EndComp
-$Comp
-L DIODE D1
-U 1 1 4CFD360C
-P 3950 2900
-F 0 "D1" H 3950 3000 40  0000 C CNN
-F 1 "DIODE" H 3950 2800 40  0000 C CNN
-	1    3950 2900
 	1    0    0    -1  
 $EndComp
 $Comp

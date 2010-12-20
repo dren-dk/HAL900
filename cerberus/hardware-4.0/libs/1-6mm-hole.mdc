@@ -1,0 +1,9 @@
+PCBNEW-LibDoc----V1  2010-12-20T19:43:36 CET
+#
+$MODULE 0
+Li 0
+Cd module 1 pin (ou trou mecanique de percage)
+Kw DEV
+$EndMODULE
+#
+$EndLIBDOC

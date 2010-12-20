@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-19T21:45:09 CET
+EESchema Schematic File Version 2  date 2010-12-20T22:26:04 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -39,13 +39,14 @@ LIBS:sn65hvd1x
 LIBS:i2c
 LIBS:linear
 LIBS:atmel
+LIBS:diode
 LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 2 6
 Title ""
-Date "19 dec 2010"
+Date "20 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -53,6 +54,28 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Label 6350 3650 0    60   ~ 0
+rd+
+Text Label 6350 3050 0    60   ~ 0
+rd-
+Text Label 6350 2850 0    60   ~ 0
+td+
+Text Label 6350 2550 0    60   ~ 0
+tct
+Text Label 6350 2250 0    60   ~ 0
+td-
+Text Label 7650 3650 0    60   ~ 0
+rx+
+Text Label 7600 3350 0    60   ~ 0
+rxct
+Text Label 7650 3050 0    60   ~ 0
+rx-
+Text Label 7650 2850 0    60   ~ 0
+tx+
+Text Label 7650 2550 0    60   ~ 0
+txct
+Text Label 7650 2250 0    60   ~ 0
+tx-
 Text Notes 750  7600 0    60   ~ 0
 All these parts are optional and only needed if Ethernet is wanted
 Wire Wire Line
@@ -851,7 +874,6 @@ U 1 1 4D07C0AC
 P 4850 2950
 F 0 "U4" H 4765 2350 50  0000 L BNN
 F 1 "ENC28J60" H 4750 3350 50  0000 L BNN
-F 2 "SSOP28" H 4850 3100 50  0001 C CNN
 	1    4850 2950
 	1    0    0    -1  
 $EndComp

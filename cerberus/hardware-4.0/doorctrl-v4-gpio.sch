@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-19T21:45:09 CET
+EESchema Schematic File Version 2  date 2010-12-20T22:26:04 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -39,13 +39,14 @@ LIBS:sn65hvd1x
 LIBS:i2c
 LIBS:linear
 LIBS:atmel
+LIBS:diode
 LIBS:doorctrl-v4-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 4 6
 Title ""
-Date "19 dec 2010"
+Date "20 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -53,20 +54,40 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text Label 8050 2800 0    60   ~ 0
-k1c
-Text Label 8250 3000 0    60   ~ 0
-k1b
-Text Label 8250 2600 0    60   ~ 0
-k1a
-Text Label 8050 4850 0    60   ~ 0
+Text Label 8100 4850 0    60   ~ 0
 k4c
 Text Label 8250 5050 0    60   ~ 0
 k4b
 Text Label 8250 4650 0    60   ~ 0
 k4a
-Text Notes 1550 6950 0    60   ~ 0
-R22 and R23 must NOT be mounted along with the on-board RFID reader.
+Text Label 8100 2800 0    60   ~ 0
+k2c
+Text Label 8250 3000 0    60   ~ 0
+k2b
+Text Label 8250 2600 0    60   ~ 0
+k2a
+$Comp
+L BC817 Q4
+U 1 1 4D0FB782
+P 9050 5450
+F 0 "Q4" H 9050 5300 50  0000 R CNN
+F 1 "BC817" H 9050 5600 50  0000 R CNN
+	1    9050 5450
+	-1   0    0    -1  
+$EndComp
+$Comp
+L BC817 Q3
+U 1 1 4D0FB771
+P 9050 3400
+F 0 "Q3" H 9050 3250 50  0000 R CNN
+F 1 "BC817" H 9050 3550 50  0000 R CNN
+	1    9050 3400
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	9300 4950 9300 5050
+Wire Wire Line
+	9300 2900 9300 3000
 Wire Wire Line
 	8950 4400 8950 4650
 Wire Wire Line
@@ -100,7 +121,7 @@ Wire Wire Line
 Wire Wire Line
 	8950 3200 8950 3000
 Wire Wire Line
-	9300 2600 8950 2600
+	8950 2600 9300 2600
 Wire Wire Line
 	8550 3000 8250 3000
 Wire Wire Line
@@ -236,7 +257,7 @@ Wire Wire Line
 Wire Wire Line
 	5450 3800 5450 4200
 Wire Wire Line
-	6250 4600 6250 4150
+	6250 4150 6250 4600
 Wire Wire Line
 	5450 3400 5450 3500
 Connection ~ 5450 3400
@@ -255,7 +276,7 @@ Wire Wire Line
 Wire Wire Line
 	1800 2000 2000 2000
 Wire Wire Line
-	5200 4600 6250 4600
+	6250 4600 5200 4600
 Wire Wire Line
 	8050 2700 8250 2700
 Wire Wire Line
@@ -280,6 +301,32 @@ Wire Wire Line
 	8950 5050 8950 5250
 Wire Wire Line
 	8950 4650 9300 4650
+Wire Wire Line
+	9300 2600 9300 2700
+Wire Wire Line
+	9300 4650 9300 4750
+$Comp
+L DIODE-MINIMELF D11
+U 1 1 4D0FB50F
+P 9300 4850
+F 0 "D11" H 9400 4869 50  0000 L BNN
+F 1 "LS 914B" H 9400 4759 50  0000 L BNN
+F 2 "diode-MINIMELF" H 9300 5000 50  0001 C CNN
+	1    9300 4850
+	0    -1   -1   0   
+$EndComp
+$Comp
+L DIODE-MINIMELF D10
+U 1 1 4D0FB4EA
+P 9300 2800
+F 0 "D10" H 9400 2819 50  0000 L BNN
+F 1 "LS 914B" H 9400 2709 50  0000 L BNN
+F 2 "diode-MINIMELF" H 9300 2950 50  0001 C CNN
+	1    9300 2800
+	0    -1   -1   0   
+$EndComp
+Text Notes 1550 6950 0    60   ~ 0
+R22 and R23 must NOT be mounted along with the on-board RFID reader.
 Text HLabel 10150 5450 2    60   Input ~ 0
 Relay2
 $Comp
@@ -317,24 +364,6 @@ F 0 "R38" V 9830 5450 50  0000 C CNN
 F 1 "4k7" V 9750 5450 50  0000 C CNN
 	1    9750 5450
 	0    1    1    0   
-$EndComp
-$Comp
-L NPN Q4
-U 1 1 4D07A03F
-P 9050 5450
-F 0 "Q4" H 9050 5300 50  0000 R CNN
-F 1 "BC817" H 9050 5600 50  0000 R CNN
-	1    9050 5450
-	-1   0    0    -1  
-$EndComp
-$Comp
-L DIODE D7
-U 1 1 4D07A035
-P 9300 4850
-F 0 "D7" H 9300 4950 40  0000 C CNN
-F 1 "DIODE" H 9300 4750 40  0000 C CNN
-	1    9300 4850
-	0    -1   -1   0   
 $EndComp
 $Comp
 L +12V #PWR047
@@ -429,24 +458,6 @@ F 0 "R36" V 9830 3400 50  0000 C CNN
 F 1 "4k7" V 9750 3400 50  0000 C CNN
 	1    9750 3400
 	0    1    1    0   
-$EndComp
-$Comp
-L NPN Q3
-U 1 1 4D079B69
-P 9050 3400
-F 0 "Q3" H 9050 3250 50  0000 R CNN
-F 1 "BC817" H 9050 3550 50  0000 R CNN
-	1    9050 3400
-	-1   0    0    -1  
-$EndComp
-$Comp
-L DIODE D6
-U 1 1 4D079B5D
-P 9300 2800
-F 0 "D6" H 9300 2900 40  0000 C CNN
-F 1 "DIODE" H 9300 2700 40  0000 C CNN
-	1    9300 2800
-	0    -1   -1   0   
 $EndComp
 $Comp
 L G5SB K1

@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-20T22:26:04 CET
+EESchema Schematic File Version 2  date 2010-12-21T17:47:20 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -46,7 +46,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 6
 Title ""
-Date "20 dec 2010"
+Date "21 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -54,6 +54,17 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+$Sheet
+S 9300 2100 1600 1000
+U 4CFD2FB8
+F0 "doorctrl-v4-net" 60
+F1 "doorctrl-v4-net.sch" 60
+F2 "SCK" I L 9300 2250 60 
+F3 "MISO" O L 9300 2400 60 
+F4 "MOSI" I L 9300 2550 60 
+F5 "~CS" I L 9300 2700 60 
+F6 "Clock-out" O L 9300 2850 60 
+$EndSheet
 Wire Wire Line
 	1300 4850 1100 4850
 Wire Wire Line
@@ -523,17 +534,6 @@ F 1 "24LC64" H 3550 6575 60  0000 C CNN
 	1    3100 6275
 	1    0    0    -1  
 $EndComp
-$Sheet
-S 9300 2100 1600 1000
-U 4CFD2FB8
-F0 "doorctrl-v4-net" 60
-F1 "doorctrl-v4-net.sch" 60
-F2 "SCK" I L 9300 2250 60 
-F3 "MISO" O L 9300 2400 60 
-F4 "MOSI" I L 9300 2550 60 
-F5 "~CS" I L 9300 2700 60 
-F6 "Clock out" O L 9300 2850 60 
-$EndSheet
 $Sheet
 S 9300 5025 1625 850 
 U 4D0BB1C7

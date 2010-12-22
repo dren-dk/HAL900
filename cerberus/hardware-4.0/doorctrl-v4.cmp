@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-03-14)-final date = 2010-12-20T21:52:44 CET
+Cmp-Mod V01 Genere par PcbNew le 2010-12-22T20:06:01 CET
 
 BeginCmp
 TimeStamp = /4CFAB038;
@@ -333,7 +333,7 @@ BeginCmp
 TimeStamp = /4CFD3054/4D04CF74;
 Reference = D3;
 ValeurCmp = SK_34SMA;
-IdModule  = DO214AC;
+IdModule  = DO214;
 EndCmp
 
 BeginCmp
@@ -900,7 +900,7 @@ BeginCmp
 TimeStamp = /4CFD3054/4D04CE01;
 Reference = U2;
 ValeurCmp = MC34063;
-IdModule  = SO8N;
+IdModule  = SO8E;
 EndCmp
 
 BeginCmp

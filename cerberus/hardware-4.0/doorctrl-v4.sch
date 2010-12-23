@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-21T17:47:20 CET
+EESchema Schematic File Version 2  date 2010-12-23T21:46:15 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -41,12 +41,12 @@ LIBS:linear
 LIBS:atmel
 LIBS:diode
 LIBS:doorctrl-v4-cache
-EELAYER 24  0
+EELAYER 25  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 6
 Title ""
-Date "21 dec 2010"
+Date "23 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -63,7 +63,6 @@ F2 "SCK" I L 9300 2250 60
 F3 "MISO" O L 9300 2400 60 
 F4 "MOSI" I L 9300 2550 60 
 F5 "~CS" I L 9300 2700 60 
-F6 "Clock-out" O L 9300 2850 60 
 $EndSheet
 Wire Wire Line
 	1300 4850 1100 4850
@@ -95,8 +94,6 @@ Wire Wire Line
 	7050 4275 9325 4275
 Wire Wire Line
 	9100 4075 9325 4075
-Wire Wire Line
-	9300 2850 9100 2850
 Wire Wire Line
 	9300 2550 9100 2550
 Wire Wire Line
@@ -466,8 +463,6 @@ Text GLabel 9100 4075 0    60   Input ~ 0
 PD6
 Text GLabel 9100 3875 0    60   Input ~ 0
 PB1
-Text GLabel 9100 2850 0    60   Input ~ 0
-CLOCK
 Text GLabel 9100 2700 0    60   Input ~ 0
 PB4
 Text GLabel 9100 2550 0    60   Input ~ 0
@@ -756,8 +751,6 @@ Text Label 4225 3050 0    60   ~ 0
 PC1
 Text Label 4225 2950 0    60   ~ 0
 PC0
-Text Label 2100 1950 2    60   ~ 0
-CLOCK
 Text Label 2100 1150 2    60   ~ 0
 RESET
 Text Label 4225 3150 0    60   ~ 0

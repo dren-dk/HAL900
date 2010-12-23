@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-21T17:47:20 CET
+EESchema Schematic File Version 2  date 2010-12-23T21:46:15 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -41,12 +41,12 @@ LIBS:linear
 LIBS:atmel
 LIBS:diode
 LIBS:doorctrl-v4-cache
-EELAYER 24  0
+EELAYER 25  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 2 6
 Title ""
-Date "21 dec 2010"
+Date "23 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -54,6 +54,16 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Label 4050 2450 2    60   ~ 0
+~enc-reset
+Text Label 5500 4050 0    60   ~ 0
+osc2
+Text Label 5500 3850 0    60   ~ 0
+osc1
+Text Label 3700 3550 0    60   ~ 0
+rbias
+Text Label 4000 3650 0    60   ~ 0
+vcap
 Text Label 6350 3650 0    60   ~ 0
 rd+
 Text Label 6350 3050 0    60   ~ 0
@@ -245,8 +255,6 @@ Connection ~ 4650 1650
 Wire Wire Line
 	4550 1750 4550 1650
 Connection ~ 4550 1650
-Wire Wire Line
-	4000 2550 4250 2550
 Wire Wire Line
 	4250 2950 4000 2950
 Wire Wire Line
@@ -794,8 +802,6 @@ Text HLabel 4000 2950 0    60   Input ~ 0
 MOSI
 Text HLabel 4000 2850 0    60   Input ~ 0
 ~CS
-Text HLabel 4000 2550 0    60   Output ~ 0
-Clock-out
 $Comp
 L GND #PWR034
 U 1 1 4D091ABE

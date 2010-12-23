@@ -1,4 +1,4 @@
-Cmp-Mod V01 Genere par PcbNew le 2010-12-22T20:06:01 CET
+Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2010-12-23T20:06:03 CET
 
 BeginCmp
 TimeStamp = /4CFAB038;
@@ -262,6 +262,20 @@ EndCmp
 BeginCmp
 TimeStamp = /4CFD2FB8/4D0BB163;
 Reference = C44;
+ValeurCmp = 100nF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3054/4D139CE3;
+Reference = C45;
+ValeurCmp = 100nF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3054/4D139CE9;
+Reference = C46;
 ValeurCmp = 100nF;
 IdModule  = SM0805;
 EndCmp

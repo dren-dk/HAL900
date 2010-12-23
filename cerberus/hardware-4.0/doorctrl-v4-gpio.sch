@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-21T17:47:20 CET
+EESchema Schematic File Version 2  date 2010-12-23T21:46:15 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -41,12 +41,12 @@ LIBS:linear
 LIBS:atmel
 LIBS:diode
 LIBS:doorctrl-v4-cache
-EELAYER 24  0
+EELAYER 25  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 4 6
 Title ""
-Date "21 dec 2010"
+Date "23 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -54,36 +54,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text Label 8100 4850 0    60   ~ 0
-k4c
-Text Label 8250 5050 0    60   ~ 0
-k4b
-Text Label 8250 4650 0    60   ~ 0
-k4a
-Text Label 8100 2800 0    60   ~ 0
-k2c
-Text Label 8250 3000 0    60   ~ 0
-k2b
-Text Label 8250 2600 0    60   ~ 0
-k2a
-$Comp
-L BC817 Q4
-U 1 1 4D0FB782
-P 9050 5450
-F 0 "Q4" H 9050 5300 50  0000 R CNN
-F 1 "BC817" H 9050 5600 50  0000 R CNN
-	1    9050 5450
-	-1   0    0    -1  
-$EndComp
-$Comp
-L BC817 Q3
-U 1 1 4D0FB771
-P 9050 3400
-F 0 "Q3" H 9050 3250 50  0000 R CNN
-F 1 "BC817" H 9050 3550 50  0000 R CNN
-	1    9050 3400
-	-1   0    0    -1  
-$EndComp
 Wire Wire Line
 	9300 4950 9300 5050
 Wire Wire Line
@@ -305,6 +275,36 @@ Wire Wire Line
 	9300 2600 9300 2700
 Wire Wire Line
 	9300 4650 9300 4750
+Text Label 8100 4850 0    60   ~ 0
+k4c
+Text Label 8250 5050 0    60   ~ 0
+k4b
+Text Label 8250 4650 0    60   ~ 0
+k4a
+Text Label 8100 2800 0    60   ~ 0
+k2c
+Text Label 8250 3000 0    60   ~ 0
+k2b
+Text Label 8250 2600 0    60   ~ 0
+k2a
+$Comp
+L BC817 Q4
+U 1 1 4D0FB782
+P 9050 5450
+F 0 "Q4" H 9050 5300 50  0000 R CNN
+F 1 "BC817" H 9050 5600 50  0000 R CNN
+	1    9050 5450
+	-1   0    0    -1  
+$EndComp
+$Comp
+L BC817 Q3
+U 1 1 4D0FB771
+P 9050 3400
+F 0 "Q3" H 9050 3250 50  0000 R CNN
+F 1 "BC817" H 9050 3550 50  0000 R CNN
+	1    9050 3400
+	-1   0    0    -1  
+$EndComp
 $Comp
 L DIODE-MINIMELF D11
 U 1 1 4D0FB50F

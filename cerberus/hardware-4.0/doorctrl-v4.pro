@@ -1,4 +1,4 @@
-update=2010-12-23T12:34:10 CET
+update=2010-12-23T22:43:45 CET
 last_client=pcbnew
 [general]
 version=1
@@ -101,7 +101,7 @@ DrawLar=150
 EdgeLar=150
 TxtLar=120
 MSegLar=150
-LastNetListRead=
+LastNetListRead=doorctrl-v4.net
 [pcbnew/libraries]
 LibDir=libs
 LibName1=sockets

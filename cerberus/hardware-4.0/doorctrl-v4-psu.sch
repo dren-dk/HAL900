@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-21T17:47:20 CET
+EESchema Schematic File Version 2  date 2010-12-23T21:46:15 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -41,12 +41,12 @@ LIBS:linear
 LIBS:atmel
 LIBS:diode
 LIBS:doorctrl-v4-cache
-EELAYER 24  0
+EELAYER 25  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 6 6
 Title ""
-Date "21 dec 2010"
+Date "23 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -55,13 +55,15 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Wire Wire Line
+	7800 2600 4950 2600
+Connection ~ 7550 3000
+Connection ~ 7550 2600
+Wire Wire Line
 	4950 4700 4950 5350
 Wire Wire Line
 	3550 5950 3550 6600
 Wire Wire Line
-	3550 5000 3550 5450
-Wire Wire Line
-	4950 2600 7550 2600
+	3550 5450 3550 5000
 Wire Wire Line
 	2350 4700 2200 4700
 Connection ~ 3300 6600
@@ -83,11 +85,11 @@ Wire Wire Line
 Wire Wire Line
 	2300 6150 2300 6600
 Connection ~ 5850 2600
-Connection ~ 7300 2600
-Connection ~ 6800 2600
+Connection ~ 7050 2600
+Connection ~ 6550 2600
 Connection ~ 6300 2600
-Connection ~ 7550 3000
-Connection ~ 7050 3000
+Connection ~ 7300 3000
+Connection ~ 6800 3000
 Connection ~ 6300 3000
 Connection ~ 5350 3000
 Connection ~ 5050 3000
@@ -108,7 +110,7 @@ Wire Wire Line
 Wire Wire Line
 	2200 1750 2200 2400
 Wire Wire Line
-	3050 2050 3050 1950
+	3050 1950 3050 2050
 Wire Wire Line
 	3900 1750 3900 2450
 Connection ~ 3900 2350
@@ -123,20 +125,18 @@ Wire Wire Line
 	3900 2750 3900 2850
 Connection ~ 3900 2750
 Wire Wire Line
-	3900 2600 4350 2600
+	4350 2600 3900 2600
 Connection ~ 4250 2600
 Wire Wire Line
 	4600 2300 5850 2300
 Connection ~ 5050 2600
 Connection ~ 5850 2300
 Connection ~ 6050 3000
+Connection ~ 7050 3000
 Connection ~ 6550 3000
-Connection ~ 7300 3000
-Connection ~ 6800 3000
 Connection ~ 6050 2600
-Connection ~ 6550 2600
-Connection ~ 7050 2600
-Connection ~ 7550 2600
+Connection ~ 6800 2600
+Connection ~ 7300 2600
 Wire Wire Line
 	5850 3000 5850 3150
 Connection ~ 5850 3000
@@ -168,18 +168,36 @@ Wire Wire Line
 Wire Wire Line
 	2200 4700 2200 4550
 Wire Wire Line
-	4050 4700 3750 4700
+	3750 4700 4050 4700
 Connection ~ 2550 5650
 Connection ~ 2200 4700
 Connection ~ 5150 4700
 Connection ~ 5150 5100
 Wire Wire Line
-	7550 3000 4250 3000
-Wire Wire Line
-	3550 5350 3650 5350
+	3650 5350 3550 5350
 Connection ~ 3550 5350
 Wire Wire Line
 	4950 5350 4150 5350
+Wire Wire Line
+	4250 3000 7800 3000
+$Comp
+L C C46
+U 1 1 4D139CE9
+P 7800 2800
+F 0 "C46" H 7850 2900 50  0000 L CNN
+F 1 "100nF" H 7750 2550 50  0000 L CNN
+	1    7800 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C45
+U 1 1 4D139CE3
+P 7550 2800
+F 0 "C45" H 7600 2900 50  0000 L CNN
+F 1 "100nF" H 7500 2550 50  0000 L CNN
+	1    7550 2800
+	1    0    0    -1  
+$EndComp
 $Comp
 L +5V #PWR071
 U 1 1 4D0BB423
@@ -346,44 +364,35 @@ $EndComp
 $Comp
 L C C25
 U 1 1 4D04D39E
-P 7550 2800
-F 0 "C25" H 7600 2900 50  0000 L CNN
-F 1 "100nF" H 7500 2550 50  0000 L CNN
-	1    7550 2800
-	1    0    0    -1  
-$EndComp
-$Comp
-L C C24
-U 1 1 4D04D39B
 P 7300 2800
-F 0 "C24" H 7350 2900 50  0000 L CNN
+F 0 "C25" H 7350 2900 50  0000 L CNN
 F 1 "100nF" H 7250 2550 50  0000 L CNN
 	1    7300 2800
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C23
-U 1 1 4D04D398
+L C C24
+U 1 1 4D04D39B
 P 7050 2800
-F 0 "C23" H 7100 2900 50  0000 L CNN
+F 0 "C24" H 7100 2900 50  0000 L CNN
 F 1 "100nF" H 7000 2550 50  0000 L CNN
 	1    7050 2800
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C22
-U 1 1 4D04D394
+L C C23
+U 1 1 4D04D398
 P 6800 2800
-F 0 "C22" H 6850 2900 50  0000 L CNN
+F 0 "C23" H 6850 2900 50  0000 L CNN
 F 1 "100nF" H 6750 2550 50  0000 L CNN
 	1    6800 2800
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C21
-U 1 1 4D04D38F
+L C C22
+U 1 1 4D04D394
 P 6550 2800
-F 0 "C21" H 6600 2900 50  0000 L CNN
+F 0 "C22" H 6600 2900 50  0000 L CNN
 F 1 "100nF" H 6500 2550 50  0000 L CNN
 	1    6550 2800
 	1    0    0    -1  

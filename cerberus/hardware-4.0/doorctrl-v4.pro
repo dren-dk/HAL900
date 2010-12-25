@@ -1,4 +1,4 @@
-update=2010-12-25T16:55:27 CET
+update=2010-12-25T18:04:02 CET
 last_client=pcbnew
 [general]
 version=1
@@ -127,3 +127,4 @@ LibName20=3mm-hole
 LibName21=torroid-inductor
 LibName22=diode
 LibName23=1-6mm-hole
+LibName24=osaa-nut

@@ -1,4 +1,4 @@
-update=2010-12-24T16:49:43 CET
+update=2010-12-25T16:55:27 CET
 last_client=pcbnew
 [general]
 version=1
@@ -87,10 +87,10 @@ LibName41=diode
 [pcbnew]
 version=1
 PadDrlX=551
-PadDimH=630
-PadDimV=630
+PadDimH=787
+PadDimV=787
 BoardThickness=630
-SgPcb45=1
+SgPcb45=0
 TxtPcbV=800
 TxtPcbH=600
 TxtModV=600

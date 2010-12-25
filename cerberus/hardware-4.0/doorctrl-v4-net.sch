@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-23T21:46:15 CET
+EESchema Schematic File Version 2  date 2010-12-25T12:56:58 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -46,7 +46,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 2 6
 Title ""
-Date "23 dec 2010"
+Date "25 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -54,40 +54,9 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text Label 4050 2450 2    60   ~ 0
-~enc-reset
-Text Label 5500 4050 0    60   ~ 0
-osc2
-Text Label 5500 3850 0    60   ~ 0
-osc1
-Text Label 3700 3550 0    60   ~ 0
-rbias
-Text Label 4000 3650 0    60   ~ 0
-vcap
-Text Label 6350 3650 0    60   ~ 0
-rd+
-Text Label 6350 3050 0    60   ~ 0
-rd-
-Text Label 6350 2850 0    60   ~ 0
-td+
-Text Label 6350 2550 0    60   ~ 0
-tct
-Text Label 6350 2250 0    60   ~ 0
-td-
-Text Label 7650 3650 0    60   ~ 0
-rx+
-Text Label 7600 3350 0    60   ~ 0
-rxct
-Text Label 7650 3050 0    60   ~ 0
-rx-
-Text Label 7650 2850 0    60   ~ 0
-tx+
-Text Label 7650 2550 0    60   ~ 0
-txct
-Text Label 7650 2250 0    60   ~ 0
-tx-
-Text Notes 750  7600 0    60   ~ 0
-All these parts are optional and only needed if Ethernet is wanted
+Connection ~ 8050 4000
+Wire Wire Line
+	8050 4000 8125 4000
 Wire Wire Line
 	6450 6250 8550 6250
 Wire Wire Line
@@ -145,8 +114,6 @@ Connection ~ 7800 6250
 Connection ~ 8300 6250
 Connection ~ 7350 6250
 Connection ~ 8050 3850
-Wire Wire Line
-	8050 3950 8050 3750
 Connection ~ 7725 4375
 Wire Wire Line
 	7825 4325 7825 4375
@@ -163,7 +130,7 @@ Wire Wire Line
 Wire Wire Line
 	8050 3850 8125 3850
 Wire Wire Line
-	8050 3750 8125 3750
+	8125 3750 8050 3750
 Wire Wire Line
 	8125 3650 7550 3650
 Wire Wire Line
@@ -342,6 +309,42 @@ Wire Wire Line
 Connection ~ 8050 3550
 Wire Wire Line
 	8550 6650 5750 6650
+Wire Wire Line
+	8050 3750 8050 4100
+Text Label 4050 2450 2    60   ~ 0
+~enc-reset
+Text Label 5500 4050 0    60   ~ 0
+osc2
+Text Label 5500 3850 0    60   ~ 0
+osc1
+Text Label 3700 3550 0    60   ~ 0
+rbias
+Text Label 4000 3650 0    60   ~ 0
+vcap
+Text Label 6350 3650 0    60   ~ 0
+rd+
+Text Label 6350 3050 0    60   ~ 0
+rd-
+Text Label 6350 2850 0    60   ~ 0
+td+
+Text Label 6350 2550 0    60   ~ 0
+tct
+Text Label 6350 2250 0    60   ~ 0
+td-
+Text Label 7650 3650 0    60   ~ 0
+rx+
+Text Label 7600 3350 0    60   ~ 0
+rxct
+Text Label 7650 3050 0    60   ~ 0
+rx-
+Text Label 7650 2850 0    60   ~ 0
+tx+
+Text Label 7650 2550 0    60   ~ 0
+txct
+Text Label 7650 2250 0    60   ~ 0
+tx-
+Text Notes 750  7600 0    60   ~ 0
+All these parts are optional and only needed if Ethernet is wanted
 $Comp
 L C C44
 U 1 1 4D0BB163
@@ -536,10 +539,10 @@ $EndComp
 $Comp
 L GND #PWR023
 U 1 1 4D092355
-P 8050 3950
-F 0 "#PWR023" H 8050 3950 30  0001 C CNN
-F 1 "GND" H 8050 3880 30  0001 C CNN
-	1    8050 3950
+P 8050 4100
+F 0 "#PWR023" H 8050 4100 30  0001 C CNN
+F 1 "GND" H 8050 4030 30  0001 C CNN
+	1    8050 4100
 	1    0    0    -1  
 $EndComp
 $Comp

@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-23T21:46:15 CET
+EESchema Schematic File Version 2  date 2010-12-25T12:56:58 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -46,7 +46,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 4 6
 Title ""
-Date "23 dec 2010"
+Date "25 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -54,6 +54,15 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Connection ~ 2850 6600
+Wire Wire Line
+	2850 6350 2850 6700
+Connection ~ 2850 4550
+Wire Wire Line
+	2850 4650 2850 4300
+Connection ~ 2850 2850
+Wire Wire Line
+	2850 2950 2850 2600
 Wire Wire Line
 	9300 4950 9300 5050
 Wire Wire Line
@@ -132,8 +141,6 @@ Wire Wire Line
 	2600 5600 1800 5600
 Connection ~ 2850 6450
 Wire Wire Line
-	2850 6350 2850 6550
-Wire Wire Line
 	2000 6250 1800 6250
 Wire Wire Line
 	2000 5900 1800 5900
@@ -177,8 +184,6 @@ Wire Wire Line
 	2750 2400 2850 2400
 Connection ~ 2850 2700
 Wire Wire Line
-	2850 2800 2850 2600
-Wire Wire Line
 	2850 2400 2850 2300
 Wire Wire Line
 	2500 2000 2850 2000
@@ -202,8 +207,6 @@ Wire Wire Line
 	2850 4100 2700 4100
 Wire Wire Line
 	2500 4200 2850 4200
-Wire Wire Line
-	2850 4300 2850 4500
 Connection ~ 2850 4400
 Wire Wire Line
 	2850 6250 2500 6250
@@ -562,10 +565,10 @@ port3-1d
 $Comp
 L GND #PWR052
 U 1 1 4D04BA37
-P 2850 6550
-F 0 "#PWR052" H 2850 6550 30  0001 C CNN
-F 1 "GND" H 2850 6480 30  0001 C CNN
-	1    2850 6550
+P 2850 6700
+F 0 "#PWR052" H 2850 6700 30  0001 C CNN
+F 1 "GND" H 2850 6630 30  0001 C CNN
+	1    2850 6700
 	1    0    0    -1  
 $EndComp
 Text HLabel 1800 6250 0    60   Input ~ 0
@@ -695,10 +698,10 @@ $EndComp
 $Comp
 L GND #PWR055
 U 1 1 4D04A9DA
-P 2850 4500
-F 0 "#PWR055" H 2850 4500 30  0001 C CNN
-F 1 "GND" H 2850 4430 30  0001 C CNN
-	1    2850 4500
+P 2850 4650
+F 0 "#PWR055" H 2850 4650 30  0001 C CNN
+F 1 "GND" H 2850 4580 30  0001 C CNN
+	1    2850 4650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -775,10 +778,10 @@ $EndComp
 $Comp
 L GND #PWR057
 U 1 1 4D04A4D9
-P 2850 2800
-F 0 "#PWR057" H 2850 2800 30  0001 C CNN
-F 1 "GND" H 2850 2730 30  0001 C CNN
-	1    2850 2800
+P 2850 2950
+F 0 "#PWR057" H 2850 2950 30  0001 C CNN
+F 1 "GND" H 2850 2880 30  0001 C CNN
+	1    2850 2950
 	1    0    0    -1  
 $EndComp
 $Comp

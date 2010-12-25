@@ -1,9 +1,9 @@
-PCBNEW-LibModule-V1  2010-12-20T19:43:36 CET
+PCBNEW-LibModule-V1  2010-12-25T13:20:47 CET
 $INDEX
 0
 $EndINDEX
 $MODULE 0
-Po 0 0 0 15 4D0FA320 00000000 ~~
+Po 0 0 0 15 4D15DF00 00000000 ~~
 Li 0
 Cd module 1 pin (ou trou mecanique de percage)
 Kw DEV
@@ -13,7 +13,7 @@ Op 0 0 0
 T0 0 0 50 50 900 13 N I 21 N"0"
 T1 0 0 50 50 0 13 N I 21 N"0"
 $PAD
-Sh "1" C 630 630 0 0 0
+Sh "1" C 787 787 0 0 0
 Dr 551 0 0
 At STD N 00E0FFFF
 Ne 0 ""

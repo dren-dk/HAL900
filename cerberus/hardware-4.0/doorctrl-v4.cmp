@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2010-12-25T13:01:42 CET
+Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2010-12-26T13:56:25 CET
 
 BeginCmp
 TimeStamp = /4CFAB038;
@@ -474,6 +474,13 @@ TimeStamp = /4D0D19DC;
 Reference = P2;
 ValeurCmp = FTDI_serial;
 IdModule  = PIN_ARRAY-6X1;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D173A4E;
+Reference = P3;
+ValeurCmp = 5x2_header;
+IdModule  = PIN_ARRAY_5x2;
 EndCmp
 
 BeginCmp

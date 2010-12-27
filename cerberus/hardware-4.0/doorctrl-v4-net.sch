@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-25T12:56:58 CET
+EESchema Schematic File Version 2  date 2010-12-27T14:47:10 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -46,7 +46,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 2 6
 Title ""
-Date "25 dec 2010"
+Date "27 dec 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -54,6 +54,10 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+NoConn ~ 4250 3350
+NoConn ~ 4250 2650
+NoConn ~ 4250 2550
+NoConn ~ 6600 3350
 Connection ~ 8050 4000
 Wire Wire Line
 	8050 4000 8125 4000

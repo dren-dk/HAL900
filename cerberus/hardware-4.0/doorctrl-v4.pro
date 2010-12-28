@@ -1,4 +1,4 @@
-update=2010-12-25T18:04:02 CET
+update=2010-12-28T21:12:05 CET
 last_client=pcbnew
 [general]
 version=1
@@ -86,11 +86,11 @@ LibName40=atmel
 LibName41=diode
 [pcbnew]
 version=1
-PadDrlX=551
-PadDimH=787
-PadDimV=787
+PadDrlX=320
+PadDimH=520
+PadDimV=520
 BoardThickness=630
-SgPcb45=0
+SgPcb45=1
 TxtPcbV=800
 TxtPcbH=600
 TxtModV=600
@@ -127,4 +127,3 @@ LibName20=3mm-hole
 LibName21=torroid-inductor
 LibName22=diode
 LibName23=1-6mm-hole
-LibName24=osaa-nut

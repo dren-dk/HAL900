@@ -1,0 +1,23 @@
+PCBNEW-LibModule-V1  2010-12-19T21:32:54 CET
+$INDEX
+3mm-hole
+$EndINDEX
+$MODULE 3mm-hole
+Po 0 0 0 15 4D0E464E 00000000 ~~
+Li 3mm-hole
+Cd 3mm screw hole.
+Kw DEV
+Sc 00000000
+AR 
+Op 0 0 0
+T0 0 -1200 400 400 0 100 N I 21 N"3mm"
+T1 0 1100 400 400 0 100 N I 21 N"P***"
+$PAD
+Sh "1" C 2362 2362 0 0 0
+Dr 1181 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 0 0
+$EndPAD
+$EndMODULE  3mm-hole
+$EndLIBRARY

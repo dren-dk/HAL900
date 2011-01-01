@@ -1,10 +1,4 @@
-PCBNEW-LibDoc----V1  13/4/2009-12:15:06
-#
-$MODULE Emb5_5
-Li Emb5_5
-Cd Bornier d'alimentation 4 pins
-Kw DEV
-$EndMODULE
+PCBNEW-LibDoc----V1  2011-01-01T11:45:01 CET
 #
 $MODULE bornier2_V
 Li bornier2_V
@@ -51,6 +45,18 @@ $EndMODULE
 $MODULE Emb4_5
 Li Emb4_5
 Cd Bornier d'alimentation 4 pins
+Kw DEV
+$EndMODULE
+#
+$MODULE Emb5_5
+Li Emb5_5
+Cd Bornier d'alimentation 4 pins
+Kw DEV
+$EndMODULE
+#
+$MODULE bornier3_V_5mm
+Li bornier3_V_5mm
+Cd Bornier d'alimentation 3 pins
 Kw DEV
 $EndMODULE
 #

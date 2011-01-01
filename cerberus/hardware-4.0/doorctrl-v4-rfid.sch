@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-28T16:33:17 CET
+EESchema Schematic File Version 2  date 2011-01-01T13:33:03 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -46,7 +46,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 5 6
 Title ""
-Date "28 dec 2010"
+Date "1 jan 2011"
 Rev ""
 Comp ""
 Comment1 ""

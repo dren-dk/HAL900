@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-28T16:33:17 CET
+EESchema Schematic File Version 2  date 2011-01-01T13:33:03 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -46,7 +46,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 4 6
 Title ""
-Date "28 dec 2010"
+Date "1 jan 2011"
 Rev ""
 Comp ""
 Comment1 ""
@@ -54,6 +54,15 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Connection ~ 2850 6150
+Connection ~ 2850 4100
+Connection ~ 2850 2400
+Connection ~ 10000 5450
+Connection ~ 8950 5050
+Connection ~ 8950 4650
+Connection ~ 8950 2600
+Connection ~ 8950 3000
+Connection ~ 10000 3400
 Connection ~ 2850 6600
 Wire Wire Line
 	2850 6350 2850 6700
@@ -279,17 +288,17 @@ Wire Wire Line
 Wire Wire Line
 	9300 4650 9300 4750
 Text Label 8100 4850 0    60   ~ 0
-k4c
-Text Label 8250 5050 0    60   ~ 0
-k4b
-Text Label 8250 4650 0    60   ~ 0
-k4a
-Text Label 8100 2800 0    60   ~ 0
 k2c
-Text Label 8250 3000 0    60   ~ 0
+Text Label 8250 5050 0    60   ~ 0
 k2b
-Text Label 8250 2600 0    60   ~ 0
+Text Label 8250 4650 0    60   ~ 0
 k2a
+Text Label 8100 2800 0    60   ~ 0
+k1c
+Text Label 8250 3000 0    60   ~ 0
+k1b
+Text Label 8250 2600 0    60   ~ 0
+k1a
 $Comp
 L BC817 Q4
 U 1 1 4D0FB782
@@ -378,29 +387,29 @@ F 1 "+12V" H 8950 4500 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_3_V K3
+L CONN_3_V CON13
 U 1 1 4D079FD5
 P 7700 4850
-F 0 "K3" H 7600 5100 50  0000 C CNN
+F 0 "CON13" H 7600 5100 50  0000 C CNN
 F 1 "CONN_3_V" H 7700 5040 40  0000 C CNN
 	1    7700 4850
 	-1   0    0    -1  
 $EndComp
 $Comp
-L G5SB K4
+L G5SB K2
 U 2 1 4D079FBB
 P 8350 4850
-F 0 "K4" H 8400 5150 50  0000 L BNN
+F 0 "K2" H 8400 5150 50  0000 L BNN
 F 1 "G5SB" H 8400 4950 50  0001 L BNN
 F 2 "g5sb" H 8300 5050 60  0001 C CNN
 	2    8350 4850
 	0    1    1    0   
 $EndComp
 $Comp
-L G5SB K4
+L G5SB K2
 U 1 1 4D079FB3
 P 8950 4850
-F 0 "K4" H 9000 5150 50  0000 L BNN
+F 0 "K2" H 9000 5150 50  0000 L BNN
 F 1 "G5SB" H 9000 4950 50  0001 L BNN
 F 2 "g5sb" H 8900 5050 60  0001 C CNN
 	1    8950 4850
@@ -409,10 +418,10 @@ $EndComp
 Text HLabel 10150 3400 2    60   Input ~ 0
 Relay1
 $Comp
-L CONN_3_V K2
+L CONN_3_V CON12
 U 1 1 4D079D9B
 P 7700 2800
-F 0 "K2" H 7600 3050 50  0000 C CNN
+F 0 "CON12" H 7600 3050 50  0000 C CNN
 F 1 "CONN_3_V" H 7700 2990 40  0000 C CNN
 	1    7700 2800
 	-1   0    0    -1  
@@ -499,10 +508,10 @@ F 1 "+12V" H 8150 1550 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_2_V P1
+L CONN_2_V CON11
 U 1 1 4D04DDC0
 P 7700 1700
-F 0 "P1" H 7620 1925 40  0000 C CNN
+F 0 "CON11" H 7620 1925 40  0000 C CNN
 F 1 "CONN_2_V" H 7670 1880 40  0000 C CNN
 	1    7700 1700
 	-1   0    0    1   

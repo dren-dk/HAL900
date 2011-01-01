@@ -1,16 +1,16 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2010-12-28T16:31:33 CET
+Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2011-01-01T12:20:58 CET
 
 BeginCmp
 TimeStamp = /4CFAB038;
 Reference = C1;
-ValeurCmp = 16_pF;
+ValeurCmp = 16pF;
 IdModule  = SM0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /4CFAB04B;
 Reference = C2;
-ValeurCmp = 16_pF;
+ValeurCmp = 16pF;
 IdModule  = SM0805;
 EndCmp
 
@@ -276,14 +276,14 @@ EndCmp
 BeginCmp
 TimeStamp = /4CF6BD17;
 Reference = CON1;
-ValeurCmp = AVR-ISP-6;
+ValeurCmp = ISP;
 IdModule  = pin_array_3x2;
 EndCmp
 
 BeginCmp
 TimeStamp = /4CF6BD20;
 Reference = CON2;
-ValeurCmp = AVR-JTAG-10;
+ValeurCmp = JTAG;
 IdModule  = PIN_ARRAY_5x2;
 EndCmp
 
@@ -323,10 +323,45 @@ IdModule  = amp-rj45-tap-up-with-leds-RJ45;
 EndCmp
 
 BeginCmp
-TimeStamp = /4D0BB1C7/4D0BB208;
+TimeStamp = /4D0BB1C7/4D0BB203;
 Reference = CON8;
 ValeurCmp = RJHSE-5085;
 IdModule  = amp-rj45-tap-up-with-leds-RJ45;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D0D19DC;
+Reference = CON9;
+ValeurCmp = FTDI-serial;
+IdModule  = PIN_ARRAY-6X1;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D173A4E;
+Reference = CON10;
+ValeurCmp = 5x2_header;
+IdModule  = PIN_ARRAY_5x2;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D04DDC0;
+Reference = CON11;
+ValeurCmp = CONN_2_V;
+IdModule  = bornier2_V;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D079D9B;
+Reference = CON12;
+ValeurCmp = CONN_3_V;
+IdModule  = bornier3_V_5mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3197/4D079FD5;
+Reference = CON13;
+ValeurCmp = CONN_3_V;
+IdModule  = bornier3_V_5mm;
 EndCmp
 
 BeginCmp
@@ -414,22 +449,8 @@ IdModule  = g5sb;
 EndCmp
 
 BeginCmp
-TimeStamp = /4CFD3197/4D079D9B;
-Reference = K2;
-ValeurCmp = CONN_3_V;
-IdModule  = bornier3_V;
-EndCmp
-
-BeginCmp
-TimeStamp = /4CFD3197/4D079FD5;
-Reference = K3;
-ValeurCmp = CONN_3_V;
-IdModule  = bornier3_V;
-EndCmp
-
-BeginCmp
 TimeStamp = /4CFD3197/4D079FBB;
-Reference = K4;
+Reference = K2;
 ValeurCmp = G5SB;
 IdModule  = g5sb;
 EndCmp
@@ -460,27 +481,6 @@ TimeStamp = /4CFD2FB8/4D0BB159;
 Reference = L4;
 ValeurCmp = 330uH;
 IdModule  = INDUCTOR_V;
-EndCmp
-
-BeginCmp
-TimeStamp = /4CFD3197/4D04DDC0;
-Reference = P1;
-ValeurCmp = CONN_2_V;
-IdModule  = bornier2;
-EndCmp
-
-BeginCmp
-TimeStamp = /4D0D19DC;
-Reference = P2;
-ValeurCmp = FTDI_serial;
-IdModule  = PIN_ARRAY-6X1;
-EndCmp
-
-BeginCmp
-TimeStamp = /4D173A4E;
-Reference = P3;
-ValeurCmp = 5x2_header;
-IdModule  = PIN_ARRAY_5x2;
 EndCmp
 
 BeginCmp

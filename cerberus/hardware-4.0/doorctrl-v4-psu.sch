@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2010-12-28T16:33:17 CET
+EESchema Schematic File Version 2  date 2011-01-01T13:33:03 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -46,7 +46,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 6 6
 Title ""
-Date "28 dec 2010"
+Date "1 jan 2011"
 Rev ""
 Comp ""
 Comment1 ""
@@ -269,7 +269,7 @@ P 3900 4900
 F 0 "D2" H 3900 5000 40  0000 C CNN
 F 1 "SK 86" H 3900 4800 40  0000 C CNN
 	1    3900 4900
-	0    1    1    0   
+	0    -1   -1   0   
 $EndComp
 $Comp
 L INDUCTOR L1

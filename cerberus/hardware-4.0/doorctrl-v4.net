@@ -1,4 +1,4 @@
-# EESchema Netlist Version 1.1 created  2011-01-03T12:57:16 CET
+# EESchema Netlist Version 1.1 created  2011-01-03T13:24:07 CET
 (
  ( /4D1A01F5 $noname  R63 1k {Lib=R}
   (    1 +5V )
@@ -46,7 +46,7 @@
   (    1 N-000038 )
   (    2 GND )
  )
- ( /4CFAAFBA $noname  X1 20_MHz {Lib=CRYSTAL}
+ ( /4CFAAFBA $noname  X1 20MHz {Lib=CRYSTAL}
   (    1 N-000033 )
   (    2 N-000038 )
  )

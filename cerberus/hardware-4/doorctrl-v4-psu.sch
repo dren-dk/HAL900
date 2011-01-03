@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2011-01-03T13:24:02 CET
+EESchema Schematic File Version 2  date 2011-01-03T16:40:54 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -259,7 +259,7 @@ L C C16
 U 1 1 4D04D8AA
 P 5150 4900
 F 0 "C16" H 5200 5000 50  0000 L CNN
-F 1 "100nF" H 5200 4800 50  0000 L CNN
+F 1 "10uF" H 5200 4800 50  0000 L CNN
 	1    5150 4900
 	1    0    0    -1  
 $EndComp

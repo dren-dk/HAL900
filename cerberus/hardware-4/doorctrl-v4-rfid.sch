@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2011-01-03T13:24:02 CET
+EESchema Schematic File Version 2  date 2011-01-03T16:40:54 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -55,6 +55,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Notes 750  7550 0    60   ~ 0
+Notice: If the RFID option is mounted on the board, then R22 and R23 must not be mounted.
 Wire Wire Line
 	4050 2900 5000 2900
 Wire Wire Line

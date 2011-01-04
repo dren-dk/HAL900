@@ -1,0 +1,16 @@
+EESchema-LIBRARY Version 2.2  Date: 04/01/2011-20:46:06
+#
+# Resonator
+#
+DEF Resonator U 0 40 Y Y 1 0 N
+F0 "X" 0 -100 50 H V C C
+F1 "Resonator" 0 100 50 H V C C
+DRAW
+S -450 -300 450 300 0 0 0 N
+X X1 1 -750 100 300 R 50 50 1 1 I
+X GND 2 -750 0 300 R 50 50 1 1 I
+X X2 3 -750 -100 300 R 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
+#End Library

@@ -17,11 +17,11 @@ program: zablet.hex
 	$(AVRDUDE) -e -U flash:w:zablet.hex
 
 rdfuses:
-	$(AVRDUDE) -v -q
+	$(AVRDUDE) -B 100 -v -q
 
 # see: http://www.engbedded.com/fusecalc/
 fuses:
-	$(AVRDUDE) -u -v -U lfuse:w:0xfd:m -U hfuse:w:0xdf:m
+	$(AVRDUDE) -B 100 -u -v -U lfuse:w:0xfd:m -U hfuse:w:0xdf:m
 
 #%.obj : %.c
 #	$(CC) $(CFLAGS) -DNODE=$(NODE) $< -o $@

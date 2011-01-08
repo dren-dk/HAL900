@@ -4,6 +4,7 @@
 #include "util.h"
 
 #define TXPORT PORTA
+#define TXDDR DDRA
 #define TX 6
 
 #if (DEBUG == 1)
@@ -21,6 +22,7 @@ void uart_putchar(char d) {
   int i;
   cli();  // turn off interrupts, make it nice & kleen
 
+  TXDDR |= _BV(TX);
   TXPORT &= ~_BV(TX);
   serialdelay();
   for (i=0; i< 8; i++) {

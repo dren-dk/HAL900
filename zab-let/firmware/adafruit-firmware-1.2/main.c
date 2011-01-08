@@ -18,6 +18,8 @@ depending on a pulldown resistor on pin B1 !
 #include <avr/sleep.h>          // definitions for power-down modes
 #include <avr/pgmspace.h>       // definitions or keeping constants in program memory
 #include <avr/wdt.h>
+#include <avr/interrupt.h>
+
 #include "main.h"
 #include "util.h"
 
@@ -185,17 +187,18 @@ that index into another table in ROM that actually stores the on/off times
       const PGM_P time_ptr = (PGM_P)pgm_read_word(code_ptr);
 */
 
+#if (DEBUG == 1)
+#define PROGRESS_BITS 6
+#else
+#define PROGRESS_BITS 8
+#endif
+
+ISR(PCINT0_vect) {
+  // Meh, we're already woken up.
+}
+
 
 int main(void) {
-  uint16_t ontime, offtime;
-  uint8_t i,j, Loop;
-  uint8_t region = EU;     // by default our code is US
-
-  char ledIndex = 0;
-  char ledDir = 1;
-
-  Loop = 1;                // by default we are not going to loop
-
 #if (DEBUG == 1)
   DDRA = _BV(PA6); // DEBUG output
 #endif
@@ -207,183 +210,161 @@ int main(void) {
   TCCR0A = 0;
   TCCR0B = 0;
 
-  i = MCUSR;                     // Save reset reason
+  unsigned char i = MCUSR;                     // Save reset reason
   MCUSR = 0;                     // clear watchdog flag
   WDTCSR = _BV(WDCE) | _BV(WDE);  // enable WDT disable
   WDTCSR = 0;                     // disable WDT while we setup
 
   DDRB = _BV(IRLED);   // set the visible and IR LED pins to outputs
-  PORTB = _BV(IRLED) |            // IR LED is off when pin is high
-          _BV(REGIONSWITCH);     // Turn on pullup on region switch pin
+  PORTB = _BV(IRLED);          // IR LED is off when pin is high
   
   DEBUGP(putstring_nl("Hello!"));
 
   PORTA &=~ _BV(6); // LEDS are active low.
 
+  PCMSK0 = _BV(PCINT7);
+  GIMSK |= _BV(PCIE0);
+  sei();
+
   // check the reset flags
   if (i & _BV(BORF)) {    // Brownout
+    DEBUGP(putstring_nl("Battery low!"));
+
     // Flash out an error and go to sleep
     flashslowLEDx(2);	
-    //    tvbgone_sleep();  
+    powerDown();
   }
 
   delay_ten_us(5000);            // Let everything settle for a bit
 
-  // determine region
-  region = US; // US
-  DEBUGP(putstring_nl("US"));
-    /*
-  if (PINB & _BV(REGIONSWITCH)) {
-    region = US; // US
-    DEBUGP(putstring_nl("US"));
-  } else {
-    region = EU;
-    DEBUGP(putstring_nl("EU"));
+  while (1) {    
+    powerDown(); // Wait for the user to hit the button.
+    wdt_enable(WDTO_8S);
+
+    // TODO: Time the button press to select mode here.
+    turnOffTVs();
   }
-  region = EU;
-    */
+}
 
-  // Tell the user what region we're in  - 3 is US 4 is EU
-  quickflashLEDx(3+region);
-  
-  // Starting execution loop
-  delay_ten_us(25000);
-
-  // turn on watchdog timer immediately, this protects against
-  // a 'stuck' system by resetting it
-  wdt_enable(WDTO_8S); // 1 second long timeout
+void turnOffTVs() {
+  uint8_t region = EU;     // by default our code is EU
 
   // Indicate how big our database is
   DEBUGP(putstring("\n\rNA Codesize: "); putnum_ud(num_NAcodes););
   DEBUGP(putstring("\n\rEU Codesize: "); putnum_ud(num_EUcodes););
-
-  do {	//Execute the code at least once.  If Loop is on, execute forever.
-
-    // We may have different number of codes in either database
-    if (region == US) {
-      j = num_NAcodes;
-    } else {
-      j = num_EUcodes;
-    }
-
-    // for every POWER code in our collection
-    for(i=0 ; i < j; i++) {   
-
-      ledIndex += ledDir;
-      if (ledIndex >= 6) {
-	ledIndex = 5;
-	ledDir = -1;
-      }
-      if (ledIndex < 0) {
-	ledIndex = 0;
-	ledDir = 1;
-      }      
-      DDRA = _BV(PA6) | (1<<ledIndex);	
-
-      // print out the code # we are about to transmit
-      DEBUGP(putstring("\n\r\n\rCode #: "); putnum_ud(i));
-
-      //To keep Watchdog from resetting in middle of code.
-      wdt_reset();
-
-      // point to next POWER code, from the right database
-      if (region == US) {
-	code_ptr = (PGM_P)pgm_read_word(NApowerCodes+i);  
-      } else {
-	code_ptr = (PGM_P)pgm_read_word(EUpowerCodes+i);  
-      }
-
-      // print out the address in ROM memory we're reading
-      DEBUGP(putstring("\n\rAddr: "); putnum_uh(code_ptr));
-      
-      // Read the carrier frequency from the first byte of code structure
-      const uint8_t freq = pgm_read_byte(code_ptr++);
-      // set OCR for Timer1 to output this POWER code's carrier frequency
-      OCR0A = freq; 
-      
-      // Print out the frequency of the carrier and the PWM settings
-      DEBUGP(putstring("\n\rOCR1: "); putnum_ud(freq););
-      DEBUGP(uint16_t x = (freq+1) * 2; putstring("\n\rFreq: "); putnum_ud(F_CPU/x););
-      
-      // Get the number of pairs, the second byte from the code struct
-      const uint8_t numpairs = pgm_read_byte(code_ptr++);
-      DEBUGP(putstring("\n\rOn/off pairs: "); putnum_ud(numpairs));
-
-      // Get the number of bits we use to index into the timer table
-      // This is the third byte of the structure
-      const uint8_t bitcompression = pgm_read_byte(code_ptr++);
-      DEBUGP(putstring("\n\rCompression: "); putnum_ud(bitcompression));
-
-      // Get pointer (address in memory) to pulse-times table
-      // The address is 16-bits (2 byte, 1 word)
-      const PGM_P time_ptr = (PGM_P)pgm_read_word(code_ptr);
-      code_ptr+=2;
-
-      // Transmit all codeElements for this POWER code 
-      // (a codeElement is an onTime and an offTime)
-      // transmitting onTime means pulsing the IR emitters at the carrier 
-      // frequency for the length of time specified in onTime
-      // transmitting offTime means no output from the IR emitters for the 
-      // length of time specified in offTime
-
-      /*    
-      // print out all of the pulse pairs
-      for (uint8_t k=0; k<numpairs; k++) {
-	uint8_t ti;
-	ti = (read_bits(bitcompression)) * 4;
-	// read the onTime and offTime from the program memory
-	ontime = pgm_read_word(time_ptr+ti);
-	offtime = pgm_read_word(time_ptr+ti+2);
-	DEBUGP(putstring("\n\rti = "); putnum_ud(ti>>2); putstring("\tPair = "); putnum_ud(ontime));
-	DEBUGP(putstring("\t"); putnum_ud(offtime));
-	} 
-      */
-
-      // For EACH pair in this code....
-      for (uint8_t k=0; k<numpairs; k++) {
-	uint8_t ti;
-	
-	// Read the next 'n' bits as indicated by the compression variable
-	// The multiply by 4 because there are 2 timing numbers per pair
-	// and each timing number is one word long, so 4 bytes total!
-	ti = (read_bits(bitcompression)) * 4;
-
-	// read the onTime and offTime from the program memory
-	ontime = pgm_read_word(time_ptr+ti);  // read word 1 - ontime
-	offtime = pgm_read_word(time_ptr+ti+2);  // read word 2 - offtime
-
-	// transmit this codeElement (ontime and offtime)
-	xmitCodeElement(ontime, offtime, (freq!=0));  
-      } 
-      
-      //Flush remaining bits, so that next code starts
-      //with a fresh set of 8 bits.
-      bitsleft_r=0;	
-
-      // delay 250 milliseconds before transmitting next POWER code
-      delay_ten_us(25000);
-      
-      // visible indication that a code has been output.
-      quickflashLED(); 
-    }
-  } while (Loop == 1);
   
-  // We are done, no need for a watchdog timer anymore
-  wdt_disable();
+  // Starting execution loop
+  delay_ten_us(25000);
 
+  // We may have different number of codes in either database
+  unsigned char numCodes = region == US ? num_NAcodes : num_EUcodes;
+
+  // for every POWER code in our collection
+  for(unsigned char i=0 ; i < numCodes; i++) {
+    // print out the code # we are about to transmit
+    DEBUGP(putstring("\n\r\n\rCode #: "); putnum_ud(i));
+    
+    char pbit = i / (numCodes/PROGRESS_BITS);           
+    unsigned char leds = 0;
+#if (DEBUG == 1) 
+    leds = _BV(PA6);
+#endif
+    leds |= ((1<<pbit)-1);
+    if (i & 1) {
+      leds |= 1<<pbit;
+    }
+    DDRA = leds;
+    
+    //To keep Watchdog from resetting in middle of code.
+    wdt_reset();
+    
+    // point to next POWER code, from the right database
+    if (region == US) {
+      code_ptr = (PGM_P)pgm_read_word(NApowerCodes+i);  
+    } else {
+      code_ptr = (PGM_P)pgm_read_word(EUpowerCodes+i);  
+    }
+    
+    // Read the carrier frequency from the first byte of code structure
+    const uint8_t freq = pgm_read_byte(code_ptr++);
+    // set OCR for Timer1 to output this POWER code's carrier frequency
+    OCR0A = freq; 
+    
+    // Print out the frequency of the carrier and the PWM settings
+    DEBUGP(putstring("\n\rOCR1: "); putnum_ud(freq););
+    DEBUGP(uint16_t x = (freq+1) * 2; putstring("\n\rFreq: "); putnum_ud(F_CPU/x););
+    
+    // Get the number of pairs, the second byte from the code struct
+    const uint8_t numpairs = pgm_read_byte(code_ptr++);
+    DEBUGP(putstring("\n\rOn/off pairs: "); putnum_ud(numpairs));
+    
+    // Get the number of bits we use to index into the timer table
+    // This is the third byte of the structure
+    const uint8_t bitcompression = pgm_read_byte(code_ptr++);
+    DEBUGP(putstring("\n\rCompression: "); putnum_ud(bitcompression));
+    
+    // Get pointer (address in memory) to pulse-times table
+    // The address is 16-bits (2 byte, 1 word)
+    const PGM_P time_ptr = (PGM_P)pgm_read_word(code_ptr);
+    code_ptr+=2;
+    
+    // Transmit all codeElements for this POWER code 
+    // (a codeElement is an onTime and an offTime)
+    // transmitting onTime means pulsing the IR emitters at the carrier 
+    // frequency for the length of time specified in onTime
+    // transmitting offTime means no output from the IR emitters for the 
+    // length of time specified in offTime
+    
+    /*    
+    // print out all of the pulse pairs
+    for (uint8_t k=0; k<numpairs; k++) {
+    uint8_t ti;
+    ti = (read_bits(bitcompression)) * 4;
+    // read the onTime and offTime from the program memory
+    ontime = pgm_read_word(time_ptr+ti);
+    offtime = pgm_read_word(time_ptr+ti+2);
+    DEBUGP(putstring("\n\rti = "); putnum_ud(ti>>2); putstring("\tPair = "); putnum_ud(ontime));
+    DEBUGP(putstring("\t"); putnum_ud(offtime));
+    } 
+    */
+    
+    // For EACH pair in this code....
+    for (uint8_t k=0; k<numpairs; k++) {
+      uint8_t ti;
+	
+      // Read the next 'n' bits as indicated by the compression variable
+      // The multiply by 4 because there are 2 timing numbers per pair
+      // and each timing number is one word long, so 4 bytes total!
+      ti = (read_bits(bitcompression)) * 4;
+
+      // read the onTime and offTime from the program memory
+      uint16_t ontime = pgm_read_word(time_ptr+ti);  // read word 1 - ontime
+      uint16_t offtime = pgm_read_word(time_ptr+ti+2);  // read word 2 - offtime
+
+      // transmit this codeElement (ontime and offtime)
+      xmitCodeElement(ontime, offtime, (freq!=0));  
+    } 
+      
+    //Flush remaining bits, so that next code starts
+    //with a fresh set of 8 bits.
+    bitsleft_r=0;	
+
+    // delay before transmitting next POWER code
+    delay_ten_us(5000);
+  }
+
+  DDRA = 0;
+  
   // flash the visible LED on PB0  4 times to indicate that we're done
   delay_ten_us(65500); // wait maxtime 
   delay_ten_us(65500); // wait maxtime 
   quickflashLEDx(4);
-
-  tvbgone_sleep();
 }
 
 
 /****************************** SLEEP FUNCTIONS ********/
 
-void tvbgone_sleep( void )
-{
+void powerDown(void) {
   // Shut down everything and put the CPU to sleep
   TCCR0A = 0;           // turn off frequency generator (should be off already)
   TCCR0B = 0;           // turn off frequency generator (should be off already)
@@ -422,12 +403,9 @@ void delay_ten_us(uint16_t us) {
 // This function quickly pulses the visible LED (connected to PB0, pin 5)
 // This will indicate to the user that a code is being transmitted
 void quickflashLED( void ) {
-  /*
-   TODO
-  PORTB &= ~_BV(LED);   // turn on visible LED at PB0 by pulling pin to ground
+  DDRA |= _BV(LED);    // turn off visible LED at PB0 by pulling pin to +3V
   delay_ten_us(3000);   // 30 millisec delay
-  PORTB |= _BV(LED);    // turn off visible LED at PB0 by pulling pin to +3V
-  */
+  DDRA &= ~_BV(LED);   // turn on visible LED at PB0 by pulling pin to ground
 }
 
 // This function just flashes the visible LED a couple times, used to
@@ -450,11 +428,11 @@ void flashslowLEDx( uint8_t num_blinks )
   for(i=0;i<num_blinks;i++)
     {
       // turn on visible LED at PB0 by pulling pin to ground
-      //PORTB &= ~_BV(LED);     TODO
+      DDRA |= _BV(LED);
       delay_ten_us(50000);         // 500 millisec delay
       wdt_reset();                 // kick the dog
       // turn off visible LED at PB0 by pulling pin to +3V
-      //PORTB |= _BV(LED);          TODO
+      DDRA &= ~_BV(LED);
       delay_ten_us(50000);	   // 500 millisec delay
       wdt_reset();                 // kick the dog
     }

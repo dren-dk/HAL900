@@ -15,6 +15,7 @@ OPT = s
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC = main.c WORLDcodes.c util.c
+EU_CODE=1
 
 # List Assembler source files here.
 # Make them always end in a capital .S.  Files ending in a lowercase .s
@@ -30,7 +31,7 @@ SRC = main.c WORLDcodes.c util.c
 #  -Wall...:  warning level
 #  -Wa,...:   tell GCC to pass this to the assembler.
 #    -ahlms:  create assembler listing
-CFLAGS = -g -O$(OPT) \
+CFLAGS = -O$(OPT) \
 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums \
 -Wall -Wstrict-prototypes \
 -DF_CPU=$(F_CPU) \

@@ -1,5 +1,5 @@
 // What pins do what
-#define LED PA0
+#define LED PA7
 #define IRLED PB2
 #define REGIONSWITCH PB1
 

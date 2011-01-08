@@ -5,8 +5,94 @@
 //Codes captured from Generation 3 TV-B-Gone by Limor Fried & Mitch Altman
 // table of POWER codes
 
+const uint16_t code_na004Times[] PROGMEM = {
+	55, 57,
+	55, 170,
+	55, 3949,
+	55, 9623,
+	56, 0,
+	898, 453,
+	900, 226,
+};
+const struct IrCode code_na004Code PROGMEM = {
+	freq_to_timerval(38610),
+	38,		// # of pairs
+	3,		// # of bits per index
+	code_na004Times,  
+	{
+		0xA0,
+		0x00,
+		0x01,
+		0x04,
+		0x92,
+		0x48,
+		0x20,
+		0x80,
+		0x40,
+		0x04,
+		0x12,
+		0x09,
+		0x2B,
+		0x3D,
+		0x00,
+	}
+};
+const uint16_t code_na005Times[] PROGMEM = {
+	88, 90,
+	88, 91,
+	88, 181,
+	88, 8976,
+	177, 91,
+};
+const struct IrCode code_na005Code PROGMEM = {
+	freq_to_timerval(35714),
+	24,		// # of pairs
+	3,		// # of bits per index
+	code_na005Times,  
+	{
+		0x10,
+		0x92,
+		0x49,
+		0x46,
+		0x33,
+		0x09,
+		0x24,
+		0x94,
+		0x60,
+	}
+};
+const uint16_t code_na009Times[] PROGMEM = {
+	53, 56,
+	53, 171,
+	53, 3950,
+	53, 9599,
+	898, 451,
+	900, 226,
+};
+const struct IrCode code_na009Code PROGMEM = {
+	freq_to_timerval(38462),
+	38,		// # of pairs
+	3,		// # of bits per index
+	code_na009Times,  
+	{
+		0x84,
+		0x90,
+		0x00,
+		0x20,
+		0x80,
+		0x08,
+		0x00,
+		0x00,
+		0x09,
+		0x24,
+		0x92,
+		0x40,
+		0x0A,
+		0xBA,
+		0x40,
+	}
+};
 
-#ifdef NA_CODES
 const uint16_t code_na000Times[] PROGMEM = {
         60, 60,
         60, 2700,
@@ -28,6 +114,95 @@ const struct IrCode code_na000Code PROGMEM = {
                 0x10,
         }
 };
+
+const uint16_t code_na031Times[] PROGMEM = {
+	88, 89,
+	88, 90,
+	88, 179,
+	88, 8977,
+	177, 90,
+};
+const struct IrCode code_na031Code PROGMEM = {
+	freq_to_timerval(35842),
+	24,		// # of pairs
+	3,		// # of bits per index
+	code_na031Times,  
+	{
+		0x06,
+		0x12,
+		0x49,
+		0x46,
+		0x32,
+		0x61,
+		0x24,
+		0x94,
+		0x60,
+	}
+};
+const uint16_t code_na021Times[] PROGMEM = {
+	48, 52,
+	48, 160,
+	48, 400,
+	48, 2335,
+	799, 400,
+};
+const struct IrCode code_na021Code PROGMEM = {
+	freq_to_timerval(38462),
+	38,		// # of pairs
+	3,		// # of bits per index
+	code_na021Times,  
+	{
+		0x80,
+		0x10,
+		0x40,
+		0x08,
+		0x82,
+		0x08,
+		0x01,
+		0xC0,
+		0x08,
+		0x20,
+		0x04,
+		0x41,
+		0x04,
+		0x00,
+		0x00,
+	}
+};
+const uint16_t code_na022Times[] PROGMEM = {
+	53, 60,
+	53, 175,
+	53, 4463,
+	53, 9453,
+	892, 450,
+	895, 225,
+};
+const struct IrCode code_na022Code PROGMEM = {
+	freq_to_timerval(38462),
+	38,		// # of pairs
+	3,		// # of bits per index
+	code_na022Times,  
+	{
+		0x80,
+		0x02,
+		0x40,
+		0x00,
+		0x02,
+		0x40,
+		0x00,
+		0x00,
+		0x01,
+		0x24,
+		0x92,
+		0x48,
+		0x0A,
+		0xBA,
+		0x00,
+	}
+};
+
+
+#ifdef NA_CODES
 
 const uint16_t code_na001Times[] PROGMEM = {
 	50, 100,
@@ -139,62 +314,6 @@ const struct IrCode code_na003Code PROGMEM = {
 		0x99,
 	}
 };
-const uint16_t code_na004Times[] PROGMEM = {
-	55, 57,
-	55, 170,
-	55, 3949,
-	55, 9623,
-	56, 0,
-	898, 453,
-	900, 226,
-};
-const struct IrCode code_na004Code PROGMEM = {
-	freq_to_timerval(38610),
-	38,		// # of pairs
-	3,		// # of bits per index
-	code_na004Times,  
-	{
-		0xA0,
-		0x00,
-		0x01,
-		0x04,
-		0x92,
-		0x48,
-		0x20,
-		0x80,
-		0x40,
-		0x04,
-		0x12,
-		0x09,
-		0x2B,
-		0x3D,
-		0x00,
-	}
-};
-const uint16_t code_na005Times[] PROGMEM = {
-	88, 90,
-	88, 91,
-	88, 181,
-	88, 8976,
-	177, 91,
-};
-const struct IrCode code_na005Code PROGMEM = {
-	freq_to_timerval(35714),
-	24,		// # of pairs
-	3,		// # of bits per index
-	code_na005Times,  
-	{
-		0x10,
-		0x92,
-		0x49,
-		0x46,
-		0x33,
-		0x09,
-		0x24,
-		0x94,
-		0x60,
-	}
-};
 const uint16_t code_na006Times[] PROGMEM = {
 	50, 62,
 	50, 172,
@@ -303,37 +422,6 @@ const struct IrCode code_na008Code PROGMEM = {
 		0x41,
 		0x20,
 		0x90,
-	}
-};
-const uint16_t code_na009Times[] PROGMEM = {
-	53, 56,
-	53, 171,
-	53, 3950,
-	53, 9599,
-	898, 451,
-	900, 226,
-};
-const struct IrCode code_na009Code PROGMEM = {
-	freq_to_timerval(38462),
-	38,		// # of pairs
-	3,		// # of bits per index
-	code_na009Times,  
-	{
-		0x84,
-		0x90,
-		0x00,
-		0x20,
-		0x80,
-		0x08,
-		0x00,
-		0x00,
-		0x09,
-		0x24,
-		0x92,
-		0x40,
-		0x0A,
-		0xBA,
-		0x40,
 	}
 };
 const uint16_t code_na010Times[] PROGMEM = {
@@ -738,67 +826,6 @@ const struct IrCode code_na020Code PROGMEM = {
 		0x00,
 	}
 };
-const uint16_t code_na021Times[] PROGMEM = {
-	48, 52,
-	48, 160,
-	48, 400,
-	48, 2335,
-	799, 400,
-};
-const struct IrCode code_na021Code PROGMEM = {
-	freq_to_timerval(38462),
-	38,		// # of pairs
-	3,		// # of bits per index
-	code_na021Times,  
-	{
-		0x80,
-		0x10,
-		0x40,
-		0x08,
-		0x82,
-		0x08,
-		0x01,
-		0xC0,
-		0x08,
-		0x20,
-		0x04,
-		0x41,
-		0x04,
-		0x00,
-		0x00,
-	}
-};
-const uint16_t code_na022Times[] PROGMEM = {
-	53, 60,
-	53, 175,
-	53, 4463,
-	53, 9453,
-	892, 450,
-	895, 225,
-};
-const struct IrCode code_na022Code PROGMEM = {
-	freq_to_timerval(38462),
-	38,		// # of pairs
-	3,		// # of bits per index
-	code_na022Times,  
-	{
-		0x80,
-		0x02,
-		0x40,
-		0x00,
-		0x02,
-		0x40,
-		0x00,
-		0x00,
-		0x01,
-		0x24,
-		0x92,
-		0x48,
-		0x0A,
-		0xBA,
-		0x00,
-	}
-};
 const uint16_t code_na023Times[] PROGMEM = {
 	48, 52,
 	48, 409,
@@ -1021,30 +1048,6 @@ const struct IrCode code_na030Code PROGMEM = {
 		0x2A,
 		0xBA,
 		0x00,
-	}
-};
-const uint16_t code_na031Times[] PROGMEM = {
-	88, 89,
-	88, 90,
-	88, 179,
-	88, 8977,
-	177, 90,
-};
-const struct IrCode code_na031Code PROGMEM = {
-	freq_to_timerval(35842),
-	24,		// # of pairs
-	3,		// # of bits per index
-	code_na031Times,  
-	{
-		0x06,
-		0x12,
-		0x49,
-		0x46,
-		0x32,
-		0x61,
-		0x24,
-		0x94,
-		0x60,
 	}
 };
 

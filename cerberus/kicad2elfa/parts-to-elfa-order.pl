@@ -45,7 +45,7 @@ for my $cmp ($cmpStr =~ /BeginCmp(.+?)EndCmp/sg) {
 
     $name =~ s/\s+$//;
     $value =~ s/\s+$//;
-    $value =~ s/_//;
+    $value =~ s/(\d)_/$1/g;
     $package =~ s/\s+$//;
 
     if (exists $PACKAGES{$package}) {

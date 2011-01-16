@@ -45,7 +45,7 @@ for my $cmp ($cmpStr =~ /BeginCmp(.+?)EndCmp/sg) {
 
     $name =~ s/\s+$//;
     $value =~ s/\s+$//;
-    $value =~ s/(\d)_/$1/g;
+    $value =~ s/_//g;
     $package =~ s/\s+$//;
 
     if (exists $PACKAGES{$package}) {
@@ -90,15 +90,14 @@ for my $type (sort keys %parts) {
 
   while (1) {
     if ($elfa{$type}) {
-      print "ELFA part number (default: $elfa{$type}): ";
-    
+      print "ELFA part number (default: $elfa{$type}): ";    
     } else {
       print "ELFA part number: ";
     }
     $ep = <STDIN>;
     $ep =~ s/^\s+//;
     $ep =~ s/\s+$//;
-    if ($ep =~ /^\d{2}-\d{3}-\d{2}$/) {
+    if ($ep =~ /^\d{2}-\d{3}-\d{2}$/ or $ep eq 'alt') {
       $elfa{$type} = $ep;
       open EE, ">$Bin/elfa.parts" or die "urgh: $!";
       for my $e (sort keys %elfa) {
@@ -134,6 +133,12 @@ for my $type (sort keys %parts) {
   my @names = @{$parts{$type}};
   my $count = @names;
   my $elfa = $elfa{$type} or die "Urgh $type";
+
+  if ($elfa eq 'alt') {
+      print OUT join("\t", $type, join(' ', @names), $elfa, $count, 0, 0,
+		     "Not ELFA"), "\n";
+      next;
+  }
   
   my $price = $priceCache->{$elfa};
   
@@ -149,7 +154,8 @@ for my $type (sort keys %parts) {
       @prices = $priceList =~ m!<td class="price">([^>]+)</td>!g;
       die "Failed to find prices in $priceList" unless @prices;
     } else  {
-      @prices = $html =~ m!<td[^>]*id="item-pricelist">\s*<span>\s*(.+?)\s*</span>\s*</td>!s or die "Failed to find price for $elfa";      
+      @prices = $html =~ m!<td[^>]*id="item-pricelist">\s*<span>\s*(.+?)\s*</span>\s*</td>!s
+	  or die "Failed to find price for $elfa";      
     }
     my $normalPrice = $prices[0];
     my $osaaPrice = $prices[@prices-1];

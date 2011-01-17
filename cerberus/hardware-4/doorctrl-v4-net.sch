@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2011-01-03T16:40:54 CET
+EESchema Schematic File Version 2  date 2011-01-17T19:42:11 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -47,7 +47,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 2 6
 Title ""
-Date "3 jan 2011"
+Date "17 jan 2011"
 Rev ""
 Comp ""
 Comment1 ""
@@ -532,7 +532,7 @@ L CAPAPOL C37
 U 1 1 4D0BB15A
 P 6550 6450
 F 0 "C37" H 6600 6550 50  0000 L CNN
-F 1 "100uF" H 6600 6350 50  0000 L CNN
+F 1 "220uF" H 6600 6350 50  0000 L CNN
 	1    6550 6450
 	1    0    0    -1  
 $EndComp

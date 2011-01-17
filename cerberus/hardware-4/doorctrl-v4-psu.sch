@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2011-01-03T16:40:54 CET
+EESchema Schematic File Version 2  date 2011-01-17T19:42:11 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -47,7 +47,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 6 6
 Title ""
-Date "3 jan 2011"
+Date "17 jan 2011"
 Rev ""
 Comp ""
 Comment1 ""
@@ -259,7 +259,7 @@ L C C16
 U 1 1 4D04D8AA
 P 5150 4900
 F 0 "C16" H 5200 5000 50  0000 L CNN
-F 1 "10uF" H 5200 4800 50  0000 L CNN
+F 1 "100nF" H 5200 4800 50  0000 L CNN
 	1    5150 4900
 	1    0    0    -1  
 $EndComp
@@ -349,7 +349,7 @@ L CAPAPOL C10
 U 1 1 4D04D797
 P 2200 4900
 F 0 "C10" H 2050 5000 50  0000 L CNN
-F 1 "1200uF" H 1900 4800 50  0000 L CNN
+F 1 "1000uF/35V" H 1900 4800 50  0000 L CNN
 	1    2200 4900
 	1    0    0    -1  
 $EndComp
@@ -430,7 +430,7 @@ L CAPAPOL C15
 U 1 1 4D04D0AE
 P 5050 2800
 F 0 "C15" H 5100 2900 50  0000 L CNN
-F 1 "100uF" H 5100 2700 50  0000 L CNN
+F 1 "220uF" H 5100 2700 50  0000 L CNN
 	1    5050 2800
 	1    0    0    -1  
 $EndComp

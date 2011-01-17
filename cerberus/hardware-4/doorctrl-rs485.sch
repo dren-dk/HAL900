@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2011-01-03T16:40:54 CET
+EESchema Schematic File Version 2  date 2011-01-17T19:42:11 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -47,7 +47,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 3 6
 Title ""
-Date "3 jan 2011"
+Date "17 jan 2011"
 Rev ""
 Comp ""
 Comment1 ""
@@ -205,7 +205,7 @@ L SN65HVD1X U7
 U 1 1 4D0BB209
 P 5450 2850
 F 0 "U7" H 5450 2950 60  0000 C CNN
-F 1 "sp485" H 5450 2850 60  0000 C CNN
+F 1 "DS75176BM" H 5450 2850 60  0000 C CNN
 F 2 "so8" H 5650 2600 60  0001 C CNN
 	1    5450 2850
 	1    0    0    -1  

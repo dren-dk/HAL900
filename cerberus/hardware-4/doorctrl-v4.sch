@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2011-01-17T19:42:11 CET
+EESchema Schematic File Version 2  date 2011-01-17T20:19:18 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device

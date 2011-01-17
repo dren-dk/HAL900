@@ -1,16 +1,16 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2011-01-03T13:23:37 CET
+Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2011-01-17T20:20:10 CET
 
 BeginCmp
 TimeStamp = /4CFAB038;
 Reference = C1;
-ValeurCmp = 16pF;
+ValeurCmp = 15pF;
 IdModule  = SM0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /4CFAB04B;
 Reference = C2;
-ValeurCmp = 16pF;
+ValeurCmp = 15pF;
 IdModule  = SM0805;
 EndCmp
 
@@ -66,7 +66,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4CFD3054/4D04D797;
 Reference = C10;
-ValeurCmp = 1200uF;
+ValeurCmp = 1000uF/35V;
 IdModule  = C2V10;
 EndCmp
 
@@ -94,14 +94,14 @@ EndCmp
 BeginCmp
 TimeStamp = /4CFD3054/4D04D79B;
 Reference = C14;
-ValeurCmp = 1000uF;
+ValeurCmp = 1000uF/35V;
 IdModule  = C2V10;
 EndCmp
 
 BeginCmp
 TimeStamp = /4CFD3054/4D04D0AE;
 Reference = C15;
-ValeurCmp = 100uF;
+ValeurCmp = 220uF;
 IdModule  = c_elec_6.3x5.8;
 EndCmp
 
@@ -213,7 +213,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4CFD2FB8/4D0BB15A;
 Reference = C37;
-ValeurCmp = 100uF;
+ValeurCmp = 220uF;
 IdModule  = c_elec_6.3x5.8;
 EndCmp
 
@@ -976,7 +976,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4D0BB1C7/4D0BB209;
 Reference = U7;
-ValeurCmp = sp485;
+ValeurCmp = DS75176BM;
 IdModule  = SO8E;
 EndCmp
 
@@ -997,7 +997,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4CFAAFBA;
 Reference = X1;
-ValeurCmp = 20_MHz;
+ValeurCmp = 20MHz;
 IdModule  = Q_49U3HMS;
 EndCmp
 

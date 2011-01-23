@@ -43,6 +43,125 @@ void resetRfidState() {
   * +2: A long high-period, ending in a falling edge.
 */
 void addEdge(char edge) {
+  if (headerLength == 0) {
+    if (edge < -1) {
+      headerLength = 1;
+    }
+
+  } else if (headerLength < 18-1) {
+    if (edge == ((headerLength & 1)?1:-1)) {
+      headerLength++;
+
+    } else {
+      headerLength = 0;      
+    }
+
+  } else {
+
+    if (edge > 1) {
+      
+      if (halfBit) {
+	resetRfidState();
+
+      } else {
+	pushZero();
+	halfBit = 0;
+      }
+
+    } else if (edge < -1) {
+
+      if (halfBit) {
+	resetRfidState();
+	
+      } else {
+	pushOne();
+	halfBit = 0;
+      }
+
+    } else if (edge > 0) {
+
+      if (halfBit) {
+	halfBit = 0;
+	pushZero();
+      } else {
+	halfBit = edge;
+      }
+
+    } else {
+      if (halfBit) {
+	halfBit = 0;
+	pushOne();
+      } else {
+	halfBit = edge;
+      }
+    }
+  }
+
+  // Detect that we are done reading, then check parity and stopbits and parse out to output data.
+  if (rfidInUse == 5*8+15) { // 5 bytes of data + 15 bits of parity.
+
+    // Check row parity:
+    char colParity = 0;
+    {
+      char bit = 0; // row*5+col;
+      for (unsigned char row=0;row<11;row++) {
+	char rowParity = 0;
+	//	PORTC |= _BV(PC2);
+	for (unsigned char col=0;col<5;col++) {
+	  if (getBit(bit++)) {
+	    rowParity ^= 1;
+	    colParity ^= 16>>col;
+	  }
+	}
+	//PORTC &=~ _BV(PC2);
+	
+	if (row < 10 && rowParity) {
+	  resetRfidState();
+	  return;
+	}
+      }    
+    }
+
+    if (colParity >> 1) {
+      resetRfidState();
+      return;
+    }
+
+    if (getBit(5*8+14)) {
+      resetRfidState();
+      return;
+    }
+
+    unsigned long output = 0;
+    char bit = 10;
+    for (unsigned char row=2;row<10;row++) {
+      for (unsigned char col=0;col<4;col++) {
+	output <<= 1;
+	if (getBit(bit++)) {
+	  output |= 1;
+	}
+      }
+      bit++; // Skip row parity.
+    }
+    /*
+    PORTC |= _BV(PC2);
+    PORTC &=~ _BV(PC2);
+    */
+    fprintf(stdout, "Got result: %ld\n", output);
+
+    // Ready to go again...
+    resetRfidState();
+  }
+}
+
+/*
+  This function eats edges from the signal, each edge is encoded as one of:
+  * -2: A long low-period, ending in a rising edge.
+  * -1: A short low-period, ending in a rising edge.
+  * +1: A short high-period, ending in a falling edge.
+  * +2: A long high-period, ending in a falling edge.
+*/
+void _addEdge(char edge) {
 
   fprintf(stdout, " %d", edge);
 
@@ -187,7 +306,8 @@ void addEdge(char edge) {
 }
 
 int main(int argc, char **argv) {
-  FILE *f = fopen("captured-timings.txt", "r");
+  FILE *f = fopen("hmm.txt", "r");
+  //  FILE *f = fopen("captured-timings.txt", "r");
   
   char buffy[10];
   memset(buffy, 0, 10);
@@ -202,12 +322,13 @@ int main(int argc, char **argv) {
       int length = atoi(buffy);
       memset(buffy, 0, 10);
 
-      char edge = 0;
-      if (length < -76) edge--;
+      char edge = length;
+      /*
+      if (length < -60) edge--;
       if (length < -10) edge--;
-      if (length > 76) edge++;
+      if (length > 60) edge++;
       if (length > 10) edge++;
-
+      */
       addEdge(edge);
     }
   }

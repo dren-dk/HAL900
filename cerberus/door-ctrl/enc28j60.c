@@ -14,8 +14,8 @@
  *********************************************/
 #include <avr/io.h>
 #include "enc28j60.h"
-//
-#define F_CPU 12500000UL  // 12.5 MHz
+
+#include "defines.h"
 #ifndef ALIBC_OLD
 #include <util/delay_basic.h>
 #else
@@ -27,16 +27,20 @@ static uint8_t Enc28j60Bank;
 static int16_t gNextPacketPtr;
 #define ENC28J60_CONTROL_PORT   PORTB
 #define ENC28J60_CONTROL_DDR    DDRB
-#define ENC28J60_CONTROL_CS     PORTB2
-#define ENC28J60_CONTROL_SO PORTB4
-#define ENC28J60_CONTROL_SI PORTB3
-#define ENC28J60_CONTROL_SCK PORTB5
+#define ENC28J60_CONTROL_CS     PORTB4
+#define ENC28J60_CONTROL_SO     PORTB6
+#define ENC28J60_CONTROL_SI     PORTB5
+#define ENC28J60_CONTROL_SCK    PORTB7
 // set CS to 0 = active
 #define CSACTIVE ENC28J60_CONTROL_PORT&=~(1<<ENC28J60_CONTROL_CS)
 // set CS to 1 = passive
 #define CSPASSIVE ENC28J60_CONTROL_PORT|=(1<<ENC28J60_CONTROL_CS)
 //
-#define waitspi() while(!(SPSR&(1<<SPIF)))
+static inline void waitspi() {
+  while (!(SPSR & _BV(SPIF))) {
+    // Meh.
+  };
+}
 
 uint8_t enc28j60ReadOp(uint8_t op, uint8_t address)
 {
@@ -177,23 +181,28 @@ void enc28j60Init(uint8_t* macaddr)
         // ss as output:
 	ENC28J60_CONTROL_DDR |= 1<<ENC28J60_CONTROL_CS;
 	CSPASSIVE; // ss=0
-        //	
-	ENC28J60_CONTROL_DDR  |= 1<<ENC28J60_CONTROL_SI | 1<<ENC28J60_CONTROL_SCK; // mosi, sck output
-	ENC28J60_CONTROL_DDR|= 1<<ENC28J60_CONTROL_SO; // MISO is input
-        //
-        ENC28J60_CONTROL_PORT|= 1<<ENC28J60_CONTROL_SI; // MOSI low
-        ENC28J60_CONTROL_PORT|= 1<<ENC28J60_CONTROL_SCK; // SCK low
-	//
+        	
+	ENC28J60_CONTROL_DDR  |= _BV(ENC28J60_CONTROL_SI); // mosi output
+	ENC28J60_CONTROL_DDR  |= _BV(ENC28J60_CONTROL_SCK); // sck output
+	ENC28J60_CONTROL_DDR  &=~ _BV(ENC28J60_CONTROL_SO); // MISO is input
+        
+	//        ENC28J60_CONTROL_PORT |= _BV(ENC28J60_CONTROL_SO); // Pullup for MISO
+        ENC28J60_CONTROL_PORT |= _BV(ENC28J60_CONTROL_SI); // MOSI low
+        ENC28J60_CONTROL_PORT |= _BV(ENC28J60_CONTROL_SCK); // SCK low
+	
 	// initialize SPI interface
+        SPCR = _BV(SPE) | _BV(MSTR);
 	// master mode and Fosc/2 clock:
-        SPCR = (1<<SPE)|(1<<MSTR);
-        SPSR |= (1<<SPI2X);
+        //SPSR |= (1<<SPI2X);
+	
 	// perform system reset
 	enc28j60WriteOp(ENC28J60_SOFT_RESET, 0, ENC28J60_SOFT_RESET);
         _delay_loop_2(0); // 20ms
 	// check CLKRDY bit to see if reset is complete
         // The CLKRDY does not work. See Rev. B4 Silicon Errata point. Just wait.
 	//while(!(enc28j60Read(ESTAT) & ESTAT_CLKRDY));
+	
+
 	// do bank 0 stuff
 	// initialize receive buffer
 	// 16-bit transfers, must write low byte first

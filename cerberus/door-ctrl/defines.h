@@ -1,7 +1,7 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-#define CLOCK_125
+#define CLOCK_20
 
 #if defined(CLOCK_10)
 
@@ -26,6 +26,7 @@
 #define CLOCK_PRESCALER 0
 #define SLEEP_10_MS_COUNT 79
 
+
 #elif defined(CLOCK_125) 
 
 // 12.5 MHz external clock from enc28j60
@@ -42,6 +43,3 @@
 #define UDP_PORT 4747
 
 #endif
-
-
-

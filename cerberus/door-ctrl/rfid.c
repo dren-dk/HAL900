@@ -8,8 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-unsigned long newRfid = 0;
-unsigned char trigger=1;
+#include "defines.h"
 
 /*
   This file implements an efficient, almost bufferles RFID Manchester decoder.
@@ -18,10 +17,12 @@ unsigned char trigger=1;
   codes become available via the getCurrentRfid and getLastRfid functions.
 */
 
-unsigned char headerLength = 0; // The number of short header bits seen.
-char rfidInUse = 0;             // -1 = Looking for the header.
+volatile unsigned long newRfid = 0;
+volatile unsigned char trigger=1;
+volatile unsigned char headerLength = 0; // The number of short header bits seen.
+volatile char rfidInUse = 0;             // -1 = Looking for the header.
 unsigned char rfid[7];          // Temporary storage for the datagram.
-char halfBit = 0; // Are we in the middle of a bit?
+volatile char halfBit = 0; // Are we in the middle of a bit?
 
 void pushOne() {
   rfid[rfidInUse>>3] |= 1<<(rfidInUse & 7);
@@ -51,6 +52,7 @@ void resetRfidState() {
   * +2: A long high-period, ending in a falling edge.
 */
 void addEdge(char edge) {
+
   if (headerLength == 0) {
     if (edge < -1) {
       headerLength = 1;
@@ -166,53 +168,57 @@ void addEdge(char edge) {
 #define CAPTURE_RISING  TCCR1B = _BV(ICNC1) | _BV(CS11) | _BV(CS10) | _BV(ICES1);
 #define CAPTURE_FALLING TCCR1B = _BV(ICNC1) | _BV(CS11) | _BV(CS10);
 
-void rfidSetup() {
-  // Set up timer 0: The 125 kHz carrierwave output on PD5.
-  DDRD |= _BV(PD5);              // OC0B pin as output.
-  PORTD &=~ _BV(PD5);
-  
-  TCCR0A = _BV(WGM01) | _BV(COM0B0); // Count to OCR0B, then reset and toggle OC0B
-  TIMSK0 = 0x00;                 // No interrupt on overflow.
-  OCR0A = OCR0B = 49;            // Each half-period is 50 clock cycles => 125 kHz
-  TCNT0 = 0;                     // Start counting at 0
-  TCCR0B = _BV(CS00);            // Raw clock input = 12.5 MHz
-  
+#define VERY_LONG_TIME 500
+#define LONG_TIME (76*F_CPU)/12500000UL
+#define SHORT_TIME (10*F_CPU)/12500000UL
 
-  // Set up timer 1: Used to measure the demodulated signal on PB0
-  DDRB  &=~ _BV(PB0);
+
+void rfidSetup() {
+  // Set up timer 0: The 125 kHz carrierwave output on OC0A 
+  DDRB  |= _BV(PB3);              // OC0A pin as output.
+
+  TCCR0A = _BV(WGM01) | _BV(COM0A0); // Count to OCR0A, then reset and toggle OC0A
+  TIMSK0 = 0x00;                 // No interrupt on overflow.
+  OCR0A = OCR0B = 79;            // Each half-period is 80 clock cycles => 125 kHz
+  TCNT0 = 0;                     // Start counting at 0
+  TCCR0B = _BV(CS00);            // Raw clock input = 20 MHz
+  
+  // Set up timer 1: Used to measure the demodulated signal on ICP
+  DDRD  &=~ _BV(PD6);
   TCCR1A = 0x00;
   TCCR1B = 0x00; 
   TIMSK1 = _BV(ICIE1); // Enable interrupt on input capture
-  TCNT1H = 0x0FF; 
+  TCNT1H = 0xFF; 
   TCNT1L = 0xF8; 
   ACSR = _BV(ACD); // Disable analog comparator;
   CAPTURE_RISING;
+
+  sei(); // Enable interrupts!
 }
 
-// This interrupt is fired on either rising or falling edge of the ICP1 (aka PB0) input
+// This interrupt is fired on either rising or falling edge of the ICP1 input
 // The value of the TCNT1 register at the time of the edge is captured in the ICR1 register.
 ISR(TIMER1_CAPT_vect) {
   TCCR1B = 0; // Stop timer while we work.
   TCNT1 = 0;  // Reset counter to 0
 
-  if (ICR1>500) { // Loong pause with no data => reset buffer.
+  if (ICR1>VERY_LONG_TIME) { // Loong pause with no data => reset buffer.
     resetRfidState();
   } 
-  
+ 
   if (trigger) {
-    if (ICR1 >= 76) {
+    if (ICR1 >= LONG_TIME) {
       addEdge(2);
-    } else if(ICR1 >= 10) {
+    } else if(ICR1 >= SHORT_TIME) {
       addEdge(1);
     }
     CAPTURE_FALLING;
     trigger=0;
     
   } else {
-
-    if (ICR1 >= 76) {
+    if (ICR1 >= LONG_TIME) {
       addEdge(-2);
-    } else if(ICR1 >= 10) {
+    } else if(ICR1 >= SHORT_TIME) {
       addEdge(-1);
     }
     CAPTURE_RISING;

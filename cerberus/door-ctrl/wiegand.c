@@ -33,52 +33,58 @@ unsigned char kbdValue;
 unsigned char rfidReady;
 unsigned char kbdReady;
 
+void initWiegand() {
+  // Enable pin change interrupt for the 4 wiegand inputs
+  PCMSK1 = (1<<PCINT8) | (1<<PCINT9) | (1<<PCINT10) | (1<<PCINT11);
+  PCICR |= 1<<PCIE1;
+}
+
 void greenRFIDLED(char on) {
-  if (!on) {
-    PORTD |= 1<<PD4; 
-  } else {
-    PORTD &=~ (1<<PD4); 
-  }
+//TODO  if (!on) {
+//TODO    PORTD |= 1<<PD4; 
+//TODO  } else {
+//TODO    PORTD &=~ (1<<PD4); 
+//TODO  }
 }
 
 void beepRFID(char on) {
-  if (!on) {
-    PORTD |= 1<<PD5; 
-  } else {
-    PORTD &=~ (1<<PD5); 
-  }
+//TODO  if (!on) {
+//TODO    PORTD |= 1<<PD5; 
+//TODO  } else {
+//TODO    PORTD &=~ (1<<PD5); 
+//TODO  }
 }
 
 void beepKBD(char on) {
-  if (!on) {
-    PORTD |= 1<<PD3; 
-  } else {
-    PORTD &=~ (1<<PD3); 
-  }
+//TODO  if (!on) {
+//TODO    PORTD |= 1<<PD3; 
+//TODO  } else {
+//TODO    PORTD &=~ (1<<PD3); 
+//TODO  }
 }
 
 void greenKBDLED(char on) {
-  if (!on) {
-    PORTD |= 1<<PD2; 
-  } else {
-    PORTD &=~ (1<<PD2); 
-  }
+//TODO  if (!on) {
+//TODO    PORTD |= 1<<PD2; 
+//TODO  } else {
+//TODO    PORTD &=~ (1<<PD2); 
+//TODO  }
 }
 
 void led(char on) {
   if (on) {
-    PORTB |= 1<<PB1; 
+    //TODO    PORTB |= 1<<PB1; 
   } else {
-    PORTB &=~ (1<<PB1); 
+    //TODO PORTB &=~ (1<<PB1); 
   }
 }
 
 void transistor(char on) {
-  if (on) {
-    PORTD |= 1<<PD7; 
-  } else {
-    PORTD &=~ (1<<PD7); 
-  }
+//TODO  if (on) {
+//TODO    PORTD |= 1<<PD7; 
+//TODO  } else {
+//TODO    PORTD &=~ (1<<PD7); 
+//TODO  }
 }
 
 void startWiegandTimeout() {
@@ -115,7 +121,7 @@ ISR(PCINT1_vect) {
   state = newState;
   startWiegandTimeout();
 }
-
+/*
 ISR(TIMER0_COMPA_vect) {
   TCCR2B = 0; // Stop timer
 
@@ -130,7 +136,7 @@ ISR(TIMER0_COMPA_vect) {
   kbdBits = 0;
   rfidBits = 0;
 }
-
+*/
 
 unsigned char isRfidReady() {
   return rfidReady;
@@ -160,9 +166,9 @@ Bolt cable:
 | Blue/white   | +12V    |     |
 | Brown        | GND     |     |
 | Brown/white  | GND     |     |
-| Orange       | Lock    | PD6 |
-| Orange/white | Door    | PB0 |
-| Green        | Control | PD7 |
+| Orange       | Lock    | TODO |
+| Orange/white | Door    | TODO |
+| Green        | Control | TODO |
 | Green/white  |         |     |
 
 Exit push: NC to ground from PB7 (internal pull up)
@@ -173,15 +179,15 @@ Exit push: NC to ground from PB7 (internal pull up)
 unsigned char getSensors() {
   unsigned char res = 0;
 
-  if (PIND & 1<<PD6) {
-    res |= 0x02;
-  }
-  if (PINB & 1<<PB0) {
-    res |= 0x01;
-  }
-  if (PINB & 1<<PB7) {
-    res |= 0x80;
-  }
+//TODO  if (PIND & 1<<PD6) {
+//    res |= 0x02;
+//  }
+//TODO  if (PINB & 1<<PB0) {
+//TODO    res |= 0x01;
+//TODO  }
+//TODO  if (PINB & 1<<PB7) {
+//TODO    res |= 0x80;
+//TODO  }
 
   return res;
 }

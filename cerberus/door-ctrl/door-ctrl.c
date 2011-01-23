@@ -20,7 +20,6 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
-#include "sleep.h"
 #include "uart.h"
 
 #include "ip_arp_udp_tcp.h"
@@ -32,6 +31,9 @@
 #include "telegram.h"
 #include "wiegand.h"
 #include "rfid.h"
+
+#include "leds.h"
+
 
 // We don't really care about unhandled interrupts.
 EMPTY_INTERRUPT(__vector_default)
@@ -55,11 +57,9 @@ void broadcastLog(struct LogTelegram *lt) {
   lt->crc32 = crc32((unsigned char*)lt, 12);
 
   //  fprintf(stdout, "Log, seq:%d, crc: %lu, type:%c\n", lt->seq, lt->crc32, lt->logType);
-#if USE_AES  
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_encrypt_ecb(&ctx, (unsigned char *)lt);
-#endif  
   unsigned char transmitBuffer[UDP_DATA_P+32];
   spam_udp(transmitBuffer, (char *)lt, 16, UDP_PORT, 4747);  
 }
@@ -132,11 +132,9 @@ void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on t
   // Affix crc in the right place.
   *((unsigned long *)(telegram+12)) = crc32((unsigned char*)telegram, 12);
   //fprintf(stdout, "Sending reply UDP package, crc is: %lu\n", *((unsigned long *)(telegram+12)));
-#if USE_AES  
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_encrypt_ecb(&ctx, (unsigned char *)telegram);
-#endif
 
   //unsigned char transmitBuffer[UDP_DATA_P+32];
   //  send_udp(transmitBuffer, telegram, 16, UDP_PORT, dip, dport);  
@@ -242,11 +240,9 @@ void handleDeleteKey(unsigned char *request, struct AddDeleteKeyTelegram *payloa
 
 
 void handleTelegram(unsigned char *request, unsigned char *payload) {  
-#if USE_AES  
   aes256_context ctx; 
   aes256_init(&ctx, getAESKEY());
   aes256_decrypt_ecb(&ctx, payload);  
-#endif
 
   char *type = (char *)payload;
   //  unsigned int *seq = (unsigned int *)(payload+1);    
@@ -428,49 +424,31 @@ void handleTick() {
 int main(void) {
   wdt_enable(WDTO_4S);
 
-  // Outputs:
-  DDRD |= 1<<PD2;
-  DDRD |= 1<<PD3;
-  DDRD |= 1<<PD4;
-  DDRD |= 1<<PD7;
-  DDRB |= 1<<PB1;
-  DDRC |= 1<<PC2;
-
   uint8_t mymac[6] = {0x42,0x42, 10,37,37,NODE};
   uint8_t myip[4]  =            {10,37,37,NODE};
+
+
+  DDRD |= _BV(PD3); // Serial TXD
+  uart_init();
+  FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+  stdout = stdin = &uart_str;
+  fprintf(stdout, "Power up! IP: %u.%u.%u.%u\n",myip[0],myip[1],myip[2],myip[3]);
+
+  DDRD |= _BV(PD1); // RS485 TXD
+  DDRD |= _BV(PD7); // RS485 TX Enable.
+  DDRC |= _BV(PC2); // RS485 RX LED
+
+  DDRB |= _BV(PB1); // RFID carrier
+
+  DDRC |= _BV(PC6) | _BV(PC7); // Relays
+
+  DDRB |= _BV(PB3); // Test signal.
 
   enc28j60Init(mymac);
   enc28j60clkout(2); // change clkout from 6.25MHz to 12.5MHz
   _delay_loop_1(0); // 60us
 
-
-  // Set all outputs high, both LEDs and beepers are active low.
-  PORTD |= (1<<PD2); 
-  PORTD |= (1<<PD3); 
-  PORTD |= (1<<PD4); 
-  //  PORTD |= (1<<PD5);  
-
-  // Inputs:
-  DDRC  &=~ (1<<PC0);
-  DDRC  &=~ (1<<PC1);
-  DDRC  &=~ (1<<PC3);
-  DDRB  &=~ (1<<PB0);
-  DDRD  &=~ (1<<PD6);
-  DDRB  &=~ (1<<PB7);
-  PORTB |= (1<<PB7);  
-
-
-  greenKBDLED(1);
-  uart_init();
-  FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
-  stdout = stdin = &uart_str;
-  fprintf(stdout, "Power up! IP: %u.%u.%u.%u\n",myip[0],myip[1],myip[2],myip[3]);
-  greenRFIDLED(1);
-
-  // Enable pin change interrupt for the 4 wiegand inputs
-  PCMSK1 = (1<<PCINT8) | (1<<PCINT9) | (1<<PCINT10) | (1<<PCINT11);
-  PCICR |= 1<<PCIE1;
-  sei();
+  //  initWiegand();
   
   // 0x476 is PHLCON LEDA=links status, LEDB=receive/transmit
   enc28j60PhyWrite(PHLCON,0x476);
@@ -478,35 +456,44 @@ int main(void) {
 
   rfidSetup();
 
-  greenKBDLED(0);
-  greenRFIDLED(0);
-
   logPowerUp();
 
-  
+  initLEDs();
+
   int loop = 0;
   unsigned char oldSensors = 0;
   while(1) {
-    
-    //    fprintf(stdout, "%0x %0x %0x %0x %0x %0x\n",TCCR0A, TIMSK0, OCR0A, OCR0B, TCNT0, TCCR0B);
-
     static uint8_t buf[BUFFER_SIZE+1];
 
     uint16_t plen=enc28j60PacketReceive(BUFFER_SIZE, buf);
     buf[BUFFER_SIZE]='\0';
     unsigned int tcpPacketSize = packetloop_icmp_tcp(buf,plen);
     if (plen && !tcpPacketSize){ 
-      fprintf(stdout, "Handling package of %d bytes\n", plen);
+      unsigned char isIP = eth_type_is_ip_and_my_ip(buf,plen);
 
-      if (eth_type_is_ip_and_my_ip(buf,plen) && 
+      if (isIP) {
+	fprintf(stdout, "Handling IP package of %d bytes IP Proto=%d\n", plen, buf[IP_PROTO_P]);
+      } else {
+	fprintf(stdout, "Handling non-IP package of %d bytes\n", plen);
+      }
+      
+      if (isIP && 
 	  buf[IP_PROTO_P]==IP_PROTO_UDP_V &&
 	  buf[UDP_DST_PORT_H_P]==(UDP_PORT>>8) &&
 	  buf[UDP_DST_PORT_L_P]==(UDP_PORT&0xff)) {
+	/*
+	for (int i = 0; i<plen; i++) {
+	  if (!(i & 0x0f)) {
+	    fprintf(stdout, "\n%4x:",i);
+	  }	
+	  fprintf(stdout, " %02x", buf[i]);
+	}
+	fprintf(stdout, "\n");
+	*/
 	
 	unsigned char *payload = buf + UDP_DATA_P;
 	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
-	//	fprintf("Handling UDP package of %d bytes\n", payloadlen);
-		
+
 	if (payloadlen == 16) {
 	  handleTelegram(buf, payload);
 	}			
@@ -533,16 +520,16 @@ int main(void) {
     
     unsigned long rfid = rfidValue();
     if (rfid) {
-      fprintf(stdout, "Got rfid: 0x%0lx\n", rfid);
+      fprintf(stdout, "Got rfid: %ld\n", rfid);
     }
 
     handleTick();
     
-
     _delay_ms(10);
     greenKBDLED(loop & 1);
     //    led(loop & 1);
     wdt_reset();
     loop++;
+    setLEDs((loop >> 4) % 0x3f);
   }	
 }

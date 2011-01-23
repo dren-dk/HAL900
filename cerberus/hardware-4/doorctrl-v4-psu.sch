@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2011-01-17T20:19:18 CET
+EESchema Schematic File Version 2  date 2011-01-23T22:09:23 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -47,7 +47,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 6 6
 Title ""
-Date "17 jan 2011"
+Date "23 jan 2011"
 Rev ""
 Comp ""
 Comment1 ""
@@ -55,6 +55,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Notes 6350 2500 0    60   ~ 0
+Distributed decoupling caps
 Wire Wire Line
 	7800 2600 4950 2600
 Connection ~ 7550 3000
@@ -268,7 +270,7 @@ L DIODESCH D2
 U 1 1 4D04D88B
 P 3900 4900
 F 0 "D2" H 3900 5000 40  0000 C CNN
-F 1 "SK 86" H 3900 4800 40  0000 C CNN
+F 1 "SK 54" H 3900 4800 40  0000 C CNN
 	1    3900 4900
 	0    -1   -1   0   
 $EndComp
@@ -448,7 +450,7 @@ L DIODESCH D3
 U 1 1 4D04CF74
 P 4250 2800
 F 0 "D3" H 4250 2900 40  0000 C CNN
-F 1 "SK 34SMA" H 4250 2700 40  0000 C CNN
+F 1 "SK 54" H 4250 2700 40  0000 C CNN
 	1    4250 2800
 	0    -1   -1   0   
 $EndComp

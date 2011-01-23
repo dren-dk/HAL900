@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2011-01-17T20:19:18 CET
+EESchema Schematic File Version 2  date 2011-01-23T22:09:23 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -47,7 +47,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 6
 Title ""
-Date "17 jan 2011"
+Date "23 jan 2011"
 Rev ""
 Comp ""
 Comment1 ""
@@ -450,7 +450,7 @@ NoConn ~ 1300 4750
 Text GLabel 1200 6125 0    60   Input ~ 0
 +3.3V
 Text GLabel 1200 6425 0    60   Input ~ 0
-PB3
+PB1
 Text GLabel 2100 6325 2    60   Input ~ 0
 PB2
 Text GLabel 1200 6325 0    60   Input ~ 0
@@ -567,7 +567,7 @@ Text Notes 4475 2500 0    60   ~ 0
 Net - ~CS
 Text Notes 4475 4500 0    60   ~ 0
 RFID - demodulated
-Text Notes 4475 2200 0    60   ~ 0
+Text Notes 4475 2400 0    60   ~ 0
 RFID carrier (125 kHz)
 Text Notes 4475 3500 0    60   ~ 0
 gpio - LED1
@@ -600,7 +600,7 @@ PC2
 Text GLabel 9100 4075 0    60   Input ~ 0
 PD6
 Text GLabel 9100 3875 0    60   Input ~ 0
-PB1
+PB3
 Text GLabel 9100 2700 0    60   Input ~ 0
 PB4
 Text GLabel 9100 2550 0    60   Input ~ 0

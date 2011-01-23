@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2011-01-17T20:20:10 CET
+Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2011-01-23T22:14:54 CET
 
 BeginCmp
 TimeStamp = /4CFAB038;
@@ -367,14 +367,14 @@ EndCmp
 BeginCmp
 TimeStamp = /4CFD3054/4D04D88B;
 Reference = D2;
-ValeurCmp = SK_86;
+ValeurCmp = SK_54;
 IdModule  = DO214;
 EndCmp
 
 BeginCmp
 TimeStamp = /4CFD3054/4D04CF74;
 Reference = D3;
-ValeurCmp = SK_34SMA;
+ValeurCmp = SK_54;
 IdModule  = DO214;
 EndCmp
 
@@ -395,7 +395,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4CFD2FB8/4D0BB158;
 Reference = D8;
-ValeurCmp = SK_34SMA;
+ValeurCmp = SK_54;
 IdModule  = DO214;
 EndCmp
 
@@ -913,14 +913,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4CFD2FB8/4D21A96D;
 Reference = R65;
-ValeurCmp = 1k;
-IdModule  = SM0805;
-EndCmp
-
-BeginCmp
-TimeStamp = /4CFD2FB8/4D21B7DC;
-Reference = R66;
-ValeurCmp = 1k;
+ValeurCmp = 330R;
 IdModule  = SM0805;
 EndCmp
 
@@ -985,13 +978,6 @@ TimeStamp = /4D0BB80A;
 Reference = U8;
 ValeurCmp = 24LC64;
 IdModule  = SO8E;
-EndCmp
-
-BeginCmp
-TimeStamp = /4CFD2FB8/4D21B725;
-Reference = U9;
-ValeurCmp = BCR08PN;
-IdModule  = SOT363;
 EndCmp
 
 BeginCmp

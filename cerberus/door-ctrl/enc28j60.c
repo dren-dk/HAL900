@@ -175,7 +175,7 @@ void enc28j60clkout(uint8_t clk)
 	enc28j60Write(ECOCON, clk & 0x7);
 }
 
-void enc28j60Init(uint8_t* macaddr)
+void enc28j60Init(const uint8_t* macaddr)
 {
 	// initialize I/O
         // ss as output:

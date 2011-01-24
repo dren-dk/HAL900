@@ -155,7 +155,7 @@ uint16_t checksum(uint8_t *buf, uint16_t len,uint8_t type){
 
 // This initializes the web server
 // you must call this function once before you use any of the other functions:
-void init_ip_arp_udp_tcp(uint8_t *mymac,uint8_t *myip,uint16_t port){
+void init_ip_arp_udp_tcp(const uint8_t *mymac, const uint8_t *myip,uint16_t port){
         uint8_t i=0;
         wwwport_h=(port>>8)&0xff;
         wwwport_l=(port&0xff);

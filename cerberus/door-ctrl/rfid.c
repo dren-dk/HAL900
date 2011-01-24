@@ -123,7 +123,6 @@ void addEdge(char edge) {
 	    colParity ^= 16>>col;
 	  }
 	}
-	//PORTC &=~ _BV(PC2);
 	
 	if (row < 10 && rowParity) {
 	  resetRfidState();

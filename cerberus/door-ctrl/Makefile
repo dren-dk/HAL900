@@ -47,8 +47,8 @@ jtagfuses:
 %.obj : %.asm
 	avra -fO $< -o $@
 
-door-ctrl.obj : door-ctrl.c uart.c uart.h defines.h net.h ip_config.h ip_arp_udp_tcp.h enc28j60.h ip_arp_udp_tcp.c enc28j60.c aes256.h aes256.c crc32.h crc32.c wiegand.h wiegand.c rfid.c rfid.h leds.h leds.c Makefile
-	$(CC) $(CFLAGS) -DNODE=$(NODE) uart.c ip_arp_udp_tcp.c enc28j60.c crc32.c wiegand.c door-ctrl.c rfid.c aes256.c config.c leds.c -o $@
+door-ctrl.obj : door-ctrl.c uart.c uart.h defines.h net.h ip_config.h ip_arp_udp_tcp.h enc28j60.h ip_arp_udp_tcp.c enc28j60.c aes256.h aes256.c crc32.h crc32.c wiegand.h wiegand.c rfid.c rfid.h leds.h leds.c door.h door.c Makefile
+	$(CC) $(CFLAGS) -DNODE=$(NODE) uart.c ip_arp_udp_tcp.c enc28j60.c crc32.c wiegand.c door-ctrl.c rfid.c aes256.c config.c leds.c door.c -o $@
 	avr-size -C $@
 
 %.hex : %.obj

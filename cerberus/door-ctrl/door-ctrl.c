@@ -31,6 +31,7 @@
 #include "telegram.h"
 #include "wiegand.h"
 #include "rfid.h"
+#include "door.h"
 
 #include "leds.h"
 
@@ -300,6 +301,7 @@ unsigned long currentRfid;
 
 void handleKey(unsigned char key) {
   logKey(key);
+  fprintf(stdout, "Key: %c\n", key);
 
   if (userState == ACTIVE) {
     idleCount = 0;
@@ -369,7 +371,6 @@ void handleRFID(unsigned long rfid) {
   pinCount = 0;
   currentRfid = rfid; 
   greenRFIDLED(1);
-  led(0);
   
   //  fprintf(stdout, "Got RFID: %ld\n", rfid);  
 }
@@ -404,19 +405,20 @@ void handleTick() {
     idleCount++;
     greenRFIDLED(1);
     greenKBDLED(1);
-    led(1);
-    transistor(1);
+    PORTC |= _BV(PC6);
 
     if (idleCount > 1000) {
       logLocked();
       greenRFIDLED(0);
       greenKBDLED(0);
-      led(0);
-      transistor(0);
+      PORTC &=~ _BV(PC6);
       userState = IDLE;
     }
   }
 }
+
+const uint8_t MYMAC[6] = {0x42,0x42, 10,37,37,NODE};
+const uint8_t MYIP[4]  =            {10,37,37,NODE};
 
 
 /**********************************************************************************************/
@@ -424,15 +426,11 @@ void handleTick() {
 int main(void) {
   wdt_enable(WDTO_4S);
 
-  uint8_t mymac[6] = {0x42,0x42, 10,37,37,NODE};
-  uint8_t myip[4]  =            {10,37,37,NODE};
-
-
   DDRD |= _BV(PD3); // Serial TXD
   uart_init();
   FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
   stdout = stdin = &uart_str;
-  fprintf(stdout, "Power up! IP: %u.%u.%u.%u\n",myip[0],myip[1],myip[2],myip[3]);
+  fprintf(stdout, "Power up! IP: %u.%u.%u.%u\n",MYIP[0],MYIP[1],MYIP[2],MYIP[3]);
 
   DDRD |= _BV(PD1); // RS485 TXD
   DDRD |= _BV(PD7); // RS485 TX Enable.
@@ -442,23 +440,18 @@ int main(void) {
 
   DDRC |= _BV(PC6) | _BV(PC7); // Relays
 
-  DDRB |= _BV(PB3); // Test signal.
-
-  enc28j60Init(mymac);
+  enc28j60Init(MYMAC);
   enc28j60clkout(2); // change clkout from 6.25MHz to 12.5MHz
   _delay_loop_1(0); // 60us
 
-  //  initWiegand();
-  
   // 0x476 is PHLCON LEDA=links status, LEDB=receive/transmit
   enc28j60PhyWrite(PHLCON,0x476);
-  init_ip_arp_udp_tcp(mymac, myip, 0);
+  init_ip_arp_udp_tcp(MYMAC, MYIP, 0);
 
+  initWiegand();  
   rfidSetup();
-
-  logPowerUp();
-
   initLEDs();
+  logPowerUp();
 
   int loop = 0;
   unsigned char oldSensors = 0;
@@ -526,8 +519,14 @@ int main(void) {
     handleTick();
     
     _delay_ms(10);
-    greenKBDLED(loop & 1);
-    //    led(loop & 1);
+    
+    greenKBDLED((loop>>5) & 0x1);
+    greenRFIDLED((loop>>5) & 0x2);    
+    /*
+    beepKBD( ((loop>>5) & 0x18) == 0x18);
+    beepRFID(((loop>>5) & 0x28) == 0x28);
+    */
+
     wdt_reset();
     loop++;
     setLEDs((loop >> 4) % 0x3f);

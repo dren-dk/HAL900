@@ -5,100 +5,85 @@
 /*
 Pinout:
 
-| Cable        | Signal  |  AVR-pin  |
-| UTP          | Wiegand | KBD | RFID|
-+--------------+---------+-----+-----+
-| Blue pair    | +12V    |     |     |
-| Brown pair   | GND     |     |     |
-| Orange       | D0      | PC0 | PC2 |
-| Orange/white | D1      | PC1 | PC3 |
-| Green        | LED     | PD2 | PD4 |
-| Green/white  | Beeper  | PD3 | PD5 |
+| Cable        | Signal  | RJ45 |  AVR-pin  |
+| UTP          | Wiegand | pin  | KBD | RFID|
++--------------+---------+------+-----+-----+
+| Blue pair    | +12V    | 4+5  |     |     |
+| Brown pair   | GND     | 7+8  |     |     |
+| Orange/white | D1      |  1   | PA0 | PA4 |
+| Orange       | D0      |  2   | PA1 | PA5 |
+| Green        | LED     |  3   | PA2 | PA6 |
+| Green/white  | Beeper  |  6   | PA3 | PA7 |
 
+PA0 = PCINT0 KBD  D1
+PA1 = PCINT1 KBD  D0
+PA2 = PCINT2
+PA3 = PCINT3
+PA4 = PCINT4 RFID D1
+PA5 = PCINT5 RFID D0
+PA6 = PCINT6
+PA7 = PCINT7
 
-PC0 = PCINT8
-PC1 = PCINT9
-PC2 = PCINT10
-PC3 = PCINT11
 */
 
-unsigned char state;
-unsigned long rfidFrame;
-unsigned char kbdFrame;
-unsigned char rfidBits;
-unsigned char kbdBits;
+volatile unsigned char state;
+volatile unsigned long rfidFrame;
+volatile unsigned char kbdFrame;
+volatile unsigned char rfidBits;
+volatile unsigned char kbdBits;
 
-unsigned long rfidValue;
-unsigned char kbdValue;
-unsigned char rfidReady;
-unsigned char kbdReady;
+volatile unsigned long rfidValue;
+volatile unsigned char kbdValue;
+volatile unsigned char rfidReady;
+volatile unsigned char kbdReady;
+
+volatile unsigned char timeout;
 
 void initWiegand() {
-  // Enable pin change interrupt for the 4 wiegand inputs
-  PCMSK1 = (1<<PCINT8) | (1<<PCINT9) | (1<<PCINT10) | (1<<PCINT11);
-  PCICR |= 1<<PCIE1;
+  timeout = 0;
+
+  // Enable pin change interrupt for the 4 wiegand inputs:
+  PCMSK1 = _BV(PCINT0) | _BV(PCINT1) | _BV(PCINT2) | _BV(PCINT3);
+  PCICR |= _BV(PCIE0);
+
+  DDRA  |= _BV(PA2) | _BV(PA3) | _BV(PA6) | _BV(PA7);
+  PORTA |= _BV(PA2) | _BV(PA3) | _BV(PA6) | _BV(PA7);
+  sei();
 }
 
 void greenRFIDLED(char on) {
-//TODO  if (!on) {
-//TODO    PORTD |= 1<<PD4; 
-//TODO  } else {
-//TODO    PORTD &=~ (1<<PD4); 
-//TODO  }
-}
-
-void beepRFID(char on) {
-//TODO  if (!on) {
-//TODO    PORTD |= 1<<PD5; 
-//TODO  } else {
-//TODO    PORTD &=~ (1<<PD5); 
-//TODO  }
-}
-
-void beepKBD(char on) {
-//TODO  if (!on) {
-//TODO    PORTD |= 1<<PD3; 
-//TODO  } else {
-//TODO    PORTD &=~ (1<<PD3); 
-//TODO  }
-}
-
-void greenKBDLED(char on) {
-//TODO  if (!on) {
-//TODO    PORTD |= 1<<PD2; 
-//TODO  } else {
-//TODO    PORTD &=~ (1<<PD2); 
-//TODO  }
-}
-
-void led(char on) {
-  if (on) {
-    //TODO    PORTB |= 1<<PB1; 
+  if (!on) {
+    PORTA |=  _BV(PA7); 
   } else {
-    //TODO PORTB &=~ (1<<PB1); 
+    PORTA &=~ _BV(PA7); 
   }
 }
 
-void transistor(char on) {
-//TODO  if (on) {
-//TODO    PORTD |= 1<<PD7; 
-//TODO  } else {
-//TODO    PORTD &=~ (1<<PD7); 
-//TODO  }
+void beepRFID(char on) {
+  if (!on) {
+    PORTA |=  _BV(PA6); 
+  } else {
+    PORTA &=~ _BV(PA6); 
+  }
 }
 
-void startWiegandTimeout() {
-    TCCR2B = 0; // Stop timer    
-
-    TCCR2A = 0;
-    TCNT2=0; 
-    OCR2A=122; // 10 ms, could probably be 2, but whatever.
-    TIMSK2 = 1<<OCIE2A; // Fire interrupt when done
-
-    TCCR2B = 1<<CS00 | 1<<CS02; // Start timer at the slowest clock (1 / 1024)    
+void beepKBD(char on) {
+  if (!on) {
+    PORTA |=  _BV(PA2); 
+  } else {
+    PORTA &=~ _BV(PA2); 
+  }
 }
 
-ISR(PCINT1_vect) {
+void greenKBDLED(char on) {
+  if (!on) {
+    PORTA |=  _BV(PA3); 
+  } else {
+    PORTA &=~ _BV(PA3); 
+  }
+}
+
+ISR(PCINT0_vect) {
   unsigned char newState = PINC;
 
   unsigned char kbdBit0  = (state & (1<<PC0)) && !(newState & (1<<PC0));
@@ -109,34 +94,31 @@ ISR(PCINT1_vect) {
   if (kbdBit0 || kbdBit1) {
     kbdFrame <<= 1;
     kbdFrame |= kbdBit1;
-    kbdBits++;
+    if (kbdBits++ == 5) {
+      kbdValue = kbdFrame;
+      kbdReady = kbdBits;
+      kbdFrame = 0;
+      kbdBits = 0;
+    }   
   }
 
   if (rfidBit0 || rfidBit1) {
     rfidFrame <<= 1;
     rfidFrame |= rfidBit1;
-    rfidBits++;
+
+    if (rfidBits++ == 26) {
+      rfidValue = (rfidFrame>>1) & ~((unsigned long)1<<24); 
+      rfidReady = rfidBits;
+      rfidBits = 0;
+      rfidFrame = 0;
+    }
   }
 
   state = newState;
-  startWiegandTimeout();
+  
+  timeout = 0;
+  PORTB |= _BV(PB0);
 }
-/*
-ISR(TIMER0_COMPA_vect) {
-  TCCR2B = 0; // Stop timer
-
-  // Get rid of the first and last bits (parity)
-  rfidValue = (rfidFrame>>1) & ~((unsigned long)1<<24); 
-  kbdValue = kbdFrame;
-  kbdReady = kbdBits;
-  rfidReady = rfidBits;
-
-  rfidFrame = 0;
-  kbdFrame = 0;
-  kbdBits = 0;
-  rfidBits = 0;
-}
-*/
 
 unsigned char isRfidReady() {
   return rfidReady;
@@ -155,45 +137,3 @@ unsigned char getKbdValue() {
   kbdReady = 0;
   return kbdValue;
 }
-
-
-/*
-Bolt cable:
-
-| UTP          | Signal  | AVR |
-+--------------+---------+-----+
-| Blue         | +12V    |     |
-| Blue/white   | +12V    |     |
-| Brown        | GND     |     |
-| Brown/white  | GND     |     |
-| Orange       | Lock    | TODO |
-| Orange/white | Door    | TODO |
-| Green        | Control | TODO |
-| Green/white  |         |     |
-
-Exit push: NC to ground from PB7 (internal pull up)
-           available via TP3 on the board.
-*/
-
-#if NODE == 1
-unsigned char getSensors() {
-  unsigned char res = 0;
-
-//TODO  if (PIND & 1<<PD6) {
-//    res |= 0x02;
-//  }
-//TODO  if (PINB & 1<<PB0) {
-//TODO    res |= 0x01;
-//TODO  }
-//TODO  if (PINB & 1<<PB7) {
-//TODO    res |= 0x80;
-//TODO  }
-
-  return res;
-}
-
-#else
-unsigned char getSensors() {
-  return 0;
-}
-#endif

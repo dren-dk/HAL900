@@ -15,9 +15,4 @@ unsigned long getRfidValue();
 unsigned char isKbdReady();
 unsigned char getKbdValue();
 
-// Yeah, not really wiegand related, but they are nicely out of the way here
-void led(char on);
-void transistor(char on);
-unsigned char getSensors();
-
 #endif

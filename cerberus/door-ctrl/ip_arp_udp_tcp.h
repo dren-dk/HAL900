@@ -16,7 +16,7 @@
 
 // -- web server functions --
 // you must call this function once before you use any of the other server functions:
-extern void init_ip_arp_udp_tcp(uint8_t *mymac,uint8_t *myip,uint16_t port);
+extern void init_ip_arp_udp_tcp(const uint8_t *mymac, const uint8_t *myip,uint16_t port);
 // for a UDP server:
 extern uint8_t eth_type_is_ip_and_my_ip(uint8_t *buf,uint16_t len);
 extern void make_udp_reply_from_request(uint8_t *buf,char *data,uint8_t datalen,uint16_t port);

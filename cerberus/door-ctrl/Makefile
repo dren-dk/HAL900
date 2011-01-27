@@ -2,11 +2,12 @@ PART=atmega324p
 #PART=atmega168
 #PART=atmega328p
 
+F_CPU=20000000
 #PROGRAMMER = usbtiny
 PROGRAMMER = jtag2isp -P usb
 
 CC=avr-gcc
-CFLAGS=-Os -Wall -pedantic-errors -Werror -mcall-prologues -mmcu=${PART} -std=c99 -Wl,-u,vfprintf -lprintf_min
+CFLAGS=-Os -Wall -pedantic-errors -Werror -mcall-prologues -DF_CPU=${F_CPU} -mmcu=${PART} -std=c99 -Wl,-u,vfprintf -lprintf_min
 
 OBJ2HEX=avr-objcopy 
 
@@ -44,10 +45,13 @@ jtagfuses:
 #%.obj : %.c
 #	$(CC) $(CFLAGS) -DNODE=$(NODE) $< -o $@
 
+nodeconfig.h: nodeconfig.pl	
+	./nodeconfig.pl ${NODE}
+
 %.obj : %.asm
 	avra -fO $< -o $@
 
-door-ctrl.obj : door-ctrl.c uart.c uart.h defines.h net.h ip_config.h ip_arp_udp_tcp.h enc28j60.h ip_arp_udp_tcp.c enc28j60.c aes256.h aes256.c crc32.h crc32.c wiegand.h wiegand.c rfid.c rfid.h leds.h leds.c door.h door.c Makefile
+door-ctrl.obj : door-ctrl.c uart.c uart.h defines.h net.h ip_config.h ip_arp_udp_tcp.h enc28j60.h ip_arp_udp_tcp.c enc28j60.c aes256.h aes256.c crc32.h crc32.c wiegand.h wiegand.c rfid.c rfid.h leds.h leds.c door.h door.c Makefile nodeconfig.h
 	$(CC) $(CFLAGS) -DNODE=$(NODE) uart.c ip_arp_udp_tcp.c enc28j60.c crc32.c wiegand.c door-ctrl.c rfid.c aes256.c config.c leds.c door.c -o $@
 	avr-size -C $@
 
@@ -61,11 +65,11 @@ clean :
 mtest: rfid-manchester-decoder
 	./$<
 
-rfid-manchester-decoder: rfid-manchester-decoder-buffered.c
+rfid-manchester-decoder: test/rfid-manchester-decoder-buffered.c
 	gcc -std=c99 -Wall -g3 -pedantic-errors -Werror -o $@ $<
 
 utest: rfid-manchester-decoder-unbuffered
 	./$<
 
-rfid-manchester-decoder-unbuffered: rfid-manchester-decoder-unbuffered.c
+rfid-manchester-decoder-unbuffered: test/rfid-manchester-decoder-unbuffered.c
 	gcc -std=c99 -Wall -g3 -pedantic-errors -Werror -o $@ $<

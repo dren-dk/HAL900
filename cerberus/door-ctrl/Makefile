@@ -1,8 +1,11 @@
 PART=atmega324p
+F_CPU=20000000
+
+# Parts of boards past:
 #PART=atmega168
 #PART=atmega328p
+#F_CPU=12500000
 
-F_CPU=20000000
 #PROGRAMMER = usbtiny
 PROGRAMMER = jtag2isp -P usb
 
@@ -45,7 +48,7 @@ jtagfuses:
 #%.obj : %.c
 #	$(CC) $(CFLAGS) -DNODE=$(NODE) $< -o $@
 
-nodeconfig.h: nodeconfig.pl	
+nodeconfig.h::	
 	./nodeconfig.pl ${NODE}
 
 %.obj : %.asm

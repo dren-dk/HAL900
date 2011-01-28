@@ -34,13 +34,6 @@
 
 #define UART_BAUD  19200
 
-#define UDP_PORT 4747
-
 #include "nodeconfig.h"
-
-#else
-#error No NODE defined, don't know how to set up build'
-#endif
-
 
 #endif

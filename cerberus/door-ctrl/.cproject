@@ -18,7 +18,7 @@
 </extensions>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-<configuration artifactName="door-ctrl" buildArtefactType="de.innot.avreclipse.buildArtefactType.app" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=de.innot.avreclipse.buildArtefactType.app" description="" id="de.innot.avreclipse.configuration.app.debug.1013757436" name="Debug" parent="de.innot.avreclipse.configuration.app.debug">
+<configuration artifactName="door-ctrl" buildArtefactType="de.innot.avreclipse.buildArtefactType.app" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=de.innot.avreclipse.buildArtefactType.app" description="" id="de.innot.avreclipse.configuration.app.debug.1013757436" name="Debug" parent="de.innot.avreclipse.configuration.app.debug" prebuildStep="../nodeconfig.pl ${NODE}">
 <folderInfo id="de.innot.avreclipse.configuration.app.debug.1013757436." name="/" resourcePath="">
 <toolChain id="de.innot.avreclipse.toolchain.winavr.app.debug.444912360" name="AVR-GCC Toolchain" superClass="de.innot.avreclipse.toolchain.winavr.app.debug">
 <option id="de.innot.avreclipse.toolchain.options.toolchain.objcopy.flash.app.debug.1759825718" name="Generate HEX file for Flash memory" superClass="de.innot.avreclipse.toolchain.options.toolchain.objcopy.flash.app.debug" value="true" valueType="boolean"/>
@@ -56,7 +56,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="rfid-manchester-decoder-buffered.c|rijndaelfantastic.asm|rfid-manchester-decoder-unbuffered.c|wiegand.h~|wiegand.c~|telegram.h~|rfid-manchester-decoder-unbuffered.c~|rfid-manchester-decoder-unbuffered|rfid-manchester-decoder.c~|rfid-manchester-decoder|rfid.h~|rfid.c~|newkey.pl|Makefile|leds.h~|leds.c~|ip_config.h~|ip_arp_udp_tcp.c~|hmm.txt|hest|gdb.conf~|gdb.conf|gah.txt|em4100_protocol.html|door-ctrl.obj|door-ctrl.hex|door.h~|door.c~|crc32.h~|crc32.c~|config.h~|config.c~|captured-timings.txt~|captured-timings.txt|atmelasm2gnuasm~|atmelasm2gnuasm|aes-128.cof|aes-128.asm~|aes-128.a|1|aes-128.asm" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="test/rfid-manchester-decoder-unbuffered.c|test/rfid-manchester-decoder-buffered.c|rfid-manchester-decoder-buffered.c|rijndaelfantastic.asm|rfid-manchester-decoder-unbuffered.c|wiegand.h~|wiegand.c~|telegram.h~|rfid-manchester-decoder-unbuffered.c~|rfid-manchester-decoder-unbuffered|rfid-manchester-decoder.c~|rfid-manchester-decoder|rfid.h~|rfid.c~|newkey.pl|Makefile|leds.h~|leds.c~|ip_config.h~|ip_arp_udp_tcp.c~|hmm.txt|hest|gdb.conf~|gdb.conf|gah.txt|em4100_protocol.html|door-ctrl.obj|door-ctrl.hex|door.h~|door.c~|crc32.h~|crc32.c~|config.h~|config.c~|captured-timings.txt~|captured-timings.txt|atmelasm2gnuasm~|atmelasm2gnuasm|aes-128.cof|aes-128.asm~|aes-128.a|1|aes-128.asm" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>

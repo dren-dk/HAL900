@@ -53,6 +53,7 @@ my %PORT = (
 
 my $code;
 my %used;
+my $hasWiegand = 0;
 
 sub claim {
 	my $user = shift;
@@ -84,12 +85,14 @@ for my $k (sort keys %cfg) {
 		claim("$k on $v", $PORT{$v}{1}, $PORT{$v}{2}, $PORT{$v}{3}, $PORT{$v}{6}, $PORT{$v}{g}, $PORT{$v}{o});
 		die "Invalid wiegand rfid port" unless $v =~ /^(1|2|3|no)$/;
 
-		$code .= "#define WIEGAND_RFID $v\n" unless $v eq 'no';	
+		$code .= "#define WIEGAND_RFID $v\n" unless $v eq 'no';
+		$hasWiegand = 1;	
 		
 	} elsif ($k eq 'wiegand.kbd') {
 		claim("$k on $v", $PORT{$v}{1}, $PORT{$v}{2}, $PORT{$v}{3}, $PORT{$v}{6}, $PORT{$v}{g}, $PORT{$v}{o});
 		die "Invalid wiegand keyboard port" unless $v =~ /^(1|2|3)$/;
 		$code .= "#define WIEGAND_KBD $v\n" unless $v eq 'no';
+		$hasWiegand = 1;	
 		
 	} elsif ($k eq 'rs485.id') {
 		die "Invalid rs485 id" unless $v =~ /^\d+$/ and $v >= 0 and $v <= 255;
@@ -109,9 +112,9 @@ for my $k (sort keys %cfg) {
 		my $mac = join(',', 47, 47, @ip);
 
 		$code .= "#define USE_ETHERNET\n";
-		$code .= "const unsigned char ETHERNET_IP[4]  = {$ip};\n";
-		$code .= "const unsigned char ETHERNET_MAC[6] = {$mac};\n";
-		$code .= "const unsigned int UDP_PORT   = $port;\n";
+		$code .= "#define ETHERNET_IP {$ip}\n";
+		$code .= "#define ETHERNET_MAC {$mac}\n";
+		$code .= "#define UDP_PORT $port\n";
 				
 	} elsif ($k eq 'ethernet.port') {
 		# Ignore.
@@ -121,6 +124,9 @@ for my $k (sort keys %cfg) {
 	}
 	print "\n";
 }
+
+
+$code .= "#define HAS_WIEGAND\n" if $hasWiegand;
 
 open H, ">$Bin/nodeconfig.h" or die "Failed to write $Bin/nodeconfig.h: $!";
 print H qq'

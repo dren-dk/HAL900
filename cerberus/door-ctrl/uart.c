@@ -39,6 +39,8 @@
  */
 void uart_init(void)
 {
+  DDRD |= _BV(PD3); // Serial TXD
+
 #if F_CPU < 2000000UL && defined(U2X)
   UCSRA = _BV(U2X);             /* improve baud rate error by using 2x clk */
   UBRRL = (F_CPU / (8UL * UART_BAUD)) - 1;

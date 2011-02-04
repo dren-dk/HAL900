@@ -417,8 +417,8 @@ void handleTick() {
   }
 }
 
-const uint8_t MYMAC[6] = {0x42,0x42, 10,37,37,NODE};
-const uint8_t MYIP[4]  =            {10,37,37,NODE};
+const uint8_t MYMAC[6] = ETHERNET_MAC;
+const uint8_t MYIP[4]  = ETHERNET_IP;
 
 
 /**********************************************************************************************/
@@ -426,17 +426,18 @@ const uint8_t MYIP[4]  =            {10,37,37,NODE};
 int main(void) {
   wdt_enable(WDTO_4S);
 
-  DDRD |= _BV(PD3); // Serial TXD
   uart_init();
   FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
   stdout = stdin = &uart_str;
   fprintf(stdout, "Power up! IP: %u.%u.%u.%u\n",MYIP[0],MYIP[1],MYIP[2],MYIP[3]);
 
+  // init485()
+  /*
   DDRD |= _BV(PD1); // RS485 TXD
   DDRD |= _BV(PD7); // RS485 TX Enable.
   DDRC |= _BV(PC2); // RS485 RX LED
+*/
 
-  DDRB |= _BV(PB1); // RFID carrier
 
   DDRC |= _BV(PC6) | _BV(PC7); // Relays
 
@@ -448,7 +449,7 @@ int main(void) {
   enc28j60PhyWrite(PHLCON,0x476);
   init_ip_arp_udp_tcp(MYMAC, MYIP, 0);
 
-  initWiegand();  
+  initWiegand();
   rfidSetup();
   initLEDs();
   logPowerUp();
@@ -465,15 +466,15 @@ int main(void) {
       unsigned char isIP = eth_type_is_ip_and_my_ip(buf,plen);
 
       if (isIP) {
-	fprintf(stdout, "Handling IP package of %d bytes IP Proto=%d\n", plen, buf[IP_PROTO_P]);
+      	fprintf(stdout, "Handling IP package of %d bytes IP Proto=%d\n", plen, buf[IP_PROTO_P]);
       } else {
-	fprintf(stdout, "Handling non-IP package of %d bytes\n", plen);
+      	fprintf(stdout, "Handling non-IP package of %d bytes\n", plen);
       }
       
       if (isIP && 
-	  buf[IP_PROTO_P]==IP_PROTO_UDP_V &&
-	  buf[UDP_DST_PORT_H_P]==(UDP_PORT>>8) &&
-	  buf[UDP_DST_PORT_L_P]==(UDP_PORT&0xff)) {
+      		buf[IP_PROTO_P]==IP_PROTO_UDP_V &&
+      		buf[UDP_DST_PORT_H_P]==(UDP_PORT>>8) &&
+      		buf[UDP_DST_PORT_L_P]==(UDP_PORT&0xff)) {
 	/*
 	for (int i = 0; i<plen; i++) {
 	  if (!(i & 0x0f)) {
@@ -484,12 +485,12 @@ int main(void) {
 	fprintf(stdout, "\n");
 	*/
 	
-	unsigned char *payload = buf + UDP_DATA_P;
-	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
+      	unsigned char *payload = buf + UDP_DATA_P;
+      	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
 
-	if (payloadlen == 16) {
-	  handleTelegram(buf, payload);
-	}			
+      	if (payloadlen == 16) {
+      		handleTelegram(buf, payload);
+      	}
       }
     }
         
@@ -519,9 +520,11 @@ int main(void) {
     handleTick();
     
     _delay_ms(10);
-    
+    /*
     greenKBDLED((loop>>5) & 0x1);
     greenRFIDLED((loop>>5) & 0x2);    
+     */
+
     /*
     beepKBD( ((loop>>5) & 0x18) == 0x18);
     beepRFID(((loop>>5) & 0x28) == 0x28);

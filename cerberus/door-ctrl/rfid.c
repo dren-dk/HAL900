@@ -54,7 +54,7 @@ void resetRfidState() {
 void addEdge(char edge) {
 
   if (headerLength == 0) {
-    if (edge < -1) {
+  	if (edge < -1) {
       headerLength = 1;
     }
 
@@ -71,38 +71,38 @@ void addEdge(char edge) {
     if (edge > 1) {
       
       if (halfBit) {
-	resetRfidState();
+    	  resetRfidState();
 
       } else {
-	pushZero();
-	halfBit = 0;
+    	  pushZero();
+    	  halfBit = 0;
       }
 
     } else if (edge < -1) {
 
       if (halfBit) {
-	resetRfidState();
+    	  resetRfidState();
 	
       } else {
-	pushOne();
-	halfBit = 0;
+    	  pushOne();
+    	  halfBit = 0;
       }
 
     } else if (edge > 0) {
 
       if (halfBit) {
-	halfBit = 0;
-	pushZero();
+    	  halfBit = 0;
+    	  pushZero();
       } else {
-	halfBit = edge;
+    	  halfBit = edge;
       }
 
     } else {
       if (halfBit) {
-	halfBit = 0;
-	pushOne();
+    	  halfBit = 0;
+    	  pushOne();
       } else {
-	halfBit = edge;
+    	  halfBit = edge;
       }
     }
   }
@@ -115,19 +115,19 @@ void addEdge(char edge) {
     {
       char bit = 0; // row*5+col;
       for (unsigned char row=0;row<11;row++) {
-	char rowParity = 0;
-	//	PORTC |= _BV(PC2);
-	for (unsigned char col=0;col<5;col++) {
-	  if (getBit(bit++)) {
-	    rowParity ^= 1;
-	    colParity ^= 16>>col;
-	  }
-	}
+      	char rowParity = 0;
+      	//	PORTC |= _BV(PC2);
+      	for (unsigned char col=0;col<5;col++) {
+      		if (getBit(bit++)) {
+      			rowParity ^= 1;
+      			colParity ^= 16>>col;
+      		}
+      	}
 	
-	if (row < 10 && rowParity) {
-	  resetRfidState();
-	  return;
-	}
+      	if (row < 10 && rowParity) {
+      		resetRfidState();
+      		return;
+      	}
       }    
     }
 
@@ -145,10 +145,10 @@ void addEdge(char edge) {
     char bit = 10;
     for (unsigned char row=2;row<10;row++) {
       for (unsigned char col=0;col<4;col++) {
-	output <<= 1;
-	if (getBit(bit++)) {
-	  output |= 1;
-	}
+    	  output <<= 1;
+    	  if (getBit(bit++)) {
+    		  output |= 1;
+    	  }
       }
       bit++; // Skip row parity.
     }
@@ -173,7 +173,7 @@ void addEdge(char edge) {
 
 
 void rfidSetup() {
-  // Set up timer 0: The 125 kHz carrierwave output on OC0A 
+  // Set up timer 0: The 125 kHz carrier wave output on OC0A
   DDRB  |= _BV(PB3);              // OC0A pin as output.
 
   TCCR0A = _BV(WGM01) | _BV(COM0A0); // Count to OCR0A, then reset and toggle OC0A
@@ -198,14 +198,15 @@ void rfidSetup() {
 // This interrupt is fired on either rising or falling edge of the ICP1 input
 // The value of the TCNT1 register at the time of the edge is captured in the ICR1 register.
 ISR(TIMER1_CAPT_vect) {
-  TCCR1B = 0; // Stop timer while we work.
+	TCCR1B = 0; // Stop timer while we work.
   TCNT1 = 0;  // Reset counter to 0
 
   if (ICR1>VERY_LONG_TIME) { // Loong pause with no data => reset buffer.
     resetRfidState();
   } 
- 
+
   if (trigger) {
+
     if (ICR1 >= LONG_TIME) {
       addEdge(2);
     } else if(ICR1 >= SHORT_TIME) {
@@ -215,6 +216,7 @@ ISR(TIMER1_CAPT_vect) {
     trigger=0;
     
   } else {
+
     if (ICR1 >= LONG_TIME) {
       addEdge(-2);
     } else if(ICR1 >= SHORT_TIME) {

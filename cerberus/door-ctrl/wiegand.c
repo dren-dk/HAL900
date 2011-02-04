@@ -1,6 +1,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include "wiegand.h"
+#include "defines.h"
 
 /*
 Pinout:
@@ -24,7 +25,23 @@ PA5 = PCINT5 RFID D0
 PA6 = PCINT6
 PA7 = PCINT7
 
+
 */
+
+#ifdef WIEGAND_KBD
+
+#if (WIEGAND_KBD == 1)
+
+#elif (WIEGAND_KBD == 2)
+
+#elif (WIEGAND_KBD == 3)
+
+#endif
+
+#endif
+
+
+
 
 volatile unsigned char state;
 volatile unsigned long rfidFrame;
@@ -40,6 +57,7 @@ volatile unsigned char kbdReady;
 volatile unsigned char timeout;
 
 void initWiegand() {
+#ifdef HAS_WIEGAND
   timeout = 0;
 
   // Enable pin change interrupt for the 4 wiegand inputs:
@@ -49,38 +67,47 @@ void initWiegand() {
   DDRA  |= _BV(PA2) | _BV(PA3) | _BV(PA6) | _BV(PA7);
   PORTA |= _BV(PA2) | _BV(PA3) | _BV(PA6) | _BV(PA7);
   sei();
+#endif
 }
 
 void greenRFIDLED(char on) {
+#ifdef WIEGAND_RFID
   if (!on) {
     PORTA |=  _BV(PA7); 
   } else {
     PORTA &=~ _BV(PA7); 
   }
+#endif
 }
 
 void beepRFID(char on) {
+#ifdef WIEGAND_RFID
   if (!on) {
     PORTA |=  _BV(PA6); 
   } else {
     PORTA &=~ _BV(PA6); 
   }
+#endif
 }
 
 void beepKBD(char on) {
+#ifdef WIEGAND_KBD
   if (!on) {
     PORTA |=  _BV(PA2); 
   } else {
     PORTA &=~ _BV(PA2); 
   }
+#endif
 }
 
 void greenKBDLED(char on) {
+#ifdef WIEGAND_KBD
   if (!on) {
     PORTA |=  _BV(PA3); 
   } else {
     PORTA &=~ _BV(PA3); 
   }
+#endif
 }
 
 ISR(PCINT0_vect) {

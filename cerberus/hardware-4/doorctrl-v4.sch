@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2011-01-23T22:09:23 CET
+EESchema Schematic File Version 2  date 2011-02-04T23:57:59 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -47,7 +47,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 6
 Title ""
-Date "23 jan 2011"
+Date "4 feb 2011"
 Rev ""
 Comp ""
 Comment1 ""
@@ -548,7 +548,7 @@ PD5
 Text GLabel 5925 2650 0    60   Input ~ 0
 PD6
 Text GLabel 5925 2500 0    60   Input ~ 0
-PB1
+PB3
 Text Notes 4475 4200 0    60   ~ 0
 Serial - TXD
 Text Notes 4475 4100 0    60   ~ 0

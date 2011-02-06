@@ -1,0 +1,138 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use HTML::Entities;
+use Email::Valid;
+use Digest::SHA qw(sha1_hex);
+use utf8;
+use DateTime;
+
+use lib "$Bin/../pm";
+
+use HAL;
+use HAL::DB;
+use HAL::Util;
+use HAL::Email;
+
+my $db = new HAL::DB;
+
+my $now = DateTime->now;
+my ($year,$month,$day) = ($now->year, $now->month, $now->day);
+my $duesSoon = $day < 3;
+my $lastDay = DateTime->last_day_of_month(year=>$year, month=>$month)->day;
+my $daysLeft = $lastDay-$day+2;
+
+my $SIG = "\n-- \nMed venlig hilsen HAL-900, OSAAs elektronhjerne.\n";
+
+my $mr = $db->sql("select m.id, m.dooraccess, monthlyFee, t.DoorAccess, membertype_id, email, realname, userName 
+from member m inner join membertype t on (m.membertype_id=t.id)
+where lastNagMail is null or lastNagMail + interval '5 days' < now()
+order by m.id")
+    or die "Urgh";
+while (my ($id, $hasAccess, $fee, $getsAccess, $membertype_id, $email, $realname, $userName) = $mr->fetchrow_array) {
+
+    my ($firstname) = split /\s+/, $realname;
+
+    my ($pbal, $account_id) = $db->getAccountTypeBalance($id, 2);
+    $pbal ||= 0;
+    my $bal = -$pbal;
+
+    if ($account_id) { 
+
+	if ($bal < 0) { # Overdraft!
+	    $db->sql("update member set lastNagMail=now() where id=?", $id);
+
+	    if ($daysLeft > 15) {
+		my $email = sendmail('Open Space Aarhus <osaa@hal.osaa.dk>', 
+				     #"$realname <dren.dk\@gmail.com>",
+				     "$realname <$email>",
+				     "Advarsel om overtræk på din OSAA konto, $firstname",
+"Hej, $firstname, du får denne mail fordi saldoen på din konto hos OSAA er gået i minus.
+
+Lige nu står der $bal kr på din konto, vi beder dig indbetale mindst $pbal kr så hurtigt
+som muligt, se denne side på HAL for oplysninger om betaling: https://hal.osaa.dk/hal/account/
+
+OSAAs økonomi er alene baseret på medlemskontingentet, så vi håber på din fortsatte
+støtte, men skulle du ikke længere ønske at være betalende medlem, beder vi dig logge ind
+i HAL og skifte din medlemstype til gratis-medlem: https://hal.osaa.dk/hal/account/type samt
+udligne ovetrækket ved at indbetale $pbal kr.
+
+$SIG
+"
+		    );    
+	    } else {
+		my $email = sendmail('Open Space Aarhus <osaa@hal.osaa.dk>', 
+				     #"$realname <dren.dk\@gmail.com>",
+				     "$realname <$email>",
+				     "Advarsel om overtræk på din OSAA konto, $firstname",
+"Hej, $firstname, du får denne mail fordi saldoen på din konto hos OSAA er gået i minus.
+
+Lige nu står der $bal kr på din konto, vi beder dig indbetale mindst $pbal kr så hurtigt
+som muligt, se denne side på HAL for oplysninger om betaling: https://hal.osaa.dk/hal/account/
+
+Der er nu $daysLeft dage til du mister fordelene som betalende medlem, det betyder blandt
+andet at du mister muligheden for at låse døren til lokalet op.
+
+OSAAs økonomi er alene baseret på medlemskontingentet, så vi håber på din fortsatte
+støtte, men skulle du ikke længere ønske at være betalende medlem, beder vi dig logge ind
+i HAL og skifte din medlemstype til gratis-medlem: https://hal.osaa.dk/hal/account/type samt
+udligne ovetrækket ved at indbetale $pbal kr.
+
+$SIG
+"
+		    );    
+	    }
+	
+	} elsif ($bal < $fee and $duesSoon) { # Not enough funds, will go into overdraft.
+	    $db->sql("update member set lastNagMail=now() where id=?", $id);
+
+	    my $email = sendmail('Open Space Aarhus <osaa@hal.osaa.dk>', 
+				 #"$realname <dren.dk\@gmail.com>",
+				 "$realname <$email>",
+				 "Advarsel om lav saldo på din OSAA konto, $firstname",
+"Hej, $firstname, du får denne mail fordi saldoen på din konto hos OSAA er lavere end
+kontingentet på $fee kr som trækkes snart.
+
+Lige nu står der $bal kr på din konto.
+
+Se denne side på HAL for oplysninger om betaling: https://hal.osaa.dk/hal/account/
+
+OSAAs økonomi er alene baseret på medlemskontingentet, så vi håber på din fortsatte
+støtte, men skulle du ikke længere ønske at være betalende medlem, beder vi dig logge ind
+i HAL og skifte din medlemstype til gratis-medlem: https://hal.osaa.dk/hal/account/type
+
+$SIG
+"
+		);    	    
+	}	
+
+    } elsif ($fee > 0) { # Never-paying (aka. new) member.
+	$db->sql("update member set lastNagMail=now() where id=?", $id);
+
+	my $email = sendmail('Open Space Aarhus <osaa@hal.osaa.dk>', 
+			     #"$realname <dren.dk\@gmail.com>",
+			     "$realname <$email>",
+			     "Velkommen som betalende medlem af Open Space Aarhus, $firstname",
+"Hej, $firstname, du får denne mail fordi du har registreret dig som betalende medlem af OSAA.
+OSAAs økonomi er alene baseret på kontingenter, så vi sætter stor pris på din støtte.
+
+Så snart din betaling er registreret vil du få alle fordelene, men vi vil først trække
+kontingentet fra din konto i starten af næste måned, så hvis du betaler nu får du resten af
+måneden gratis.
+
+Se denne side på HAL for oplysninger om betaling: https://hal.osaa.dk/hal/account/
+
+Hvis du har valgt betalende medlem ved en fejl, beder vi dig logge ind i HAL og skifte din
+medlemstype til gratis-medlem: https://hal.osaa.dk/hal/account/type
+
+$SIG
+"
+	);    
+    }
+}
+$mr->finish;
+
+$db->dbh->commit;
+
+

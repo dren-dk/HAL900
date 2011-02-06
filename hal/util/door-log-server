@@ -1,0 +1,74 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin $Script);
+use lib "$Bin/../pm";
+use HAL::DoorCtrl;
+use Data::Dumper;
+use IO::Socket;
+use POSIX;
+
+my $sock = IO::Socket::INET->new(LocalPort => 4747, Proto => 'udp')
+    or die "socket: $@";
+
+print "Awaiting UDP messages on port 4747\n";
+while (1) {
+    my $emsg;
+    $sock->recv($emsg, 100);
+
+    my ($port, $ipaddr) = sockaddr_in($sock->peername);
+    $ipaddr = inet_ntoa($ipaddr);
+    my ($id) = $ipaddr =~ /(\d+)$/;
+    my @msg = decryptById($id, $emsg);
+
+    if (@msg == 1) {
+	print "Ignoring message from $ipaddr (id:$id): $msg[0]\n";
+	next;
+    }
+
+    my ($type, $hash) = unpack('CL', $msg[12]);
+    my $key = $hash & 0xff;
+    $type = chr($type);
+    my $telegramType = chr($msg[0]);
+    my $seq = $msg[1];
+
+    if ($telegramType ne 'L') {
+	print "Ignoring message from $ipaddr: Because type is not L: $telegramType $type $seq\n";
+	next;
+    }
+    
+    my $msg = '';
+    if ($type eq 'P') {
+	$msg = "Power up";
+	
+    } elsif ($type eq 'U') {
+	$msg = "Unlock hash=$hash";
+	
+    } elsif ($type eq 'R') {
+	$msg = "Scanned RFID=$hash";
+	
+    } elsif ($type eq 'K') {
+	$msg = "Key pressed=$key";
+	
+    } elsif ($type eq 'S') {
+	$msg = "Sensor state=$key";
+	
+    } elsif ($type eq 'D') {
+	$msg = "Deny";
+
+    } elsif ($type eq 'E') {
+	$msg = "Exit";
+
+    } elsif ($type eq 'L') {
+	$msg = "Locked";
+
+    } else {
+	$msg = "Unknown log type: $type";
+    }   
+
+    print join("\t", strftime("%Y-%m-%d %H:%M:%S", localtime),
+	       $id,
+	       $seq,
+	       $msg);
+    print "\n";
+} 

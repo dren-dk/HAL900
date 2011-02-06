@@ -1,0 +1,43 @@
+PCBNEW-LibDoc----V1  mer 12 ago 2009 00:26:41 CEST
+#
+$MODULE melf
+Li melf
+Cd Melf
+$EndMODULE
+#
+$MODULE micromelf
+Li micromelf
+Cd Micromelf
+$EndMODULE
+#
+$MODULE sod80c
+Li sod80c
+Cd SOD80C
+$EndMODULE
+#
+$MODULE sod87
+Li sod87
+Cd SOD87
+$EndMODULE
+#
+$MODULE DO214AC
+Li do214ac
+Cd DO214AC
+$EndMODULE
+#
+$MODULE DO219AB
+Li do219ab
+Cd DO219AB
+$EndMODULE
+#
+$MODULE SOD323
+Li sod323
+Cd SOD323
+$EndMODULE
+#
+$MODULE SOD523
+Li sod523
+Cd SOD523
+$EndMODULE
+#
+$EndLIBDOC

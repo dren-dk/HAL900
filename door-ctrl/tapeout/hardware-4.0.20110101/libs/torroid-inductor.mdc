@@ -1,0 +1,9 @@
+PCBNEW-LibDoc----V1  2010-12-26T12:52:24 CET
+#
+$MODULE torroid
+Li torroid
+Cd INDUCTOR
+Kw INDUCTOR
+$EndMODULE
+#
+$EndLIBDOC

@@ -1,0 +1,10 @@
+
+
+gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=doorctrl-v4.pdf -dBATCH \
+  doorctrl-v4.ps \
+  doorctrl-v4-doorctrl-v4-net.ps \
+  doorctrl-v4-doorctrl-rs485.ps \
+  doorctrl-v4-doorctrl-v4-gpio.ps \
+  doorctrl-v4-doorctrl-v4-rfid.ps \
+  doorctrl-v4-doorctrl-v4-psu.ps
+

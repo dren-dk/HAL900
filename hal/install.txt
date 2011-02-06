@@ -1,0 +1,41 @@
+
+
+
+Run: 
+sudo apt-get install libemail-valid-perl libapache2-request-perl libxml-writer-perl emacs atop ntp subversion postfix apache2-mpm-prefork libdbi-perl libdbd-pg-perl libmime-perl postfix libdatetime-perl
+
+
+Link to the config/apache-foo.conf file into /etc/apache2/sites-enabled
+sudo apt-get install libapreq2 
+sudo a2enmod apreq
+
+
+
+sudo apt-get install postgresql postgresql-client-common
+
+Trust local connections:
+Edit /etc/postgresql/8.4/main/pg_hba.conf to say:
+local   all         postgres                          trust
+local   all         all                               trust
+
+Enable auto vacuum: 
+Edit /etc/postgresql/8.4/main/postgresql.conf to say:
+track_counts = on
+autovacuum = on 
+
+
+Create the database:
+ createuser -s -d -U postgres -P hal
+ createdb -U hal hal
+ psql -U hal < create.sql
+
+... Or restore from backup:
+ gpg -o latest.pg -d latest.pg.gpg
+ pg_restore -d hal -U hal -c latest.pg 
+
+
+Add your machine to pm/HAL.pm
+make sure that you get the correct port for postgresql (default 5432)
+
+
+And now setup postfix....

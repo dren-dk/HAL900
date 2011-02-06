@@ -1,0 +1,103 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use utf8;
+use DateTime;
+use FindBin qw($Bin);
+
+use lib "$Bin/../pm";
+
+use HAL;
+use HAL::DB;
+
+my $db = new HAL::DB;
+
+my $now = DateTime->now;
+my ($year,$month) = ($now->year, $now->month);
+my $lastDay = DateTime->last_day_of_month(year=>$year, month=>$month)->day;
+my $transactionName = "Kontingent $year 1/$month-$lastDay/$month";
+
+#* Kontingent-træk: En funktion der kører en gang om måneden der:
+# * Hvis der er et overtræk skifter medlemstype til gratis medlem, opgradering til betalende medlem sker ved indbetaling af 300+150 kr.
+# * Trækker måneds kontingentet fra alle betalende medlemmers konti
+# * Hvis der ikke kom overtræk: tænder for deres dør-bit.
+
+my %skip;
+my $sr = $db->sql("select owner_id ".
+		  "from accounttransaction t inner join account a on (target_account_id=a.id) ".
+		  "where type_id=2 and comment=?",
+		 $transactionName);
+while (my ($id) = $sr->fetchrow_array) {
+    $skip{$id}++;
+}
+$sr->finish;
+
+
+my $mr = $db->sql("select m.id, m.dooraccess, monthlyFee, t.DoorAccess, membertype_id ".
+		  "from member m inner join membertype t on (m.membertype_id=t.id) order by m.id")
+    or die "Urgh";
+
+while (my ($id, $hasAccess, $fee, $getsAccess, $membertype_id) = $mr->fetchrow_array) {
+    if ($hasAccess and !$getsAccess) {
+	$db->sql("update member set dooraccess=false where id=?", $id) 
+	    or die "Failed to lock out user: $id";
+
+	# TODO: Send receipt email in this case.
+	print STDERR "Locked out user $id becasue member type doesn't grant access\n";
+	next;
+    }
+
+    next unless $fee > 0;    # Don't bother those that shouldn't pay.
+    next unless $getsAccess; # Don't bother those that will not pay.
+    next if $skip{$id};      # Don't bother those that have already paid.    
+
+    my ($bal, $account_id) = $db->getAccountTypeBalance($id, 2);
+    $bal ||= 0;
+
+    if (!$account_id) { # never-paying member.
+
+	if ($hasAccess) {
+	    $db->sql("update member set dooraccess=false where id=?", $id) 
+		or die "Failed to lock out user: $id";
+	    
+	    # TODO: Send receipt email in this case.
+	    print STDERR "Locked out user $id because of non-payment\n";
+	}		
+	
+	next;
+    }
+
+    if ($bal > 0) { # Already in overdraft => downgrade to freebie and pull door access.
+	$db->sql("update member set dooraccess=false, membertype_id=2 where id=?", $id) 
+	    or die "Failed to downgrade user: $id";
+	
+	print STDERR "Downgraded $id to non-paying due to over-draft\n";
+	# TODO: Send receipt email in this case
+
+	next;
+    }
+
+    print STDERR "Pulling fee of $fee from $id\n";
+    $db->sql("insert into accounttransaction ".
+	     "(source_account_id, target_account_id, amount, comment) ".
+	     "values (?,?,?,?)",
+	     100000+$membertype_id, $account_id, $fee, $transactionName)
+	or die "Failed to insert transaction";
+
+	
+    if ($fee <= -$bal) { # Funds were available and we didn't go into overdraft.		
+	if (!$hasAccess and $getsAccess) {
+	    $db->sql("update member set dooraccess=true where id=?", $id) 
+		or die "Failed to lock in user: $id";
+	    
+	    # TODO: Send receipt email in this case.
+	    print STDERR "Locked in user $id because member type grants access\n";
+	}
+    } else {
+	print STDERR "User went into overdraft: $id\n";
+    }
+}
+$mr->finish;
+
+#$db->dbh->rollback;
+$db->dbh->commit;

@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use POSIX;
+use FindBin qw($Bin);
+
+my $root = "$Bin/backups";
+
+my $ts = strftime("%A-%H", localtime);
+my $fn = "hal.$ts.pg";
+mkdir "$root";
+mkdir "$root/local";
+my $target = "$root/local/$fn";
+
+system("pg_dump", '--format=c', '--username=hal', 'hal', "--file=$target")
+        and die "Failed to back up $target";
+
+mkdir "$root/remote";
+my $enc = "$root/remote/$fn.gpg";
+
+system("gpg --yes --output $enc -s -e -u HAL900 -r helle\@daimi.au.dk -r markus\@markuspetersen.dk -r ff\@nrvissing.net -r jacob\@rotand.dk $target")
+    and die "Failed to encrypt $target to $enc";
+
+system("rsync -a $root/remote osaa.dk:backups")
+    and die "Failed to sync the $root/remote dir to osaa.dk:backups";
+
+exit 0;

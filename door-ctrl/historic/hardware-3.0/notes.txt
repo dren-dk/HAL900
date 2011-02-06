@@ -1,0 +1,200 @@
+Eagle names:
+r-eu_r0805
+c-euc0805
+
+
+
+
+RJ45 connector:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#toc=19662;item=42-482-66;
+
+Ethernet trafo:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=58-578-83;
+
+SMD 0805 10uF/16V keramik:
+https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#toc=18803;item=65-502-89;
+
+SMD 1210 10uF/35V keramik
+https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#toc=18803;item=65-721-16;
+
+SMD 1206 2.2uF/50V keramik
+https://www.elfa.se/elfa3~dk_da/elfa/init.do?shop=ELFA_DK-DA#item=65-721-20;
+
+Relay:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=37-071-31;
+
+E²PROM:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-786-19;
+
+LDO:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-067-85;
+
+Diode:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=70-186-09;
+
+Terminal block 3 point:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=48-375-14;
+
+Terminal block 2 point:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=48-375-06;
+
+Zener protection diode:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=70-061-33;
+
+0805 LED (red):
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#toc=20266;item=75-102-55;
+
+0805 LED (green):
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#toc=20266;item=75-310-10;
+
+Storage coil for PSU:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=58-113-71;
+
+
+5V voltage regulator:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-286-76;
+
+Quad opamp:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-462-24;
+
+Dual opamp:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=73-301-29;
+
+PNP:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=71-303-54;
+
+NPN:
+https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#item=71-302-97;
+
+SMA shcottky:
+https://www.elfaelektronik.dk/elfa3~dk_en/elfa/init.do?item=70-087-07&toc=18973
+
+Choke:
+https://www.elfaelektronik.dk/elfa3~dk_en/elfa/init.do?item=58-578-19&toc=20326
+
+Current sense 0.22 Ohm:
+https://www.elfaelektronik.dk/elfa3~dk_en/elfa/init.do?item=60-155-49&toc=0
+
+100 uF filter cap:
+https://www.elfaelektronik.dk/elfa3~dk_en/elfa/init.do?item=67-134-40
+
+
+
+Eagle names:
+r-eu_r0805
+c-euc0805
+
+
+
+Wiegand cables:
+
+| Cable        | Signal  |  AVR-pin  |
+| UTP          | Wiegand | KBD | RFID|
++--------------+---------+-----+-----+
+| Blue pair    | +12V    |     |     | 4+5
+| Brown pair   | GND     |     |     | 7+8
+| Orange       | D0      | PC0 | PC2 | 2 (yellow led on low)
+| Orange/white | D1      | PC1 | PC3 | 1 
+| Green        | LED     | PD2 | PD4 | 6 (green led on low)
+| Green/white  | Beeper  |    PD3    | 3
+
+
+Bolt cable:
+
+| UTP          | Signal  | AVR |
++--------------+---------+-----+
+| Blue         | +12V    |     | 4
+| Blue/white   | +12V    |     | 5 
+| Brown        | GND     |     | 7
+| Brown/white  | GND     |     | 8
+| Orange       | Lock    | PD6 | 2
+| Orange/white | Door    | PB0 | 1
+| Green        | Control | PD7 | 6
+| Green/white  | Exit    | PB7 | 3
+
+
+Connections:
+2x Wiegand cable + Bolt cable: 3x RJ45
+
+3x GPIO per RJ45 connector + 1 common alarm => 3x4 + 1 = 10 GPIO
+
+Common: PC3
+KBD port:  PC0, PC1, PD2
+RFID port: PC2, PC3, PD4
+Lock:      PD6, PB0, PD7
+!Exit:     PB7
+
+PB1: Relay/LED 1
+PD5: Relay/LED 2
+
+
+
+
+------------------------------------------------------------------
+
+
+Power:
+
+12V:
+KBD:   80-190
+RFID:  32
+BOLT:  100-1000
+
+Total: 220-1300 mA
+
+3.3V:
+200 mA
+
+3.3W - Peak: 16.25W
+
+-----------------------------------------------------------
+
+Port-0:
+  PB0
+  PB2
+  PA0
+  PA1
+  led1: PD4
+  led2: PD5
+
+Port-1:
+  Coil A / PB1(T1) 
+  Coil B / PD6(ICP)
+  PA4
+  PA5
+  led1: PC6
+  led2: PC7
+
+Port-2:
+  PB3
+  PB4
+  PA2
+  PA3
+  led1: PD7
+  led2: PA7
+
+Relay 1: PD2
+Relay 2: PD3
+
+Ext:
+  GND
+  +3V3
+  PA6
+  PA7
+  PD4
+  PD5
+  PD7
+  coil-a
+
+  GND
+  +12V
+  SDA
+  SCL
+  TXD
+  RXD
+  !RESET
+  coil-b
+  
+
+
+

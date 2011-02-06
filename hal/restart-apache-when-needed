@@ -1,0 +1,35 @@
+#!/usr/bin/perl -w
+use strict;
+use FindBin qw ($Bin);
+
+chdir "$Bin";
+my $lastTime = 0;
+
+sub getTime() {
+    my $newest = 0;
+    for my $f (split /\n/, `find -type f`) {
+	next if $f =~ m!/(config|\.svn|static)/!;
+	next if $f =~ m!/[~#]$/!;
+	next if $f =~ m!/var/!;
+	
+	my $t = (stat $f)[9];
+	print "$f has changed\n" if $lastTime && $t > $lastTime;
+	$newest = $t if $t > $newest;
+    }
+    return $newest;
+}
+
+while (1) {
+    my $t = getTime();
+    
+    if ($t != $lastTime) {
+	print STDERR "\nRestarting apache";
+	$lastTime = $t;
+	system("sudo /etc/init.d/apache2 restart");
+	print STDERR "\nWaiting for changes";
+    } else {
+	print STDERR ".";
+    }
+    
+    sleep 1;
+}

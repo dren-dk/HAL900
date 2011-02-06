@@ -1,0 +1,135 @@
+EESchema-DOCLIB  Version 2.0  Date: 22/8/2008-07:22:11
+#
+$CMP 24LC04
+F I2C_Composants/24LC04.pdf
+$ENDCMP
+#
+$CMP 24LC64
+F I2C_Composants/24LC64.pdf
+$ENDCMP
+#
+$CMP 82B715PN
+F I2C_Composants/P82B715.PDF
+$ENDCMP
+#
+$CMP AD5305
+F I2C_Composants/AD5305_5315_5325.pdf
+$ENDCMP
+#
+$CMP AD5306
+F I2C_Composants/AD5306_5316_5326.pdf
+$ENDCMP
+#
+$CMP AD7476
+F I2C_Composants/AD7476_7477_7478.pdf
+$ENDCMP
+#
+$CMP AD7576
+F I2C_Composants/AD7476_7477_7478.pdf
+$ENDCMP
+#
+$CMP CMP01
+F I2C_Composants/boussole01.pdf
+$ENDCMP
+#
+$CMP CMP03
+F I2C_Composants/boussole01.pdf
+$ENDCMP
+#
+$CMP LM75AD
+F I2C_Composants/LM75.pdf
+$ENDCMP
+#
+$CMP PCA24S08
+F I2C_Composants/PCA24S08_1.pdf
+$ENDCMP
+#
+$CMP PCA8581P
+F I2C_Composants/PCA8581_PCA8581C_3.pdf
+$ENDCMP
+#
+$CMP PCA9564D
+F I2C_Composants/PCA9564_4.pdf
+$ENDCMP
+#
+$CMP PCF85102C-2P/03
+F I2C_Composants/PCF85102C-2T.pdf
+$ENDCMP
+#
+$CMP PCF85103C-2T/00
+F I2C_Composants/PCF85103C-2.pdf
+$ENDCMP
+#
+$CMP PCF85116C-3N
+F I2C_Composants/pcf85116.pdf
+$ENDCMP
+#
+$CMP PCF85116C-3P
+F I2C_Composants/pcf85116.pdf
+$ENDCMP
+#
+$CMP PCF8570P
+F I2C_Composants/PCF8570_4.pdf
+$ENDCMP
+#
+$CMP PCF8573
+F I2C_Composants/PCF8573.pdf
+$ENDCMP
+#
+$CMP PCF8574
+D 8 BitsPort to I2C bus
+K I2C
+F I2C_Composants/pcf8574.pdf
+$ENDCMP
+#
+$CMP PCF8574AP
+F I2C_Composants/pcf8574.pdf
+$ENDCMP
+#
+$CMP PCF8582C-2P/03
+F I2C_Composants/PCF8582.pdf
+$ENDCMP
+#
+$CMP PCF8583P
+F I2C_Composants/pcf8583[1].pdf
+$ENDCMP
+#
+$CMP PCF8584P
+F I2C_Composants/PCF8584.pdf
+$ENDCMP
+#
+$CMP PCF8591
+D ANALOG to DIGITAL Conv. I2C bus
+K I2C
+F I2C_Composants/pcf8591.pdf
+$ENDCMP
+#
+$CMP PCF8593
+F I2C_Composants/PCF8593.pdf
+$ENDCMP
+#
+$CMP PCF8594C-2P/02
+F I2C_Composants/pcf8594.pdf
+$ENDCMP
+#
+$CMP PCF8598C-2P/02
+F I2C_Composants/pcf8598.pdf
+$ENDCMP
+#
+$CMP TDA8424
+F I2C_Composants/TDA8424.pdf
+$ENDCMP
+#
+$CMP TDA8722
+F I2C_Composants/TDA8722_2.pdf
+$ENDCMP
+#
+$CMP TSA5512
+F I2C_Composants/tsa5512_cnv_3.pdf
+$ENDCMP
+#
+$CMP UV916H
+F I2C_Composants/tuner_UV916.pdf
+$ENDCMP
+#
+#End Doc Library

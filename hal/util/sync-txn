@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin $Script);
+use lib "$Bin/../pm";
+use HAL::DoorCtrl;
+use Data::Dumper;
+
+my @txn;
+open T, "$Bin/latest.txn" or die "Failed to open latest.txn: $!";
+while (my $line = <T>) {
+    chomp $line;
+
+    my ($tid, $hash, $op) = split /\t/, $line;
+
+    push @txn, {tid=>$tid, hash=>$hash, op=>$op};
+}
+close T;
+
+
+for my $door (1..2) {
+    my $ds = getDoorState($door);
+    die "Failed to get door state for door $door" unless $ds;
+    my $startSeq = $ds->{sequence};
+    print "Door ctrl $door is at $startSeq\n";
+    $startSeq = 0 if $startSeq == 0xffff;
+
+    for my $t (grep {$_->{tid} > $startSeq} @txn) {
+	if ($t->{op} eq 'a') {
+	    print " Transaction id $t->{tid}: Adding $t->{hash}\n";
+	    my $res = addDoorHash($door, $t->{tid}, $t->{hash});
+	    die "Failed to load transaction: $res" unless $res eq 'ACK';
+	    
+	} elsif ($t->{op} eq 'd') {
+	    print " Transaction id $t->{tid}: Deleting $t->{hash}\n";
+	    my $res = deleteDoorHash($door, $t->{tid}, $t->{hash});
+	    die "Failed to load transaction: $res" unless $res eq 'ACK';
+
+	} else {
+	    die "Invalid op for txn $t->{tid}: $t->{op}";
+	}
+    }
+}
+
+exit 0;

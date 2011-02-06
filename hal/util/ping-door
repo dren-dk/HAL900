@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin $Script);
+use lib "$Bin/../pm";
+use HAL::DoorCtrl;
+
+die "Syntax: $Script <door id>"  unless @ARGV == 1;
+
+my ($id) = @ARGV;
+
+
+my $s = 1;
+while (1) {
+    my $t = pingDoor($id, $s++);
+    if ($t >= 0) {
+	print "Got answer, roundtrip: $t ms\n";
+    } else {
+	print "No answer\n";
+    }
+    sleep 1;
+}

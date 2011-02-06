@@ -1,0 +1,138 @@
+Partlist
+
+Exported from cerberus-h2.sch at 9/1/10 5:37 PM
+
+EAGLE Version 5.10.0 Copyright (c) 1988-2010 CadSoft
+
+Part     Value             Device                 Package      Library                   Sheet
+
+BOLT     RJHSE-5085        RJHSE-5085             RJ45         amp-rj45-tap-up-with-leds 1
+C1       100nF             C-EUC0805              C0805        rcl                       1
+C2       100nF             C-EUC0805              C0805        rcl                       1
+C3       10uF              C-EUC1210              C1210        rcl                       1
+C4       15p               C-EUC0805              C0805        rcl                       1
+C5       15p               C-EUC0805              C0805        rcl                       1
+C6       100nF             C-EUC0805              C0805        rcl                       1
+C7       100nF             C-EUC0805              C0805        rcl                       1
+C8       100nF             C-EUC0805              C0805        rcl                       1
+C9       100nF             C-EUC0805              C0805        rcl                       1
+C10      100nF             C-EUC0805              C0805        rcl                       1
+C11      100nF             C-EUC0805              C0805        rcl                       1
+C12      100nF             C-EUC0805              C0805        rcl                       1
+C13      100nF             C-EUC0805              C0805        rcl                       1
+C14      100nF             C-EUC0805              C0805        rcl                       1
+C15      10uF              C-EUC0805              C0805        rcl                       1
+C16      10uF              C-EUC0805              C0805        rcl                       1
+C17      1200uF/35V        CPOL-EUE5-13           E5-13        rcl                       1
+C18      1000uF/16V        CPOL-EUE5-13           E5-13        rcl                       1
+C19      100nF             C-EUC0805              C0805        rcl                       1
+C20      2.2 uF            C-EUC0805              C0805        rcl                       1
+C21      2.2 nF            C-EUC0805              C0805        rcl                       1
+C22      33nF              C-EUC0805              C0805        rcl                       1
+C23      100nF             C-EUC0805              C0805        rcl                       1
+C24      3n3               C-EUC0805              C0805        rcl                       1
+C25      1nF               C-EUC0805              C0805        rcl                       1
+C26      100nF             C-EUC0805              C0805        rcl                       1
+C27      1nF               C-EUC0805              C0805        rcl                       1
+C28      100nF             C-EUC0805              C0805        rcl                       1
+C29      100nF             C-EUC0805              C0805        rcl                       1
+C30      1nF               C-EUC0805              C0805        rcl                       1
+C31      100nF             C-EUC0805              C0805        rcl                       1
+D1                         DIODE-MINIMELF         MINIMELF     diode                     1
+D2                         DIODE-MINIMELF         MINIMELF     diode                     1
+D3       BAV70             BAV199                 SOT23        diode                     1
+D4       BAV70             BAV199                 SOT23        diode                     1
+D5       BAV70             BAV199                 SOT23        diode                     1
+D6       BAV70             BAV199                 SOT23        diode                     1
+D7       BAV70             BAV199                 SOT23        diode                     1
+D8       BAV70             BAV199                 SOT23        diode                     1
+D9       BAV70             BAV199                 SOT23        diode                     1
+D10      BAV70             BAV199                 SOT23        diode                     1
+D11      BAV70             BAV199                 SOT23        diode                     1
+D12      BAV70             BAV199                 SOT23        diode                     1
+D13      BAV70             BAV199                 SOT23        diode                     1
+D14      3v6               ZENER-DIODESOD80C      SOD80C       diode                     1
+D15                        DIODE-TO220V           TO220ACS     diode                     1
+D16                        DIODE-MINIMELF         MINIMELF     diode                     1
+IC1      ENC28J60SS        ENC28J60SS             SSOP28       microchip-6               1
+IC2      ATmega168         MEGA8-AI               TQFP32-08    atmel                     1
+IC3      24LC64SN          24LC64SN               SO-08        microchip                 1
+IC4      LD117AS33TR       LD117AS33TR            SOT223       v-reg                     1
+IC5      L4960             L4960                  HEPTAWATT    l4960                     1
+IC6      LM358             LM358D                 SO08         linear                    1
+IC7      MC78M05CDTG       LP2950CDT-5.0          DPACK        v-reg                     1
+K1       HF33F/012-ZS3 047 G5SB                   G5SB         relay                     1
+K2       HF33F/012-ZS3 047 G5SB                   G5SB         relay                     1
+KBD      RJHSE-5085        RJHSE-5085             RJ45         amp-rj45-tap-up-with-leds 1
+L1       ferrite bead      L-EU0204V              0204V@1      rcl                       1
+L3       220uH             A26GFC                 A26GFC       inductors                 1
+L4       bead              L-EU0204V              0204V@1      rcl                       1
+LED1                       LEDCHIP-LED0805        CHIP-LED0805 led                       1
+LED2                       LEDCHIP-LED0805        CHIP-LED0805 led                       1
+Q1       25MHz             CRYSTALHC49UP          HC49UP       crystal                   1
+R1       470               R-EU_R0805             R0805        rcl                       1
+R2       470               R-EU_R0805             R0805        rcl                       1
+R3       50R               R-EU_R0805             R0805        rcl                       1
+R4       50R               R-EU_R0805             R0805        rcl                       1
+R5       50R               R-EU_R0805             R0805        rcl                       1
+R6       50R               R-EU_R0805             R0805        rcl                       1
+R7       330R              R-EU_R0805             R0805        rcl                       1
+R8       10k               R-EU_R0805             R0805        rcl                       1
+R9       10k               R-EU_R0805             R0805        rcl                       1
+R10      2k7               R-EU_R0805             R0805        rcl                       1
+R11      18k               R-EU_R0805             R0805        rcl                       1
+R12      4k7               R-EU_R0805             R0805        rcl                       1
+R13      470               R-EU_R0805             R0805        rcl                       1
+R14      4k7               R-EU_R0805             R0805        rcl                       1
+R15      470               R-EU_R0805             R0805        rcl                       1
+R16      1k                R-EU_R0805             R0805        rcl                       1
+R17      1k                R-EU_R0805             R0805        rcl                       1
+R18      1k                R-EU_R0805             R0805        rcl                       1
+R19      1k                R-EU_R0805             R0805        rcl                       1
+R20      1k                R-EU_R0805             R0805        rcl                       1
+R21      1k                R-EU_R0805             R0805        rcl                       1
+R22      1k                R-EU_R0805             R0805        rcl                       1
+R23      1k                R-EU_R0805             R0805        rcl                       1
+R24      1k                R-EU_R0805             R0805        rcl                       1
+R25      1k                R-EU_R0805             R0805        rcl                       1
+R26      1k                R-EU_R0805             R0805        rcl                       1
+R27      1k                R-EU_R0805             R0805        rcl                       1
+R28      1k                R-EU_R0805             R0805        rcl                       1
+R29      1k                R-EU_R0805             R0805        rcl                       1
+R30      1k                R-EU_R0805             R0805        rcl                       1
+R31      1k                R-EU_R0805             R0805        rcl                       1
+R32      1k                R-EU_R0805             R0805        rcl                       1
+R33      4k7               R-EU_R0805             R0805        rcl                       1
+R34      6k2               R-EU_R0805             R0805        rcl                       1
+R35      4k7               R-EU_R0805             R0805        rcl                       1
+R36      15k               R-EU_R0805             R0805        rcl                       1
+R37      4k7               R-EU_R0805             R0805        rcl                       1
+R38      1k                R-EU_R0805             R0805        rcl                       1
+R39      1k                R-EU_R0805             R0805        rcl                       1
+R40      1k                R-EU_R0805             R0805        rcl                       1
+R41      10R               R-EU_R0805             R0805        rcl                       1
+R42      10k               R-EU_R0805             R0805        rcl                       1
+R43      100k              R-EU_R0805             R0805        rcl                       1
+R44      330R              R-EU_R0805             R0805        rcl                       1
+R45      22k               R-EU_R0805             R0805        rcl                       1
+R46      100k              R-EU_R0805             R0805        rcl                       1
+R48      1k                R-EU_R0805             R0805        rcl                       1
+R49      10k               R-EU_R0805             R0805        rcl                       1
+R50      100k              R-EU_R0805             R0805        rcl                       1
+R51      4k7               R-EU_R0805             R0805        rcl                       1
+R52      4k7               R-EU_R0805             R0805        rcl                       1
+R53      10k               R-EU_R0805             R0805        rcl                       1
+RFID     RJHSE-5085        RJHSE-5085             RJ45         amp-rj45-tap-up-with-leds 1
+RJ45     RJHSE-5085        RJHSE-5085             RJ45         amp-rj45-tap-up-with-leds 1
+SV1      ICSP              MA03-2                 MA03-2       con-lstb                  1
+SV2      serial            MA06-2                 MA06-2       con-lstb                  1
+SV3      GPIO              MA06-2                 MA06-2       con-lstb                  1
+T1       BC817             BC817-16-NPN-SOT23-BEC SOT23-BEC    transistor                1
+T2       BC817             BC817-16-NPN-SOT23-BEC SOT23-BEC    transistor                1
+T3       BC807             BC807-16-PNP-SOT23-BEC SOT23-BEC    transistor                1
+T4       BC817             BC817-16-NPN-SOT23-BEC SOT23-BEC    transistor                1
+T5       BC817             BC817-16-NPN-SOT23-BEC SOT23-BEC    transistor                1
+U$1      749010011         749010011              SMD          wurth-ethernet-trafo      1
+X1                         W237-103               W237-103     con-wago-500              1
+X2                         W237-103               W237-103     con-wago-500              1
+X3                         W237-102               W237-102     con-wago-500              1

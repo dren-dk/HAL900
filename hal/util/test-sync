@@ -1,0 +1,66 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin $Script);
+use lib "$Bin/../pm";
+use HAL::DoorCtrl;
+use Data::Dumper;
+
+die "Syntax: $Script <door id>"  unless @ARGV == 1;
+my ($id) = @ARGV;
+
+my $startSeq = getDoorState($id)->{sequence};
+print "Door ctrl $id is at $startSeq\n";
+
+my %txn = (
+    1=>{
+	op=>'a',
+	rfid=>2426005,
+	pin=>4747,
+    },
+    2=>{
+	op=>'a',
+	rfid=>2918155,
+	pin=>4242,
+    },
+    3=>{
+	op=>'d',
+	rfid=>2426005,
+	pin=>4747,
+    },
+    4=>{
+	op=>'d',
+	rfid=>2918155,
+	pin=>4242,
+    },
+    5=>{ # Fleming
+	op=>'a',
+	rfid=>2426005,
+	pin=>4242,
+    },
+    6=>{ # Kasper
+	op=>'a',
+	rfid=>6138865,
+	pin=>1436,
+    },
+);
+
+
+my $newestSeq = 0;
+map {$newestSeq = $_ if $newestSeq < $_} keys %txn;
+
+$startSeq = 0 if $startSeq == 0xffff;
+if ($startSeq < $newestSeq) {
+    for my $seq (grep {$_ >= 1 and $_ > $startSeq} sort keys %txn) {
+	my $t = $txn{$seq};
+	if ($t->{op} eq 'a') {
+	    addDoorKey($id, $seq, $t->{rfid}, $t->{pin});
+	    
+	} elsif ($t->{op} eq 'd') {
+	    deleteDoorKey($id, $seq, $t->{rfid}, $t->{pin});
+
+	} else {
+	    die "Invalid op for txn $seq: $t->{op}";
+	}
+    }
+}

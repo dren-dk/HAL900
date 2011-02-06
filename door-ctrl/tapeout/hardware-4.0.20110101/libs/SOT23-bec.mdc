@@ -1,0 +1,9 @@
+PCBNEW-LibDoc----V1  2010-12-06T22:10:08 CET
+#
+$MODULE SOT23-bec
+Li SOT23-bec
+Cd Module CMS SOT23 Transistor bec
+Kw CMS SOT
+$EndMODULE
+#
+$EndLIBDOC

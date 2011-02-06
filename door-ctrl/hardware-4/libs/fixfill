@@ -1,0 +1,16 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+while (my $line = <STDIN>) {
+    
+    $line =~ s/\s+$//;
+
+    if ($line =~ /^S/) {
+	if ($line =~ /^S(.*)[fF]$/) {
+	    $line = "S$1N\n";
+	}
+    }
+
+    print "$line\n";
+}

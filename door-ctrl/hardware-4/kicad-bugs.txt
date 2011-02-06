@@ -1,0 +1,16 @@
+Printing sucks: https://bugs.launchpad.net/kicad/+bug/691899
+
+Cvpcb corrupts netlist: https://bugs.launchpad.net/kicad/+bug/692740
+
+EESchema doesn't automatically save the netlist on every edit.
+
+EESchema doesn't automatically annotate non-annotated components when exporting netlist.
+
+EESchema prompts for netlist name.
+
+PCBNew doesn't automatically run cvpcb when footprints are missing.
+
+PCBNew doesn't automatically import the netlist when it changes.
+
+There is no way to lock modules (like mounting holes) so they do not get removed when re-reading the netlist, unless the mounting holes are added to the schematic, perhaps specific handling of loose holes would be good?
+

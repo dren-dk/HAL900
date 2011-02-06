@@ -1,0 +1,63 @@
+EESchema-DOCLIB  Version 2.0  Date: 13/4/2009-07:27:00
+#
+$CMP CONN_2
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_2_E
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_2_V
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_3
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_3_E
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_3_V
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_4
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_4_E
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_4_V
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_5
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_5_E
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP CONN_5_V
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+#End Doc Library

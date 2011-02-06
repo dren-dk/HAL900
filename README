@@ -8,3 +8,4 @@ Author: Flemming Frandsen <dren.dk@gmail.com>
 The system consists of two major parts, the web interface (in the hal subdir)
 and the door controller (in the door-ctrl) subdir.
 
+

@@ -3,11 +3,47 @@ use strict;
 use warnings;
 use FindBin qw($Script $Bin);
 use Data::Dumper;
+use File::Path qw(make_path);
 
 die "Syntax: $Script <node>, reads nodes/<node>.config and generates nodeconfig.h" unless @ARGV == 1;
 my ($node) = @ARGV;
 my $cfg = "$Bin/nodes/$node.config";
 die "Invalid node '$node' $cfg not found" unless -f $cfg;
+
+my $keystore = "$ENV{HOME}/.hal/keys";
+make_path $keystore unless -d $keystore;
+my $kf = "$keystore/node-$node.key";
+
+my $aesKey;
+
+if (-f $kf) { 
+	open K, "<$kf" or die "Failed to read $kf: $!";
+	$aesKey = join '', <K>;
+	close K;
+	
+} else {
+	
+	my $k = '';
+	my $sep = '';
+	open R, "</dev/urandom" or die "Fail: $!";
+	for my $i (0..31) {
+	    my $data;
+	    read(R, $data, 1) or die "Couldn't read from /dev/urandom";
+	    my $byte = unpack('C',$data);
+	    $k .= $sep;
+	    $k .= " \n    " if $sep and $i % 8 == 0;
+	    $sep = ', ';
+	    $k .= sprintf("0x%0x", $byte);
+	}
+	close R;
+	$aesKey = $k;
+	
+	open K, ">$kf" or die "Failed to write $kf: $!";
+	print K $aesKey;
+	close K;
+}
+
+$aesKey =~ s/\n/\\\n/g; 
 
 my %cfg;
 open CFG, "<$cfg" or die "Failed to read $cfg: $!";
@@ -85,14 +121,21 @@ for my $k (sort keys %cfg) {
 		claim("$k on $v", $PORT{$v}{1}, $PORT{$v}{2}, $PORT{$v}{3}, $PORT{$v}{6}, $PORT{$v}{g}, $PORT{$v}{o});
 		die "Invalid wiegand rfid port" unless $v =~ /^(1|2|3|no)$/;
 
-		$code .= "#define WIEGAND_RFID $v\n" unless $v eq 'no';
-		$hasWiegand = 1;	
+		if ($v ne 'no') {
+			$code .= "#define WIEGAND_RFID $v\n";
+			$code .= "#define WIEGAND_$v 'R'\n";
+			$hasWiegand = 1;
+		}	
 		
 	} elsif ($k eq 'wiegand.kbd') {
 		claim("$k on $v", $PORT{$v}{1}, $PORT{$v}{2}, $PORT{$v}{3}, $PORT{$v}{6}, $PORT{$v}{g}, $PORT{$v}{o});
 		die "Invalid wiegand keyboard port" unless $v =~ /^(1|2|3)$/;
-		$code .= "#define WIEGAND_KBD $v\n" unless $v eq 'no';
-		$hasWiegand = 1;	
+		
+		if ($v ne 'no') {
+			$code .= "#define WIEGAND_KBD $v\n";
+			$code .= "#define WIEGAND_$v 'K'\n";
+			$hasWiegand = 1;
+		}	
 		
 	} elsif ($k eq 'rs485.id') {
 		die "Invalid rs485 id" unless $v =~ /^\d+$/ and $v >= 0 and $v <= 255;
@@ -143,9 +186,13 @@ print H qq'
 
 $code
 
+// Key read from $kf:
+#define NODE_AES_KEY $aesKey
+
 #endif
 ';
 close H;
 
 print "Generated $Bin/nodeconfig.h for node $node\n";
+
 exit 0;

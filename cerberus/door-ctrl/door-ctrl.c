@@ -27,7 +27,6 @@
 #include "net.h"
 #include "aes256.h"
 #include "crc32.h"
-#include "config.h"
 #include "telegram.h"
 #include "wiegand.h"
 #include "rfid.h"
@@ -38,6 +37,9 @@
 
 // We don't really care about unhandled interrupts.
 EMPTY_INTERRUPT(__vector_default)
+
+const unsigned char AES_KEY[32] = {NODE_AES_KEY};
+
 
 /*
   EEPROM memory map:
@@ -59,7 +61,7 @@ void broadcastLog(struct LogTelegram *lt) {
 
   //  fprintf(stdout, "Log, seq:%d, crc: %lu, type:%c\n", lt->seq, lt->crc32, lt->logType);
   aes256_context ctx; 
-  aes256_init(&ctx, getAESKEY());
+  aes256_init(&ctx, AES_KEY);
   aes256_encrypt_ecb(&ctx, (unsigned char *)lt);
   unsigned char transmitBuffer[UDP_DATA_P+32];
   spam_udp(transmitBuffer, (char *)lt, 16, UDP_PORT, 4747);  
@@ -134,7 +136,7 @@ void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on t
   *((unsigned long *)(telegram+12)) = crc32((unsigned char*)telegram, 12);
   //fprintf(stdout, "Sending reply UDP package, crc is: %lu\n", *((unsigned long *)(telegram+12)));
   aes256_context ctx; 
-  aes256_init(&ctx, getAESKEY());
+  aes256_init(&ctx, AES_KEY);
   aes256_encrypt_ecb(&ctx, (unsigned char *)telegram);
 
   //unsigned char transmitBuffer[UDP_DATA_P+32];
@@ -242,7 +244,7 @@ void handleDeleteKey(unsigned char *request, struct AddDeleteKeyTelegram *payloa
 
 void handleTelegram(unsigned char *request, unsigned char *payload) {  
   aes256_context ctx; 
-  aes256_init(&ctx, getAESKEY());
+  aes256_init(&ctx, AES_KEY);
   aes256_decrypt_ecb(&ctx, payload);  
 
   char *type = (char *)payload;

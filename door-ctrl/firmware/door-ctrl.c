@@ -33,7 +33,7 @@
 #include "door.h"
 
 #include "leds.h"
-
+#include "24c64.h"
 
 // We don't really care about unhandled interrupts.
 EMPTY_INTERRUPT(__vector_default)
@@ -455,6 +455,15 @@ int main(void) {
   rfidSetup();
   initLEDs();
   logPowerUp();
+  eepromInit();
+
+  for (int i=0;i<10;i++) {
+  	eepromWrite(i+1000, i);
+  }
+  for (int i=0;i<30;i++) {
+  	int v = eepromRead(i+1000-10);
+  	fprintf(stdout, "Value %d = %d\n", i, v);
+  }
 
   int loop = 0;
   unsigned char oldSensors = 0;

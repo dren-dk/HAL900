@@ -11,7 +11,8 @@ open T, "$Bin/latest.txn" or die "Failed to open latest.txn: $!";
 while (my $line = <T>) {
     chomp $line;
 
-    my ($tid, $hash, $op) = split /\t/, $line;
+    my ($tid, $hash, $op) = split /\s+/, $line;
+    next unless $tid and $hash and $op;
 
     push @txn, {tid=>$tid, hash=>$hash, op=>$op};
 }

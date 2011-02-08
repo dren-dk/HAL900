@@ -36,7 +36,12 @@ $ct->finish;
 
 
 my %new;
-my $ns = $db->sql("select rfid, pin, id from rfid where pin is not null order by id") or die "Urgh";
+my $ns = $db->sql("
+select rfid, pin, r.id
+from rfid r inner join member m on r.owner_id=m.id
+where m.doorAccess and pin is not null
+order by r.id
+") or die "Urgh";
 while (my ($rfid, $pin, $rfid_id) = $ns->fetchrow_array) {
     my $hash = keyHash($rfid, $pin);
     $new{$hash}++;

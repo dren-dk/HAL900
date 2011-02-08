@@ -5,7 +5,7 @@
 #include <avr/io.h>
 
 void eepromInit() {
-	TWBR = 7; // SCL freq = F_CPU / (16+2*TWBR* 4^TWPS)
+	TWBR = 7_; // SCL freq = F_CPU / (16+2*TWBR* 4^TWPS)
 	TWSR &=~ (_BV(TWPS1) | _BV(TWPS0));
 
 	DDRC |= _BV(PC0) | _BV(PC1);

@@ -82,6 +82,10 @@ For mere information om din konto se: https://hal.osaa.dk/hal/account/
 
 -- 
 Med venlig hilsen HAL-900, OSAAs elektronhjerne.
+
+Open Space Aarhus
+Bryggervej 30
+8240 Risskov
 ';
 
 	sendmail('OSAA <kvittering@hal.osaa.dk>', 

@@ -440,7 +440,6 @@ int main(void) {
   DDRC |= _BV(PC2); // RS485 RX LED
 */
 
-
   DDRC |= _BV(PC6) | _BV(PC7); // Relays
 
   enc28j60Init(MYMAC);
@@ -455,6 +454,8 @@ int main(void) {
   rfidSetup();
   initLEDs();
   logPowerUp();
+
+  /*
   eepromInit();
 
   for (int i=0;i<10;i++) {
@@ -464,6 +465,7 @@ int main(void) {
   	int v = eepromRead(i+1000-10);
   	fprintf(stdout, "Value %d = %d\n", i, v);
   }
+  */
 
   int loop = 0;
   unsigned char oldSensors = 0;

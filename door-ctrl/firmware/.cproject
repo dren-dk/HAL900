@@ -40,7 +40,7 @@
 									<listOptionValue builtIn="false" value="NODE=${NODE}"/>
 								</option>
 								<option id="de.innot.avreclipse.compiler.option.optimize.other.29175446" name="Other Optimization Flags" superClass="de.innot.avreclipse.compiler.option.optimize.other" value="-ffunction-sections -mcall-prologues" valueType="string"/>
-								<option id="de.innot.avreclipse.compiler.option.language.uchar.1372968468" superClass="de.innot.avreclipse.compiler.option.language.uchar" value="false" valueType="boolean"/>
+								<option id="de.innot.avreclipse.compiler.option.language.uchar.1372968468" name="char is unsigned (-funsigned-char)" superClass="de.innot.avreclipse.compiler.option.language.uchar" value="false" valueType="boolean"/>
 								<inputType id="de.innot.avreclipse.compiler.winavr.input.760595166" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.cppcompiler.app.debug.1928240329" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.debug">
@@ -64,7 +64,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="test/rfid-manchester-decoder-unbuffered.c|test/rfid-manchester-decoder-buffered.c|rfid-manchester-decoder-buffered.c|rijndaelfantastic.asm|rfid-manchester-decoder-unbuffered.c|wiegand.h~|wiegand.c~|telegram.h~|rfid-manchester-decoder-unbuffered.c~|rfid-manchester-decoder-unbuffered|rfid-manchester-decoder.c~|rfid-manchester-decoder|rfid.h~|rfid.c~|newkey.pl|Makefile|leds.h~|leds.c~|ip_config.h~|ip_arp_udp_tcp.c~|hmm.txt|hest|gdb.conf~|gdb.conf|gah.txt|em4100_protocol.html|door-ctrl.obj|door-ctrl.hex|door.h~|door.c~|crc32.h~|crc32.c~|config.h~|config.c~|captured-timings.txt~|captured-timings.txt|atmelasm2gnuasm~|atmelasm2gnuasm|aes-128.cof|aes-128.asm~|aes-128.a|1|aes-128.asm" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="test/twitest.c|test/rfid-manchester-decoder-unbuffered.c|test/rfid-manchester-decoder-buffered.c|rfid-manchester-decoder-buffered.c|rijndaelfantastic.asm|rfid-manchester-decoder-unbuffered.c|wiegand.h~|wiegand.c~|telegram.h~|rfid-manchester-decoder-unbuffered.c~|rfid-manchester-decoder-unbuffered|rfid-manchester-decoder.c~|rfid-manchester-decoder|rfid.h~|rfid.c~|newkey.pl|Makefile|leds.h~|leds.c~|ip_config.h~|ip_arp_udp_tcp.c~|hmm.txt|hest|gdb.conf~|gdb.conf|gah.txt|em4100_protocol.html|door-ctrl.obj|door-ctrl.hex|door.h~|door.c~|crc32.h~|crc32.c~|config.h~|config.c~|captured-timings.txt~|captured-timings.txt|atmelasm2gnuasm~|atmelasm2gnuasm|aes-128.cof|aes-128.asm~|aes-128.a|1|aes-128.asm" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

@@ -1,17 +1,15 @@
-
-
-
 Run: 
-sudo apt-get install libemail-valid-perl libapache2-request-perl libxml-writer-perl emacs atop ntp subversion postfix apache2-mpm-prefork libdbi-perl libdbd-pg-perl libmime-perl postfix libdatetime-perl
+sudo apt-get install libemail-valid-perl libapache2-request-perl libxml-writer-perl emacs atop ntp subversion postfix apache2-mpm-prefork libdbi-perl libdbd-pg-perl libmime-perl postfix libdatetime-perl git-core libchart-perl libapreq2 postgresql postgresql-client-common
 
 
 Link to the config/apache-foo.conf file into /etc/apache2/sites-enabled
-sudo apt-get install libapreq2 
 sudo a2enmod apreq
+sudo a2enmod ssl
 
+Copy the front page for the default site to /, so users get redirected
+away from port 80 in a hurry:
+cp static/index.html /var/www
 
-
-sudo apt-get install postgresql postgresql-client-common
 
 Trust local connections:
 Edit /etc/postgresql/8.4/main/pg_hba.conf to say:
@@ -27,6 +25,8 @@ autovacuum = on
 Create the database:
  createuser -s -d -U postgres -P hal
  createdb -U hal hal
+
+... Create new, empty database:
  psql -U hal < create.sql
 
 ... Or restore from backup:
@@ -36,6 +36,7 @@ Create the database:
 
 Add your machine to pm/HAL.pm
 make sure that you get the correct port for postgresql (default 5432)
+
 
 
 And now setup postfix....

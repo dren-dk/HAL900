@@ -1,0 +1,4 @@
+nodeconfig.h
+Debug
+*.hex
+*.obj

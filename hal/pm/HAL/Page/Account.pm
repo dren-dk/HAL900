@@ -8,6 +8,7 @@ use Data::Dumper;
 use HTML::Entities;
 use Email::Valid;
 use Digest::SHA qw(sha1_hex);
+use File::Slurp qw(slurp);
 
 use HAL;
 use HAL::Pages;
@@ -150,14 +151,10 @@ Tlf. $phone
     $html .= "<td></tr></table> <!-- Yes I'm using a table for layout, so sue me! -->";
 
     if ($doorAccess) {
-	$html .= qq'<h2>Rabat hos ELFA</h2>
-<p>Som betalende medlem af OSAA får du rabat på køb hos <a href="https://www.elfa.se/elfa3~dk_en/elfa/init.do?shop=ELFA_DK-EN#page=about/shops.html;">ELFA</a>,
-rabatten består i at du får højeste pricebreak for alle varer, med andre ord får du den højeste mængderabat uanset hvor meget du køber, dette kan være op til
-60% rabat på nogle varer.</p>
-<p>For at gøre brug af rabatten skal du handle i butikken i Århus (Sintrupvej 26) og oplyse at du er medlem af OSAA inden de begynder at oprette ordren,
-dvs. at hvis du sender en mail til dem med en bestilling skal du sørge for at gøre opmærksom på dit OSAA medlemsskab allerede der.</p>
-<p>Det er vigtigt at lade være med at fortælle folk der ikke er betalende medlemmer hvordan man får rabatten, da misbrug af ordningen vil medføre at vi bliver
-nødt til at indføre medlemskort for at lette ELFAs kontrol.</p>';
+	my $mf = HALRoot()."/.hal/paying-member-message.html";
+	if (-f $mf) {
+	    $html .= slurp($mf, binmode => ':utf8');
+	}
     }
     
     if ($monthlyFee > 0) {

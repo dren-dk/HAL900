@@ -38,5 +38,4 @@ Add your machine to pm/HAL.pm
 make sure that you get the correct port for postgresql (default 5432)
 
 
-
 And now setup postfix....

@@ -1,8 +1,8 @@
 #ifndef EE24C64_H
 #define EE24C64_H
 
-void eepromInit();
-char eepromWrite(unsigned int address, unsigned char data);
-int eepromRead(unsigned int address);
+void ee24xx_init();
+int ee24xx_write_bytes(unsigned int eeaddr, int len, unsigned char *buf);
+int ee24xx_read_bytes(unsigned int eeaddr, int len, unsigned char *buf);
 
 #endif

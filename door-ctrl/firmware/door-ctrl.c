@@ -454,18 +454,7 @@ int main(void) {
   rfidSetup();
   initLEDs();
   logPowerUp();
-
-  /*
-  eepromInit();
-
-  for (int i=0;i<10;i++) {
-  	eepromWrite(i+1000, i);
-  }
-  for (int i=0;i<30;i++) {
-  	int v = eepromRead(i+1000-10);
-  	fprintf(stdout, "Value %d = %d\n", i, v);
-  }
-  */
+  ee24xx_init();
 
   int loop = 0;
   unsigned char oldSensors = 0;

@@ -87,6 +87,7 @@ sub dispatchRequest($) {
     if ($agent =~ /MSIE/) {
 	$r->headers_out->set('X-UA-Compatible', 'chrome=1');
     }
+    $r->headers_out->set('Strict-Transport-Security', 'max-age=15768000') unless testMode();
 
     if (getSessionID) {
 	if (isLoggedIn) {
@@ -100,7 +101,6 @@ sub dispatchRequest($) {
 	}
 
 	$r->headers_out->set("Set-Cookie", new CGI::Cookie(-name=>'SID', -value=>getSessionID, -path=>'/'));
-	$r->headers_out->set('Strict-Transport-Security', 'max-age=15768000') unless testMode();
 
 	if ($r->uri ne '/hal/nocookie') {
 	    l "Redirecting away from uri to get cookie: ".$r->unparsed_uri;

@@ -1,3 +1,4 @@
+Inventory:
 
 datasheets   All datasheets for parts used in the project
 firmware     The firmware that runs on the board
@@ -6,4 +7,56 @@ historic     Old EAGLE and kicad source files
 kicad2elfa   Utility that allows easy mapping from parts in kicad to ELFA SKUs
 server-side  Test software for the PC side.
 tapeout	     Copies of hardware sources that was produced
+
+
+Firmware TODOs:
+
+* Wiegand kbd and rfid
+ * Configurable Wiegand via node config
+
+* RS485 master
+ * Poll all possible slave adresses to find active slaves.
+ * Poll all active slaves in turn and re-transmit via UDP
+ * Transmit UDP datagrams to the indicated slave.
+
+* RS485 slave
+ * Respond to pings from master immediatly
+ * Transmit datagrams to master when polled.
+ * Buffer datagram from master and hand it off to main loop.
+
+
+* Node 1: Outer door
+ * RS485 slave
+ * Wiegand rfid + kbd
+ * Bolt via relay
+ * Door sensor
+
+* Node 2: Inner door
+ * RS485 slave
+ * Wiegand rfid + kbd
+ * Bolt via digital output
+ * Door sensor
+ * Bolt sensor
+ * Exit button
+
+* Node 3: Rolling door
+ * RS485 slave
+ * Wiegand rfid + kbd
+ * Up/Down relay
+ * Manual control of door
+ * Extra UPS control via serial? 
+
+* Node 4: Technical room
+ * RS485 master
+ * Light control via relay
+ * Light toggle switch input 
+  * Fast click: Toggle light
+  * Long press: Turn on for 30 seconds
+ * City power supply monitoring.
+ * UPS power monitoring?
+
+* Node 5: Cashbox
+ * Read coin rejector via I2C + report deposits to server.
+ * Payout via 3 RC servos (5, 10 and 20 kr coins)
+ * Onboard RFID reader
 

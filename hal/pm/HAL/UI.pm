@@ -83,6 +83,11 @@ sub dispatchRequest($) {
 	loadSession($cookies{SID}->value) if $cookies{SID};
     }
 
+    my $agent  = $r->headers_in->{'User-Agent'} || '';
+    if ($agent =~ /MSIE/) {
+	$r->headers_out->set('X-UA-Compatible', 'chrome=1');
+    }
+
     if (getSessionID) {
 	if (isLoggedIn) {
 	    setCurrentUser("id:".getSession->{member_id});
@@ -90,9 +95,12 @@ sub dispatchRequest($) {
 
     } else {
 	newSession();		
-	$r->headers_out->set('P3P', 'CP="CAO ADM OUR IND PHY ONL PUR NAV DEM CNT STA"');
-	$r->headers_out->set('MSIE', 'Sucks the goats balls!');    
+	if ($agent =~ /MSIE/) {
+	    $r->headers_out->set('P3P', 'CP="CAO ADM OUR IND PHY ONL PUR NAV FOAD MSIE DEM CNT STA DIAF"');
+	}
+
 	$r->headers_out->set("Set-Cookie", new CGI::Cookie(-name=>'SID', -value=>getSessionID, -path=>'/'));
+	$r->headers_out->set('Strict-Transport-Security', 'max-age=15768000') unless testMode();
 
 	if ($r->uri ne '/hal/nocookie') {
 	    l "Redirecting away from uri to get cookie: ".$r->unparsed_uri;

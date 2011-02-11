@@ -1,5 +1,5 @@
-#ifndef DEFINES_H
-#define DEFINES_H
+#ifndef DCDEFINES_H
+#define DCDEFINES_H
 
 #if (F_CPU == 10000000)
 
@@ -37,3 +37,4 @@
 #include "nodeconfig.h"
 
 #endif
+

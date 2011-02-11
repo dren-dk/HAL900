@@ -152,7 +152,7 @@ for my $k (sort keys %cfg) {
 		my $port = $cfg{'ethernet.port'} || 4747;		
 		die "Invalid port" unless $port =~ /^\d+$/ and $port >= 1 and $port <= 65535;
 
-		my $mac = join(',', 47, 47, @ip);
+		my $mac = join(',', 0x05, 0xAA, @ip); # We use 05AA as the prefix, because we're OSAA...
 
 		$code .= "#define USE_ETHERNET\n";
 		$code .= "#define ETHERNET_IP {$ip}\n";
@@ -172,8 +172,7 @@ for my $k (sort keys %cfg) {
 $code .= "#define HAS_WIEGAND\n" if $hasWiegand;
 
 open H, ">$Bin/nodeconfig.h" or die "Failed to write $Bin/nodeconfig.h: $!";
-print H qq'
-#ifndef NODECONFIG_H
+print H qq'#ifndef NODECONFIG_H
 #define NODECONFIG_H
 
 /*

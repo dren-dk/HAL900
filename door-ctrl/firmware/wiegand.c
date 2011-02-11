@@ -1,7 +1,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include "wiegand.h"
 #include "defines.h"
+#include "wiegand.h"
 
 /*
 Pinout:
@@ -25,7 +25,6 @@ PA5 = PCINT5 RFID D0
 PA6 = PCINT6
 PA7 = PCINT7
 
-
 */
 
 #ifdef WIEGAND_KBD
@@ -39,8 +38,6 @@ PA7 = PCINT7
 #endif
 
 #endif
-
-
 
 
 volatile unsigned char state;

@@ -34,6 +34,7 @@
 
 #include "leds.h"
 #include "24c64.h"
+#include "relays.h"
 
 // We don't really care about unhandled interrupts.
 EMPTY_INTERRUPT(__vector_default)
@@ -440,8 +441,6 @@ int main(void) {
   DDRC |= _BV(PC2); // RS485 RX LED
 */
 
-  DDRC |= _BV(PC6) | _BV(PC7); // Relays
-
   enc28j60Init(MYMAC);
   enc28j60clkout(2); // change clkout from 6.25MHz to 12.5MHz
   _delay_loop_1(0); // 60us
@@ -455,7 +454,9 @@ int main(void) {
   initLEDs();
   logPowerUp();
   ee24xx_init();
+  initRelays();
 
+  int relayToggle = 0;
   int loop = 0;
   unsigned char oldSensors = 0;
   while(1) {
@@ -517,6 +518,7 @@ int main(void) {
     unsigned long rfid = rfidValue();
     if (rfid) {
       fprintf(stdout, "Got rfid: %ld\n", rfid);
+      setRelays(relayToggle++ >> 2);
     }
 
     handleTick();

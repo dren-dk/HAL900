@@ -11,23 +11,21 @@ tapeout      Copies of hardware sources that was produced
 
 Firmware driver TODOs:
 
-* Wiegand kbd and rfid
- * Configurable Wiegand via node config
+* Crypto
+ * Fix PC side code.
+ * Fix AVR side code.
+ * Need support for rs485 encryption/decryption
 
 * RS485 master
  * Poll all possible slave adresses to find active slaves.
  * Poll all active slaves in turn and re-transmit via UDP
- * Transmit UDP datagrams to the indicated slave.
+ * Transmit UDP datagrams to the indicated RS485 slave.
 
 * RS485 slave
- * Respond to pings from master immediatly
- * Transmit datagrams to master when polled.
+ * Respond to plaintext pings from master immediatly...
+  * ... and tag on any waiting pre-encrypted datagram from the output buffer.
  * Buffer datagram from master and hand it off to main loop.
  
-* Crypto
- * Fix PC side code.
- * Fix AVR side code.
-
 
 Firmware application TODOs:
 
@@ -57,7 +55,7 @@ Firmware application TODOs:
  * Light control via relay
  * Light toggle switch input 
   * Fast click: Toggle light
-  * Long press: Turn on for 30 seconds
+  * Double click: Turn on for 30 seconds
  * City power supply monitoring.
  * UPS power monitoring?
 

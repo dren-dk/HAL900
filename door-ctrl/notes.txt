@@ -6,10 +6,10 @@ hardware-4   The kicad sources for the board
 historic     Old EAGLE and kicad source files
 kicad2elfa   Utility that allows easy mapping from parts in kicad to ELFA SKUs
 server-side  Test software for the PC side.
-tapeout	     Copies of hardware sources that was produced
+tapeout      Copies of hardware sources that was produced
 
 
-Firmware TODOs:
+Firmware driver TODOs:
 
 * Wiegand kbd and rfid
  * Configurable Wiegand via node config
@@ -23,7 +23,13 @@ Firmware TODOs:
  * Respond to pings from master immediatly
  * Transmit datagrams to master when polled.
  * Buffer datagram from master and hand it off to main loop.
+ 
+* Crypto
+ * Fix PC side code.
+ * Fix AVR side code.
 
+
+Firmware application TODOs:
 
 * Node 1: Outer door
  * RS485 slave

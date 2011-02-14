@@ -15,4 +15,6 @@ unsigned long getRfidValue();
 unsigned char isKbdReady();
 unsigned char getKbdValue();
 
+void pollWiegandTimeout();
+
 #endif

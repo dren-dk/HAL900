@@ -45,8 +45,6 @@ const unsigned char AES_KEY[32] = {NODE_AES_KEY};
 /*
   EEPROM memory map:
   0-1: EEPROM_SEQ: Current state sequence number
-  
-  23-1023: EEPROM_KEYS: 4 bytes per key, unused positions set to 0xffffffff
 */
 
 #define EEPROM_SEQ 0
@@ -60,7 +58,7 @@ void broadcastLog(struct LogTelegram *lt) {
 
   lt->crc32 = crc32((unsigned char*)lt, 12);
 
-  //  fprintf(stdout, "Log, seq:%d, crc: %lu, type:%c\n", lt->seq, lt->crc32, lt->logType);
+  fprintf(stdout, "Log, seq:%d, crc: %lu, type:%c\n", lt->seq, lt->crc32, lt->logType);
   aes256_context ctx; 
   aes256_init(&ctx, AES_KEY);
   aes256_encrypt_ecb(&ctx, (unsigned char *)lt);
@@ -226,10 +224,10 @@ void handleDeleteKey(unsigned char *request, struct AddDeleteKeyTelegram *payloa
     for (int i = 0; i < 250; i++) {
       unsigned long v = eeprom_read_dword((uint32_t *)(EEPROM_KEYS + (i << 2)));
       if (v == payload->hash) {
-	eeprom_write_dword((uint32_t *)(EEPROM_KEYS+ (i<<2)), 0xffffffff);
-	eeprom_write_word((uint16_t *)EEPROM_SEQ, payload->seq);
-	reply.result = 1; // ACK
-	break;
+      	eeprom_write_dword((uint32_t *)(EEPROM_KEYS+ (i<<2)), 0xffffffff);
+      	eeprom_write_word((uint16_t *)EEPROM_SEQ, payload->seq);
+      	reply.result = 1; // ACK
+      	break;
       }
     }   
 
@@ -303,11 +301,11 @@ unsigned int idleCount;
 unsigned long currentRfid;
 
 void handleKey(unsigned char key) {
-  logKey(key);
-  fprintf(stdout, "Key: %c\n", key);
+	logKey(key);
+  fprintf(stdout, "Key: %d\n", key);
 
   if (userState == ACTIVE) {
-    idleCount = 0;
+  	idleCount = 0;
 
     if (key == 10) { // *
       // Door bell?
@@ -318,36 +316,36 @@ void handleKey(unsigned char key) {
     } else { // 0..9
 
       if (pinCount > 8) {
-	userState = DENY;
-	logDeny();
+      	userState = DENY;
+      	logDeny();
 
       } else {
-	pinCount++;
-	pin *= 10;	
-	pin += key;
+      	pinCount++;
+      	pin *= 10;
+      	pin += key;
 
-	if (pinCount >= 4) {
-	  unsigned long hash = keyHash(currentRfid, pin);
+      	if (pinCount >= 4) {
+      		unsigned long hash = keyHash(currentRfid, pin);
 	
-	  for (int i=0;i<250;i++) {
-	    unsigned long v = eeprom_read_dword((uint32_t *)(EEPROM_KEYS + (i << 2)));
-	    /*
-	    if (v != 0xffffffff) {
-	      fprintf(stdout, "Comparing with %d = %ld\n", i, v);  	      
-	    }
-	    */
+					for (int i=0;i<250;i++) {
+						unsigned long v = eeprom_read_dword((uint32_t *)(EEPROM_KEYS + (i << 2)));
+						/*
+						if (v != 0xffffffff) {
+							fprintf(stdout, "Comparing with %d = %ld\n", i, v);
+						}
+						*/
 
-	    if (hash == v) {
-	      logUnlock(hash);
+						if (hash == v) {
+							logUnlock(hash);
 
-	      //fprintf(stdout, "Found hit at %d\n", i);  	      
-	      
-	      idleCount = 0;
-	      userState = OPEN;
-	      return;
-	    }
-	  }
-	} 
+							//fprintf(stdout, "Found hit at %d\n", i);
+
+							idleCount = 0;
+							userState = OPEN;
+							return;
+						}
+					}
+				}
       }
     } 
   }
@@ -375,7 +373,7 @@ void handleRFID(unsigned long rfid) {
   currentRfid = rfid; 
   greenRFIDLED(1);
   
-  //  fprintf(stdout, "Got RFID: %ld\n", rfid);  
+  fprintf(stdout, "Got RFID: %ld\n", rfid);
 }
 
 void handleTick() {

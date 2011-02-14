@@ -1,6 +1,8 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include "leds.h"
+#include "wiegand.h"
+#include "defines.h"
 
 volatile unsigned char ledsOn;
 volatile unsigned char plexCount;
@@ -46,6 +48,10 @@ ISR(TIMER2_COMPA_vect) {
   if (plexCount++ > 5) {
     plexCount = 0;
   }
+
+#ifdef HAS_WIEGAND
+  pollWiegandTimeout();
+#endif
 }
 
 void setLED(unsigned char led, unsigned char on) {

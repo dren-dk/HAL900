@@ -87,6 +87,7 @@ my %PORT = (
 	},
 );
 
+my %features;
 my $code;
 my %used;
 my $hasWiegand = 0;
@@ -97,7 +98,8 @@ sub claim {
 	for my $r (@resource) {
 		my $c = $used{$r};
 		die "$user conflicts with $c on $r" if $c;
-		$used{$r} = $user;		
+		$used{$r} = $user;
+		push @{$features{$user}}, $r; 		
 	}	
 }
 
@@ -106,40 +108,44 @@ for my $k (sort keys %cfg) {
 	print "Checking $k=$v...";
 	
 	if ($k eq 'onboard.rfid') {
-		if ($cfg{$k} eq '3') {
-			claim("$k on $v", 'PD6', 'PB3', 'LED4');
+		if ($cfg{$k} eq 'yes') {
+			claim("Onboard RFID on port 3", 'PD6', 'PB3', 'LED4');
 			$code .= "#define ONBOARD_RFID\n";						
 			
 		} elsif ($cfg{$k} eq 'no') {
 			# Ok.
 			
 		} else {
-			die "Invalid port must be either 3 or no";
+			die "Invalid port must be either yes or no";
 		}
 		
 	} elsif ($k eq 'wiegand.rfid') {
-		claim("$k on $v", $PORT{$v}{1}, $PORT{$v}{2}, $PORT{$v}{3}, $PORT{$v}{6}, $PORT{$v}{g}, $PORT{$v}{o});
-		die "Invalid wiegand rfid port" unless $v =~ /^(1|2|3|no)$/;
+		claim("Wiegand RFID on port 1", $PORT{1}{1}, $PORT{1}{2}, $PORT{1}{3}, $PORT{1}{6}, $PORT{1}{g}, $PORT{1}{o});
+		die "Invalid wiegand rfid port" unless $v =~ /^(yes|no)$/;
 
 		if ($v ne 'no') {
-			$code .= "#define WIEGAND_RFID $v\n";
-			$code .= "#define WIEGAND_$v 'R'\n";
+			$code .= "#define WIEGAND_RFID\n";
 			$hasWiegand = 1;
 		}	
 		
 	} elsif ($k eq 'wiegand.kbd') {
-		claim("$k on $v", $PORT{$v}{1}, $PORT{$v}{2}, $PORT{$v}{3}, $PORT{$v}{6}, $PORT{$v}{g}, $PORT{$v}{o});
-		die "Invalid wiegand keyboard port" unless $v =~ /^(1|2|3)$/;
+		claim("Wiegand Keypad on port 2", $PORT{2}{1}, $PORT{2}{2}, $PORT{2}{3}, $PORT{2}{6}, $PORT{2}{g}, $PORT{2}{o});
+		die "Invalid wiegand keyboard port" unless $v =~ /^(yes|no)$/;
 		
 		if ($v ne 'no') {
-			$code .= "#define WIEGAND_KBD $v\n";
-			$code .= "#define WIEGAND_$v 'K'\n";
+			$code .= "#define WIEGAND_KBD\n";
 			$hasWiegand = 1;
 		}	
 		
 	} elsif ($k eq 'rs485.id') {
 		die "Invalid rs485 id" unless $v =~ /^\d+$/ and $v >= 0 and $v <= 255;
 		$code .= "#define RS485_ID $v\n";
+		
+		if ($v) {
+			claim("RS485 node id $k", 'PD0', 'PD1', 'PD7', 'PC2');
+		} else {
+			claim("RS485 master", 'PD0', 'PD1', 'PD7', 'PC2');
+		}
 		
 	} elsif ($k eq 'ethernet.ip') {
 		die "Invalid ip" unless $v =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
@@ -158,6 +164,7 @@ for my $k (sort keys %cfg) {
 		$code .= "#define ETHERNET_IP {$ip}\n";
 		$code .= "#define ETHERNET_MAC {$mac}\n";
 		$code .= "#define UDP_PORT $port\n";
+		claim("ENC28J60", 'PB6', 'PB7', 'PB5', 'PB4');
 				
 	} elsif ($k eq 'ethernet.port') {
 		# Ignore.
@@ -168,8 +175,19 @@ for my $k (sort keys %cfg) {
 	print "\n";
 }
 
-
 $code .= "#define HAS_WIEGAND\n" if $hasWiegand;
+
+$code .= "\n/* Port allocation\n\n";
+for my $f (sort keys %features) {
+	$code .= " $f:\n";			
+	for my $r (sort @{$features{$f}}) {
+		$code .= "   $r\n";		
+	}	
+	$code .= "\n";			
+}
+
+$code .= "*/\n";
+
 
 open H, ">$Bin/nodeconfig.h" or die "Failed to write $Bin/nodeconfig.h: $!";
 print H qq'#ifndef NODECONFIG_H

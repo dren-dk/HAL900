@@ -430,7 +430,8 @@ int main(void) {
   uart_init();
   FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
   stdout = stdin = &uart_str;
-  fprintf(stdout, "Power up! IP: %u.%u.%u.%u\n",MYIP[0],MYIP[1],MYIP[2],MYIP[3]);
+  fprintf(stdout, "Power up! IP: %u.%u.%u.%u  MAC: %u:%u:%u:%u:%u:%u\n",MYIP[0],MYIP[1],MYIP[2],MYIP[3],
+  		MYMAC[0],MYMAC[1],MYMAC[2],MYMAC[3],MYMAC[4],MYMAC[5]);
 
   // init485()
   /*
@@ -440,7 +441,7 @@ int main(void) {
 */
 
   enc28j60Init(MYMAC);
-  enc28j60clkout(2); // change clkout from 6.25MHz to 12.5MHz
+  //enc28j60clkout(2); // change clkout from 6.25MHz to 12.5MHz
   _delay_loop_1(0); // 60us
 
   // 0x476 is PHLCON LEDA=links status, LEDB=receive/transmit
@@ -462,29 +463,13 @@ int main(void) {
 
     uint16_t plen=enc28j60PacketReceive(BUFFER_SIZE, buf);
     buf[BUFFER_SIZE]='\0';
-    unsigned int tcpPacketSize = packetloop_icmp_tcp(buf,plen);
-    if (plen && !tcpPacketSize){ 
-      unsigned char isIP = eth_type_is_ip_and_my_ip(buf,plen);
-
-      if (isIP) {
-      	fprintf(stdout, "Handling IP package of %d bytes IP Proto=%d\n", plen, buf[IP_PROTO_P]);
-      } else {
-      	fprintf(stdout, "Handling non-IP package of %d bytes\n", plen);
-      }
+    if (plen){
+      packetloop_icmp_tcp(buf,plen);
       
-      if (isIP && 
+      if (eth_type_is_ip_and_my_ip(buf,plen) &&
       		buf[IP_PROTO_P]==IP_PROTO_UDP_V &&
       		buf[UDP_DST_PORT_H_P]==(UDP_PORT>>8) &&
       		buf[UDP_DST_PORT_L_P]==(UDP_PORT&0xff)) {
-	/*
-	for (int i = 0; i<plen; i++) {
-	  if (!(i & 0x0f)) {
-	    fprintf(stdout, "\n%4x:",i);
-	  }	
-	  fprintf(stdout, " %02x", buf[i]);
-	}
-	fprintf(stdout, "\n");
-	*/
 	
       	unsigned char *payload = buf + UDP_DATA_P;
       	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;

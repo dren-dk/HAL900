@@ -11,12 +11,10 @@ tapeout      Copies of hardware sources that was produced
 
 Firmware driver TODOs:
 
-* Crypto
- * Fix PC side code.
- * Fix AVR side code.
- * Need support for rs485 encryption/decryption
+* Refactor networking code into separate module.
 
 * RS485 master
+ * Need support for rs485 encryption/decryption
  * Poll all possible slave adresses to find active slaves.
  * Poll all active slaves in turn and re-transmit via UDP
  * Transmit UDP datagrams to the indicated RS485 slave.

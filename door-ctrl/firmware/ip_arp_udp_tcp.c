@@ -21,6 +21,7 @@
 #include <avr/pgmspace.h>
 #include <string.h>
 #include <stdlib.h>
+
 #include "net.h"
 #include "enc28j60.h"
 #include "ip_config.h"
@@ -156,18 +157,15 @@ uint16_t checksum(uint8_t *buf, uint16_t len,uint8_t type){
 // This initializes the web server
 // you must call this function once before you use any of the other functions:
 void init_ip_arp_udp_tcp(const uint8_t *mymac, const uint8_t *myip,uint16_t port){
-        uint8_t i=0;
-        wwwport_h=(port>>8)&0xff;
-        wwwport_l=(port&0xff);
-        while(i<4){
-                ipaddr[i]=myip[i];
-                i++;
-        }
-        i=0;
-        while(i<6){
-                macaddr[i]=mymac[i];
-                i++;
-        }
+	wwwport_h=(port>>8)&0xff;
+	wwwport_l=(port&0xff);
+
+	for (unsigned char i=0;i<4;i++) {
+		ipaddr[i]=myip[i];
+	}
+	for (unsigned char i=0;i<6;i++) {
+		macaddr[i]=mymac[i];
+	}
 }
 
 uint8_t check_ip_message_is_from(uint8_t *buf,uint8_t *ip)
@@ -192,6 +190,7 @@ uint8_t eth_type_is_arp_and_my_ip(uint8_t *buf,uint16_t len){
            buf[ETH_TYPE_L_P] != ETHTYPE_ARP_L_V){
                 return(0);
         }
+
         while(i<4){
                 if(buf[ETH_ARP_DST_IP_P+i] != ipaddr[i]){
                         return(0);
@@ -797,7 +796,7 @@ void send_udp(uint8_t *buf,char *data,uint8_t datalen,uint16_t sport, uint8_t *d
 void spam_udp(uint8_t *buf, char *data, uint8_t datalen, uint16_t sport, uint16_t dport)
 {
 
-  // Boardcast MAC addy (no need for any steenking arp):
+  // Broadcast MAC addy (no need for any steenking arp):
   for (int i=0;i<6;i++) {
     buf[ETH_DST_MAC +i]=0xff;
     buf[ETH_SRC_MAC +i]=macaddr[i];
@@ -1307,6 +1306,7 @@ uint16_t packetloop_icmp_tcp(uint8_t *buf,uint16_t plen)
                 return(0);
 
         }
+
         // check if ip packets are for us:
         if(eth_type_is_ip_and_my_ip(buf,plen)==0){
                 return(0);

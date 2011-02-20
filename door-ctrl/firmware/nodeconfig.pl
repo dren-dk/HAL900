@@ -158,7 +158,7 @@ for my $k (sort keys %cfg) {
 		my $port = $cfg{'ethernet.port'} || 4747;		
 		die "Invalid port" unless $port =~ /^\d+$/ and $port >= 1 and $port <= 65535;
 
-		my $mac = join(',', 0x05, 0xAA, @ip); # We use 05AA as the prefix, because we're OSAA...
+		my $mac = join(',', 0xaa, 0x05, @ip); # We use 05AA as the prefix, because we're OSAA...
 
 		$code .= "#define USE_ETHERNET\n";
 		$code .= "#define ETHERNET_IP {$ip}\n";

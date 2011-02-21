@@ -33,7 +33,7 @@ volatile unsigned char kbdFrame;
 volatile unsigned char rfidBits;
 volatile unsigned char kbdBits;
 
-volatile unsigned long rfidValue;
+volatile unsigned long newRfidValue;
 volatile unsigned char kbdValue;
 volatile unsigned char rfidReady;
 volatile unsigned char kbdReady;
@@ -140,7 +140,7 @@ void pollWiegandTimeout() {
 
 		#ifdef WIEGAND_RFID
     if (rfidBits == 26) {
-      rfidValue = (rfidFrame>>1) & ~((unsigned long)1<<24); 
+      newRfidValue = (rfidFrame>>1) & ~((unsigned long)1<<24); 
       rfidReady = rfidBits;
     }
     rfidBits = 0;
@@ -167,7 +167,7 @@ unsigned char isRfidReady() {
 
 unsigned long getRfidValue() {
   rfidReady = 0;
-  return rfidValue;
+  return newRfidValue;
 }
 
 unsigned char isKbdReady() {

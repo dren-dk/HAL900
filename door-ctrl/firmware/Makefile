@@ -54,9 +54,9 @@ nodeconfig.h::
 %.obj : %.asm
 	avra -fO $< -o $@
 
-door-ctrl.obj : door-ctrl.c uart.c uart.h defines.h net.h ip_config.h ip_arp_udp_tcp.h enc28j60.h ip_arp_udp_tcp.c enc28j60.c aes256.h aes256.c crc32.h crc32.c wiegand.h wiegand.c rfid.c rfid.h leds.h leds.c door.h door.c Makefile nodeconfig.h 24c64.h 24c64.c relays.c relays.h
-	$(CC) $(CFLAGS) -DNODE=$(NODE) uart.c ip_arp_udp_tcp.c enc28j60.c crc32.c wiegand.c door-ctrl.c rfid.c aes256.c leds.c door.c 24c64.c relays.c -o $@
-	avr-size -C $@
+door-ctrl.obj : door-ctrl.c uart.c uart.h defines.h net.h ip_config.h ip_arp_udp_tcp.h enc28j60.h ip_arp_udp_tcp.c enc28j60.c aes256.h aes256.c crc32.h crc32.c wiegand.h wiegand.c rfid.c rfid.h leds.h leds.c door.h door.c Makefile nodeconfig.h 24c64.h 24c64.c relays.c relays.h comms.h comms.c
+	$(CC) $(CFLAGS) -DNODE=$(NODE) uart.c ip_arp_udp_tcp.c enc28j60.c crc32.c wiegand.c door-ctrl.c rfid.c aes256.c leds.c door.c 24c64.c relays.c comms.c -o $@
+	avr-size --mcu=$(PART) -C $@
 
 %.hex : %.obj
 	$(OBJ2HEX) -R .eeprom -O ihex $< $@

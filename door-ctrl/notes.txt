@@ -12,7 +12,11 @@ tapeout      Copies of hardware sources that was produced
 Firmware driver TODOs:
 
 * Refactor networking code into separate module.
-
+ * Poll network handler from the slow loop, like wiegand.
+  
+* Move the keys out to external EEPROM
+ * Encryption? 
+ 
 * RS485 master
  * Need support for rs485 encryption/decryption
  * Poll all possible slave adresses to find active slaves.

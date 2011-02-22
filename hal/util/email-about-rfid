@@ -25,7 +25,7 @@ while (my ($id, $rfid, $pin, $lost, $email, $realname, $memberId) = $rr->fetchro
     $db->sql("update member set lastRFIDMail=now() where id=?", $memberId);
 
     my ($firstname) = split /\s+/, $realname;
-    sendmail('Open Space Aarhus <rfid@hal.osaa.dk>', 
+    sendmail('OSAAs kasserer <kasserer@osaa.dk>', 
 	     #"$realname <dren.dk\@gmail.com>",
 	     "$realname <$email>",
 	     'Tillykke med din nye RFID nøgle til OSAA',

@@ -88,7 +88,7 @@ Bryggervej 30
 8240 Risskov
 ';
 
-	sendmail('OSAA <kvittering@hal.osaa.dk>', 
+	sendmail('OSAAs kasserer <kasserer@osaa.dk>', 
 		 #"$realname <dren.dk\@gmail.com>",
 		 "$realname <$email>",
 		 $transactions > 1 

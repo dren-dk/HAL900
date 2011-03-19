@@ -33,6 +33,7 @@
 #endif
 
 #define UART_BAUD  19200
+#define RS485_BAUD 9600
 
 #include "nodeconfig.h"
 

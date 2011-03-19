@@ -14,3 +14,19 @@ PCBNew doesn't automatically import the netlist when it changes.
 
 There is no way to lock modules (like mounting holes) so they do not get removed when re-reading the netlist, unless the mounting holes are added to the schematic, perhaps specific handling of loose holes would be good?
 
+kicad spams changes into the pro file, resulting in tons of conflicts and worthles changes:
+diff --git a/door-ctrl/hardware-4/doorctrl-v4.pro b/door-ctrl/hardware-4/doorctrl-v4.pro
+index 82d6bfd..35409f5 100644
+--- a/door-ctrl/hardware-4/doorctrl-v4.pro
++++ b/door-ctrl/hardware-4/doorctrl-v4.pro
+@@ -1,4 +1,4 @@
+-update=2011-02-13T15:03:28 CET
++update=2011-03-10T21:58:10 CET
+ last_client=pcbnew
+ [general]
+ version=1
+
+
+Dialog box for deleted stale pid file, WTF? I don't give a shit, if it's stale just do your job in stead of
+giving me the play-by-play!
+

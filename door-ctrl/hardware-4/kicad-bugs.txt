@@ -1,6 +1,8 @@
+Fixed/Won't fix:
 Printing sucks: https://bugs.launchpad.net/kicad/+bug/691899
 
 Cvpcb corrupts netlist: https://bugs.launchpad.net/kicad/+bug/692740
+
 
 EESchema doesn't automatically save the netlist on every edit.
 

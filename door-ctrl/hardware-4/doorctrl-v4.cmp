@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2011-01-23T22:14:54 CET
+Cmp-Mod V01 Created by CvPCB (2010-12-18 BZR 2669)-stable date = 2011-03-21T19:38:40 CET
 
 BeginCmp
 TimeStamp = /4CFAB038;
@@ -421,6 +421,41 @@ IdModule  = diode-MINIMELF;
 EndCmp
 
 BeginCmp
+TimeStamp = /4CFD3054/4D87996B;
+Reference = H1;
+ValeurCmp = MOUNTING;
+IdModule  = 3mm-hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3054/4D879975;
+Reference = H2;
+ValeurCmp = MOUNTING;
+IdModule  = 3mm-hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3054/4D87997E;
+Reference = H3;
+ValeurCmp = MOUNTING;
+IdModule  = 3mm-hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3054/4D879985;
+Reference = H4;
+ValeurCmp = MOUNTING;
+IdModule  = 3mm-hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CFD3054/4D879AD2;
+Reference = H5;
+ValeurCmp = MOUNTING;
+IdModule  = 0;
+EndCmp
+
+BeginCmp
 TimeStamp = /4CF6BD02;
 Reference = IC1;
 ValeurCmp = ATMEGA324P-A;
@@ -669,7 +704,7 @@ BeginCmp
 TimeStamp = /4CFD3054/4D04CE98;
 Reference = R27;
 ValeurCmp = 0.22R;
-IdModule  = R1;
+IdModule  = SM0805;
 EndCmp
 
 BeginCmp
@@ -837,7 +872,7 @@ BeginCmp
 TimeStamp = /4CFD2FB8/4D0BB151;
 Reference = R51;
 ValeurCmp = 0.22R;
-IdModule  = R1;
+IdModule  = SM0805;
 EndCmp
 
 BeginCmp
@@ -899,14 +934,14 @@ EndCmp
 BeginCmp
 TimeStamp = /4D1A01F5;
 Reference = R63;
-ValeurCmp = 1k;
+ValeurCmp = 10k;
 IdModule  = SM0805;
 EndCmp
 
 BeginCmp
 TimeStamp = /4D1A01EA;
 Reference = R64;
-ValeurCmp = 1k;
+ValeurCmp = 10k;
 IdModule  = SM0805;
 EndCmp
 

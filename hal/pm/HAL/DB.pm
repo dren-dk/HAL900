@@ -52,6 +52,7 @@ sub dbh($) {
 				     'hal', 'hal900', {
 					 AutoCommit => $self->{autocommit},
 					 pg_enable_utf8=>1,
+					 autotest=>1,
 				     }) or confess "Unable to connect to the database";
 }
 
@@ -71,7 +72,7 @@ sub sql {
     
     return ($sth, $rv) if wantarray;
     
-    if ($sql =~ /^select/i) {
+    if ($sql =~ /^\s*select/i) {
 	return $sth;
     } else {
 	$sth->finish();

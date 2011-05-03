@@ -36,6 +36,11 @@ sub configureHAL {
 	    test=>1,
 	    db=>'dbi:Pg:dbname=hal;port=5433',
 	},
+	bee=>{
+	    root=>"/home/ff/projects/osaa/HAL900/hal",
+	    test=>1,
+	    db=>'dbi:Pg:dbname=hal;host=localhost;port=5433',
+	},
 	hal=>{
 	    root=>"/home/hal/hal",
 	    test=>0,

@@ -471,10 +471,13 @@ sub transactionsPage {
 
     $html .= qq'<p>';
     if ($owner_id) {
-	$html .= qq'Denne konto er ejet af <a href="/hal/admin/members/$owner_id">$owner</a>';
+	$html .= qq'Denne konto er ejet af <a href="/hal/admin/members/$owner_id">$owner</a> - ';
     } else {
-	$html .= "Denne konto er ejet af foreningen.";
+	$html .= "Denne konto er ejet af foreningen. - ";
     }
+
+    $html .= qq'<a href="/hal/admin/accounts/$type_id/$id/csv">Export as CSV</a>';
+    
     $html .= '</p>';
 
     my @table;
@@ -518,6 +521,62 @@ sub transactionsPage {
     
     return outputAdminPage('transactions', "Transaktioner for $accountName", $html);
 }
+
+sub transactionsExport {
+    my ($r,$q,$p, $bleh_type_id, $account_id) = @_;
+
+    my $ar = db->sql("select account.id, type_id, accountName, owner_id, realname ".
+		     "from account left outer join member on (owner_id=member.id) ".
+		     "where account.id=?", $account_id);		
+    my ($id, $type_id, $accountName, $owner_id, $owner) = $ar->fetchrow_array;
+    $ar->finish;
+    return outputGoto("/hal/admin/accounts/$type_id") unless $id;
+
+    my @table;
+    my $tx = db->sql("select t.id, t.created, source_account_id, sa.accountName, target_account_id, ta.accountName, amount, comment ".
+		     "from accountTransaction t ".
+		     "inner join account sa on (t.source_account_id = sa.id) ".
+		     "inner join account ta on (t.target_account_id = ta.id) ".
+		     "where target_account_id=? or source_account_id=? ".
+		     "order by t.id", $id, $id);
+    my $sum = 0;
+    my $sumIn = 0;
+    my $sumOut = 0;
+    while (my ($tid, $created, $source_id, $source, $target_id, $target, $amount, $comment) = $tx->fetchrow_array) {
+	my $other;
+	my $otherId;
+	if ($source_id == $id) {
+	    $other = $target;
+	    $otherId = $target_id;
+	} else {
+	    $other = $source;
+	    $otherId = $source_id;
+	}
+	my $in = 0;
+	my $out = 0;
+
+	if ($source_id == $id) {
+	    $out = $amount;
+	    $sum -= $amount;
+	    $sumOut += $amount;
+	} else {
+	    $in = $amount;
+	    $sum += $amount;
+	    $sumIn += $amount;
+	}
+	push @table, [$tid, $created, $comment, $other, $otherId, $in, $out, $sum];
+    }
+    $tx->finish;
+
+    my $content = "";
+    for my $line (@table) {
+	$content .= join "\t", @$line;
+	$content .= "\n";
+    }
+    
+    return outputRaw('text/csv', $content, "hal-transactions.$id.csv");
+}
+
 
 sub createAccountPage {
     my ($r,$q,$p, $type_id) = @_;
@@ -884,6 +943,7 @@ BEGIN {
     addHandler(qr'^/hal/admin/consolidate/?$', \&consolidatePage);
     addHandler(qr'^/hal/admin/accounts/?$', \&accountsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)$', \&accountsPage);
+    addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)/csv$', \&transactionsExport);
     addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)$', \&transactionsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)/create$', \&createAccountPage);
     addHandler(qr'^/hal/admin/members/?$', \&membersPage);

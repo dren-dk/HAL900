@@ -143,6 +143,8 @@ sub dispatchRequest($) {
 	} else {
 	    die "invalid output type: $res->{type}";
 	}
+	$r->headers_out->set("Content-disposition" 
+			     => "attachment; filename=$res->{filename}") if $res->{filename};
 	
 	$r->content_type($res->{mime});
 	binmode(STDOUT, ':utf8' );

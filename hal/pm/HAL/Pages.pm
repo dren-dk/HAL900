@@ -92,13 +92,14 @@ sub outputNotFound($$$) {
     };
 }
 
-sub outputRaw($$) {
-    my ($mime, $content) = @_;
+sub outputRaw {
+    my ($mime, $content, $fn) = @_;
     
     return {
 	type=>'raw',
 	mime=>$mime,
 	content=>$content,
+	filename=>$fn,
     };
 }
 

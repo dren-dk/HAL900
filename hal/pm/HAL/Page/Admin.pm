@@ -476,8 +476,7 @@ sub transactionsPage {
 	$html .= "Denne konto er ejet af foreningen. - ";
     }
 
-    $html .= qq'<a href="/hal/admin/accounts/$type_id/$id/csv">Export as CSV</a>';
-    
+    $html .= qq'<a href="/hal/admin/accounts/$type_id/$id/csv">Export as TSV</a>';
     $html .= '</p>';
 
     my @table;
@@ -574,7 +573,7 @@ sub transactionsExport {
 	$content .= "\n";
     }
     
-    return outputRaw('text/csv', $content, "hal-transactions.$id.csv");
+    return outputRaw('text/tab-separated-values', $content, "hal-transactions.$id.tsv");
 }
 
 

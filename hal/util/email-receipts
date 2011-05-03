@@ -19,6 +19,8 @@ use HAL::Email;
 
 my $db = new HAL::DB;
 
+my $FROM = 'HAL på vegne af OSAA <hal@osaa.dk>';
+
 my $mr = $db->sql("select id, email, realname from member") or die "Urgh";
 while (my ($member_id, $email, $realname) = $mr->fetchrow_array) {
     
@@ -88,7 +90,7 @@ Bryggervej 30
 8240 Risskov
 ';
 
-	sendmail('OSAAs kasserer <kasserer@osaa.dk>', 
+	sendmail($FROM, 
 		 #"$realname <dren.dk\@gmail.com>",
 		 "$realname <$email>",
 		 $transactions > 1 

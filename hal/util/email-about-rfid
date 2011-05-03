@@ -14,6 +14,9 @@ use HAL::DB;
 use HAL::Util;
 use HAL::Email;
 
+my $FROM = 'HAL på vegne af OSAA <hal@osaa.dk>';
+
+
 my $db = new HAL::DB;
 
 my $rr = $db->sql("select rfid.id, rfid, pin, lost, email, realname, member.id
@@ -25,7 +28,7 @@ while (my ($id, $rfid, $pin, $lost, $email, $realname, $memberId) = $rr->fetchro
     $db->sql("update member set lastRFIDMail=now() where id=?", $memberId);
 
     my ($firstname) = split /\s+/, $realname;
-    sendmail('OSAAs kasserer <kasserer@osaa.dk>', 
+    sendmail($FROM,
 	     #"$realname <dren.dk\@gmail.com>",
 	     "$realname <$email>",
 	     'Tillykke med din nye RFID nøgle til OSAA',

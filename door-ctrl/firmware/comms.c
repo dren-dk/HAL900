@@ -2,6 +2,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/eeprom.h> 
+#include <stdio.h>
+#include <stdint.h>
 
 #include "ip_arp_udp_tcp.h"
 #include "enc28j60.h"
@@ -15,13 +17,59 @@
 
 #define BUFFER_SIZE 550
 
+#if (USE_ETHERNET)
 const uint8_t MYMAC[6] = ETHERNET_MAC;
 const uint8_t MYIP[4]  = ETHERNET_IP;
+#endif
 
 const unsigned char AES_KEY[32] = {NODE_AES_KEY};
 
 
+int rs485putchar(char c, FILE *stream) {
+  if (c == '\a') {
+      fputs("*ring*\n", stderr);
+      return 0;
+    }
+
+  if (c == '\n') {
+   rs485putchar('\r', stream);
+  }
+  loop_until_bit_is_set(UCSR0A, UDRE0);
+  UDR0 = c;
+
+  return 0;
+}
+
+int rs485getchar(FILE *stream) {
+
+  if (UCSR0A & 1<<RXC0) {
+    if (UCSR0A & _BV(FE0)) {
+      return _FDEV_EOF;
+    }
+    if (UCSR0A & _BV(DOR0)) {
+      return _FDEV_ERR;
+    }
+
+    return UDR0;
+  } else {
+    return -1000;
+  }
+}
+
+FILE rs485 = FDEV_SETUP_STREAM(rs485putchar, rs485getchar, _FDEV_SETUP_RW);
+
+void rs485init() {
+#if F_CPU < 2000000UL && defined(U2X)
+  UCSR0A = _BV(U2X);             /* improve baud rate error by using 2x clk */
+  UBRR0L = (F_CPU / (8UL * RS485_BAUD)) - 1;
+#else
+  UBRR0L = (F_CPU / (16UL * RS485_BAUD)) - 1;
+#endif
+  UCSR0B = _BV(TXEN0) | _BV(RXEN0); /* tx/rx enable */
+}
+
 void initComms() {
+#if (USE_ETHERNET)
   enc28j60Init(MYMAC);
   //enc28j60clkout(2); // change clkout from 6.25MHz to 12.5MHz
   _delay_loop_1(0); // 60us
@@ -29,6 +77,14 @@ void initComms() {
   // 0x476 is PHLCON LEDA=links status, LEDB=receive/transmit
   enc28j60PhyWrite(PHLCON,0x476);
   init_ip_arp_udp_tcp(MYMAC, MYIP, 0);
+#endif
+
+#ifdef RS485_ID
+  DDRD |= _BV(PD1); // RS485 TXD
+  DDRD |= _BV(PD7); // RS485 TX Enable.
+  DDRC |= _BV(PC2); // RS485 RX LED
+
+#endif
 }
 
 
@@ -44,8 +100,11 @@ void broadcastLog(struct LogTelegram *lt) {
   aes256_context ctx;
   aes256_init(&ctx, AES_KEY);
   aes256_encrypt_ecb(&ctx, (unsigned char *)lt);
+
+#if (USE_ETHERNET)
   unsigned char transmitBuffer[UDP_DATA_P+32];
   spam_udp(transmitBuffer, (char *)lt, 16, UDP_PORT, 4747);
+#endif
 }
 
 void logPowerUp() {
@@ -122,7 +181,9 @@ void sendAnswerTelegram(unsigned char *request, char *telegram) { // Stomps on t
 
   //unsigned char transmitBuffer[UDP_DATA_P+32];
   //  send_udp(transmitBuffer, telegram, 16, UDP_PORT, dip, dport);
+#if (USE_ETHERNET)
   make_udp_reply_from_request(request, telegram, 16, UDP_PORT);
+#endif
 }
 
 void handlePing(unsigned char *request, struct PingPongTelegram *ping) {
@@ -256,8 +317,9 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
 }
 
 void pollComms() {
-    static uint8_t buf[BUFFER_SIZE+1];
 
+#if (USE_ETHERNET)
+    static uint8_t buf[BUFFER_SIZE+1];
     uint16_t plen=enc28j60PacketReceive(BUFFER_SIZE, buf);
     buf[BUFFER_SIZE]='\0';
     if (plen){
@@ -276,4 +338,5 @@ void pollComms() {
       	}
       }
     }
+#endif
 }

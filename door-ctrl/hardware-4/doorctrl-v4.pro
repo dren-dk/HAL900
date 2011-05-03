@@ -1,4 +1,4 @@
-update=2011-02-13T15:03:28 CET
+update=2011-03-22T07:44:48 CET
 last_client=pcbnew
 [general]
 version=1
@@ -81,6 +81,7 @@ LibName39=linear
 LibName40=atmel
 LibName41=diode
 LibName42=npnpnp
+LibName43=mounting
 [pcbnew]
 version=1
 PadDrlX=0

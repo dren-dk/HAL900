@@ -183,17 +183,13 @@ int main(void) {
   wdt_enable(WDTO_4S);
 
   uart_init();
-  FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
-  stdout = stdin = &uart_str;
-  fprintf(stdout, "Power up! IP: %u.%u.%u.%u  MAC: %u:%u:%u:%u:%u:%u\n",MYIP[0],MYIP[1],MYIP[2],MYIP[3],
-  		MYMAC[0],MYMAC[1],MYMAC[2],MYMAC[3],MYMAC[4],MYMAC[5]);
-
-  // init485()
-  /*
-  DDRD |= _BV(PD1); // RS485 TXD
-  DDRD |= _BV(PD7); // RS485 TX Enable.
-  DDRC |= _BV(PC2); // RS485 RX LED
-  */
+#if (USE_ETHERNET)
+  fprintf(stdout, "Power up! Node %u, IP: %u.%u.%u.%u  MAC: %u:%u:%u:%u:%u:%u\n",NODE,
+		  MYIP[0],MYIP[1],MYIP[2],MYIP[3],
+  		  MYMAC[0],MYMAC[1],MYMAC[2],MYMAC[3],MYMAC[4],MYMAC[5]);
+#else
+  fprintf(stdout, "Power up! Node %u, No Ethernet\n",NODE);
+#endif
 
   initComms();
   initWiegand();

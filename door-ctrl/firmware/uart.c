@@ -34,6 +34,8 @@
 
 
 
+FILE uart_str = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
+
 /*
  * Initialize the UART to 8N1.
  */
@@ -48,6 +50,8 @@ void uart_init(void)
   UBRRL = (F_CPU / (16UL * UART_BAUD)) - 1;
 #endif
   UCSRB = _BV(TXEN) | _BV(RXEN); /* tx/rx enable */
+
+  stdout = stdin = &uart_str;
 }
 
 /*

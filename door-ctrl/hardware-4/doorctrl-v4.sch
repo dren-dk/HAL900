@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2011-02-04T23:57:59 CET
+EESchema Schematic File Version 2  date 2011-03-21T20:05:08 CET
 LIBS:enc28j60
 LIBS:power
 LIBS:device
@@ -41,13 +41,14 @@ LIBS:linear
 LIBS:atmel
 LIBS:diode
 LIBS:npnpnp
+LIBS:mounting
 LIBS:doorctrl-v4-cache
 EELAYER 25  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 6
 Title ""
-Date "4 feb 2011"
+Date "21 mar 2011"
 Rev ""
 Comp ""
 Comment1 ""
@@ -418,7 +419,7 @@ L R R63
 U 1 1 4D1A01F5
 P 3500 5675
 F 0 "R63" V 3580 5675 50  0000 C CNN
-F 1 "1k" V 3500 5675 50  0000 C CNN
+F 1 "10k" V 3500 5675 50  0000 C CNN
 	1    3500 5675
 	1    0    0    -1  
 $EndComp
@@ -427,7 +428,7 @@ L R R64
 U 1 1 4D1A01EA
 P 3700 5675
 F 0 "R64" V 3780 5675 50  0000 C CNN
-F 1 "1k" V 3700 5675 50  0000 C CNN
+F 1 "10k" V 3700 5675 50  0000 C CNN
 	1    3700 5675
 	1    0    0    -1  
 $EndComp

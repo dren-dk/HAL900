@@ -8,6 +8,7 @@ use Data::Dumper;
 use HTML::Entities;
 use Email::Valid;
 use Digest::SHA qw(sha1_hex);
+use POSIX;
 
 use HAL;
 use HAL::Pages;
@@ -446,7 +447,11 @@ sub accountsPage {
 }
 
 sub transactionsPage {
-    my ($r,$q,$p, $bleh_type_id, $account_id) = @_;
+    my ($r,$q,$p, $bleh_type_id, $account_id, $format) = @_;
+
+    $format ||= 'all';
+    my $summary = $format =~ /month/ ? 1 : 0;
+    my $csv = $format =~ /csv/ ? 1 : 0;
 
     my $ar = db->sql("select account.id, type_id, accountName, owner_id, realname ".
 		     "from account left outer join member on (owner_id=member.id) ".
@@ -471,16 +476,22 @@ sub transactionsPage {
 
     $html .= qq'<p>';
     if ($owner_id) {
-	$html .= qq'Denne konto er ejet af <a href="/hal/admin/members/$owner_id">$owner</a> - ';
+	$html .= qq'Denne konto er ejet af <a href="/hal/admin/members/$owner_id">$owner</a>';
     } else {
-	$html .= "Denne konto er ejet af foreningen. - ";
+	$html .= "Denne konto er ejet af foreningen.";
     }
 
-    $html .= qq'<a href="/hal/admin/accounts/$type_id/$id/csv">Export as TSV</a>';
+    $html .= qq'- <a href="/hal/admin/accounts/$type_id/$id/$format.csv">Export as TSV</a>';
+
+    if ($summary) {
+	$html .= qq'- <a href="/hal/admin/accounts/$type_id/$id">Vis alle transaktioner</a>';
+    } else {
+	$html .= qq'- <a href="/hal/admin/accounts/$type_id/$id/month">Vis sum for hver måned</a>';
+    }
     $html .= '</p>';
 
     my @table;
-    my $tx = db->sql("select t.id, t.created, source_account_id, sa.accountName, target_account_id, ta.accountName, amount, comment ".
+    my $tx = db->sql("select t.id, date_part('epoch', t.created), source_account_id, sa.accountName, target_account_id, ta.accountName, amount, comment ".
 		     "from accountTransaction t ".
 		     "inner join account sa on (t.source_account_id = sa.id) ".
 		     "inner join account ta on (t.target_account_id = ta.id) ".
@@ -489,6 +500,7 @@ sub transactionsPage {
     my $sum = 0;
     my $sumIn = 0;
     my $sumOut = 0;
+    my %month;
     while (my ($tid, $created, $source_id, $source, $target_id, $target, $amount, $comment) = $tx->fetchrow_array) {
 	my $other = $source_id == $id 
 	    ? qq'<a href="/hal/admin/accounts/$type_id/$target_id">$target</a>'
@@ -505,20 +517,63 @@ sub transactionsPage {
 	    $sum += $amount;
 	    $sumIn += $amount;
 	}
-	push @table, [$tid, $created, $comment, $other, $in, $out, $sum];
+	push @table, [$tid, strftime("%Y-%m-%d %H:%M", localtime($created)), $comment, $other, $in, $out, $sum];
+	
+	my $m = strftime("%Y-%m", localtime($created));
+	$month{$m}{tx}++;
+	$month{$m}{in} += $in;
+	$month{$m}{out} += $out;
+	$month{$m}{delta} += $in-$out;
+	$month{$m}{saldo} = $sum;
     }
     $tx->finish;
     push @table, ["","", "Totaler", "", $sumIn, $sumOut, $sum];
 
-    $html .= "<table><th>ID</th><th>Dato</th><th>Transaktion</th><th>Fra/Til konto</th><th>Ind</th><th>Ud</th><th>Saldo</th>\n";
-    my $count = 0;
-    for my $r (reverse @table) {
-	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
-	$html .= qq'<tr $class>'.join('', map {"<td>$_</td>"} @$r).qq'</tr>\n';
+    if ($summary) {
+
+	if ($csv) {
+	    my $content = "";
+	    for my $m (sort keys %month) {
+		$month{$m}{m} = $m;
+		$content .= join("\t", map {$month{$m}{$_}} qw(m tx in out delta saldo))."\n";
+	    }	    
+	    return outputRaw('text/tab-separated-values', $content, "hal-summary.$id.tsv");
+
+	} else {
+	    $html .= "<table><th>Måned</th><th>Transaktioner</th><th>Ind</th><th>Ud</th><th>Sum</th><th>Saldo</th>\n";
+	    my $count = 0;
+	    for my $m (sort keys %month) {
+		$month{$m}{m} = $m;
+		my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
+		$html .= qq'<tr $class>'.join('', map {"<td>$month{$m}{$_}</td>"} qw(m tx in out delta saldo)).qq'</tr>\n';
+	    }
+	    $html .= "</table>";
+	}
+
+    } else {
+
+	if ($csv) {
+	    my $content = "";
+	    for my $line (@table) {
+		$content .= join "\t", @$line;
+		$content .= "\n";
+	    }	    
+	    return outputRaw('text/tab-separated-values', $content, "hal-transactions.$id.tsv");
+
+	} else {
+	    $html .= "<table><th>ID</th><th>Dato</th><th>Transaktion</th><th>Fra/Til konto</th><th>Ind</th><th>Ud</th><th>Saldo</th>\n";
+	    my $count = 0;
+	    for my $r (reverse @table) {
+		my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
+		$html .= qq'<tr $class>'.join('', map {"<td>$_</td>"} @$r).qq'</tr>\n';
+	    }
+	    $html .= "</table>";
+	}
     }
-    $html .= "</table>";
     
-    return outputAdminPage('transactions', "Transaktioner for $accountName", $html);
+    return outputAdminPage('transactions', 
+			   $summary ? "Månedlig sum for $accountName" : "Transaktioner for $accountName",
+			   $html);
 }
 
 sub transactionsExport {
@@ -942,7 +997,8 @@ BEGIN {
     addHandler(qr'^/hal/admin/consolidate/?$', \&consolidatePage);
     addHandler(qr'^/hal/admin/accounts/?$', \&accountsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)$', \&accountsPage);
-    addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)/csv$', \&transactionsExport);
+#    addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)/csv$', \&transactionsExport);
+    addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)/((month|all)(\.csv)?)$', \&transactionsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)$', \&transactionsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)/create$', \&createAccountPage);
     addHandler(qr'^/hal/admin/members/?$', \&membersPage);

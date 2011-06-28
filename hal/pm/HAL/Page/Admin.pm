@@ -52,7 +52,7 @@ sub outputAdminPage($$$;$) {
 	}
     }
 
-    if ($cur eq 'consolidate') {
+    if ($cur eq 'consolidate' or $cur eq 'rain') {
 	$js = "$cur.js";
 	$onload = "init_$cur();";
     }
@@ -124,6 +124,7 @@ sub indexPage {
     $html .= '<h2>Diverse</h2>';
     $html .= qq'<p><a href="/hal/admin/load">Load nye poster fra Nordea</a></p>';
     $html .= qq'<p><a href="/hal/admin/consolidate">Konsolider nye poster med systemet</a></p>';
+    $html .= qq'<p><a href="/hal/admin/rain">Make it rain</a></p>';
 
     return outputAdminPage('index', 'Admin oversigt', $html);
 }
@@ -990,11 +991,122 @@ sub rfidPage {
     return outputAdminPage('rfid', "RFID", $html);
 }
 
+sub rainPage {
+    my ($r,$q,$p) = @_;
+
+    my $amount = $p->{amount} || '';
+    $amount = 0 unless $amount =~ /^-?\d+(\.\d+)?$/;
+    
+    my $comment = $p->{comment};
+    $comment =~ s/[^a-zA-Z0-9.,æøåÆØÅ()\/ -]//g;
+
+    my $source_account = $p->{source_account};
+    my $target_account = $p->{target_account};
+
+    l "$amount and $source_account and $target_account ".Dumper $p;
+    if ($p->{rain} and $amount and $source_account and $target_account) {
+
+	if ($source_account < 0) {
+	    my $dude_id = -$source_account;
+	    my $ar = db->sql("select id from account where owner_id=? and type_id=2", $dude_id);
+	    ($source_account) = $ar->fetchrow_array;
+	    $ar->finish;
+		
+	    unless ($source_account) {
+		my $dr = db->sql("select realname from member where id=?", $dude_id);
+		my ($name) = $dr->fetchrow_array or die "Invalid member id: $dude_id";
+		$dr->finish;
+
+		db->sql('insert into account (owner_id, type_id, accountName) values (?,2,?)',
+			$dude_id, $name) or die "Failed to store the new account";
+		$source_account = db->getID('account') or die "Failed to get new account id";
+		l "Created account $source_account for $dude_id type: 2";
+	    }
+	}
+
+	my @accounts = ($source_account, $target_account);
+	if ($amount < 0) {
+	    $amount *= -1;
+	    @accounts = reverse @accounts;
+	}
+	
+	db->sql('insert into accountTransaction (source_account_id, target_account_id, amount, comment) values (?, ?, ?, ?)',
+		@accounts, $amount, $comment
+	    ) or die "Failed to insert transaction ".join(',', @accounts, $amount, $comment);
+
+
+	my $ar = db->sql("select type_id from account where id=?", $source_account);
+	my ($type_id) = $ar->fetchrow_array;
+	$ar->finish;
+
+	return outputGoto("/hal/admin/accounts/$type_id/$source_account");
+    }
+
+
+    my $load;
+    my %seen;    
+    my $atres = db->sql("select owner_id, id, type_id, accountName from account order by accountName")
+	or die "Failed to get unconsolidated transactions";
+    while (my ($owner_id, $id, $type_id, $accountName) = $atres->fetchrow_array) {
+	$load .= qq' account($id, $type_id, "$accountName");\n';
+	$seen{$owner_id}{$type_id} = $id if $owner_id;
+    }
+    $atres->finish;
+
+    my $mres = db->sql("select id, email, realname from member order by realname")
+	or die "Failed to get unconsolidated transactions";
+    while (my ($id, $email, $name) = $mres->fetchrow_array) {
+	for my $type (2,3) {
+	    my $aid = $seen{$id}{$type} || -$id;
+	    if ($aid < 0) { # Add fake account.
+		$load .= qq' account($aid, $type, "[$name <$email>]");\n';
+	    }
+	    $name = lc($name);
+	    $email = lc($email);
+	    $load .= qq' dude($aid, $type, "$email", "$name");\n';
+	}
+    }
+    $mres->finish;
+
+    
+    my $html = qq'
+<p>Udfyld denne formular for at betale et medlem penge fra en konto.</p>
+<form method="post" action="/hal/admin/rain">
+
+<table id="rain">
+<tr><th>Kommentar</th><td><input type="text" size="50" name="comment" value="$comment"></td></tr>
+<tr><th>Beløb</th><td><input type="text" size="50" name="amount" value="$amount"></td></tr>
+';
+
+    $html .= '<tr><th>Medlem</th><td>';
+    $html .= qq'<select name="source_account" id="source_account">\n';
+    $html .= qq'  <option value="0">Unknown</option>\n';
+    $html .= qq'</select></td></tr>\n';
+
+    $html .= '<tr><th>Konto</th><td>';
+    $html .= qq'<select name="target_account" id="target_account">\n';
+    $html .= qq'  <option value="0">Unknown</option>\n';
+    $html .= qq'</select></td></tr>\n';
+
+    $html .= qq'
+</table>
+<input type="submit" name="rain" value="Make it rain!">
+</form>
+
+<script type="text/javascript">
+$load
+</script>
+';
+    
+    return outputAdminPage('rain', 'Overfør penge', $html);
+}
+
 BEGIN {
     ensureAdmin(qr'^/hal/admin');
     addHandler(qr'^/hal/admin/?$', \&indexPage);
     addHandler(qr'^/hal/admin/load/?$', \&loadPage);
     addHandler(qr'^/hal/admin/consolidate/?$', \&consolidatePage);
+    addHandler(qr'^/hal/admin/rain/?$', \&rainPage);
     addHandler(qr'^/hal/admin/accounts/?$', \&accountsPage);
     addHandler(qr'^/hal/admin/accounts/(\d+)$', \&accountsPage);
 #    addHandler(qr'^/hal/admin/accounts/(\d+)/(\d+)/csv$', \&transactionsExport);

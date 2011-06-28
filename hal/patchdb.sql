@@ -41,3 +41,7 @@ commit;
 begin transaction;
 alter table member add column lastRFIDMail timestamp;
 commit;
+
+begin transaction;
+insert into account (type_id, accountName) values (4, 'Rengøring');
+commit;

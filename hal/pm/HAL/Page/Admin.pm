@@ -381,19 +381,19 @@ sub accountsPage {
     my @types;
     my $title = 'Konti';
     while (my ($id, $typename) = $rest->fetchrow_array) {
-	push @types, {
-	    href=>"/hal/admin/accounts/$id",
-	    title=>$typename,
-	    current=>$id==$type_id,
-	};
-	$title = "Konti : $typename" if $id==$type_id;
+		push @types, {
+			href=>"/hal/admin/accounts/$id",
+			title=>$typename,
+			current=>$id==$type_id,
+		};
+		$title = "Konti : $typename" if $id==$type_id;
     }
     $rest->finish;
 
     my %memberTypes;
     my $tr = db->sql("select id, memberType from membertype");
     while (my ($id, $memberType) = $tr->fetchrow_array) {
-	$memberTypes{$id} = $memberType;
+		$memberTypes{$id} = $memberType;
     }
     $tr->finish;
 
@@ -409,19 +409,7 @@ sub accountsPage {
 			 $type_id);		
 	my $count = 0;
 	while (my ($id, $accountName, $owner_id, $owner, $doorAccess, $membertype_id) = $ar->fetchrow_array) {
-	    my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
 
-	    my $ol = 'n/a';
-	    my $com = '';
-	    if ($owner_id) {
-
-		my $door = $doorAccess ? ' [D]' : '';
-		my $type = $memberTypes{$membertype_id};
-		$com = "$type$door";
-
-		$ol = qq'<a href="/hal/admin/members/$owner_id">$owner</a>';
-	    }
-	    
 	    my $inr = db->sql("select sum(amount), count(*) from accountTransaction where target_account_id=?", $id);		
 	    my ($in, $inc) = $inr->fetchrow_array;
 	    $inr->finish;
@@ -431,6 +419,23 @@ sub accountsPage {
 	    $outr->finish;
 
 	    my $saldo = ($in//0)-($out//0);
+	    
+		if ($membertype_id and $membertype_id == 2 and $saldo == 0) {
+			next;
+		}
+
+	    my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
+		
+	    my $ol = 'n/a';
+	    my $com = '';
+	    if ($owner_id) {
+			
+			my $door = $doorAccess ? ' [D]' : '';
+			my $type = $memberTypes{$membertype_id};
+			$com = "$type$door";
+			
+			$ol = qq'<a href="/hal/admin/members/$owner_id">$owner</a>';
+	    }
 	    
 	    $html .= qq' <tr $class><td><a href="/hal/admin/accounts/$type_id/$id">$id</a></td>'.
 		qq'<td>$accountName</td><td>$ol</td><td>$com</td><td>$inc</td><td>$outc</td><td>$saldo</td></tr>\n';

@@ -106,7 +106,7 @@ sub createUser {
 		$errors++;
 		return "Dit fulde navn kan umuligt være mindre end 4 tegn langt.";
 	    }
-	    if ($v !~ /^[a-zA-ZæøåÆØÅ \.-]+$/) {
+	    if ($v !~ /^[\pL .-]+$/) {
 		$errors++;
 		return "Æh, hvad?";
 	    }

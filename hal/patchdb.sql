@@ -42,3 +42,6 @@ begin transaction;
 alter table member add column lastRFIDMail timestamp;
 commit;
 
+begin transaction;
+alter table accountTransaction add column operator_id integer references member(id);
+commit;

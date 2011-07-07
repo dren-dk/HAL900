@@ -106,6 +106,8 @@ create table accountTransaction (
        amount numeric(10,2) check (amount > 0),
        receiptSent timestamp,
 
+	   operator_id integer references member(id),
+
        comment varchar(150)
 );
 CREATE TRIGGER update_updated BEFORE UPDATE

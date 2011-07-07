@@ -256,7 +256,7 @@ sub consolidatePage {
 		    my ($name, $email) = $dr->fetchrow_array or die "Invalid member id: $dude_id";
 		    $dr->finish;
 
-		    db->sql('insert into account (owner_id, type_id, accountName) values (?,?,?)',
+		    db->sql('insert into account (owner_id, type_id, accountName) values (?,?,?,?)',
 			    $dude_id, $type_id, $name) or die "Failed to store the new account";
 		    $account_id = db->getID('account') or die "Failed to get new account id";
 		    l "Created account $account_id for $dude_id type: $type_id";
@@ -269,8 +269,8 @@ sub consolidatePage {
 		@accounts = reverse @accounts;
 	    }
 
-	    db->sql('insert into accountTransaction (source_account_id, target_account_id, amount, comment) values (?, ?, ?, ?)',
-		    @accounts, $amount, "$bankDate: $bankComment"
+	    db->sql('insert into accountTransaction (source_account_id, target_account_id, amount, comment, operator_id) values (?, ?, ?, ?, ?)',
+		    @accounts, $amount, "$bankDate: $bankComment", getSession->{member_id}
 		) or die "Failed to insert transaction ".join(',', @accounts, $amount, "$bankDate: $bankComment");
 	    my $transaction_id = db->getID('accountTransaction') or die "Failed to get new transaction id";
 	    db->sql("update bankTransaction set transaction_id=? where id=?", $transaction_id, $id)
@@ -1035,8 +1035,8 @@ sub rainPage {
 	    @accounts = reverse @accounts;
 	}
 	
-	db->sql('insert into accountTransaction (source_account_id, target_account_id, amount, comment) values (?, ?, ?, ?)',
-		@accounts, $amount, $comment
+	db->sql('insert into accountTransaction (source_account_id, target_account_id, amount, comment, operator_id) values (?, ?, ?, ?, ?)',
+		@accounts, $amount, $comment, getSession->{member_id}
 	    ) or die "Failed to insert transaction ".join(',', @accounts, $amount, $comment);
 
 

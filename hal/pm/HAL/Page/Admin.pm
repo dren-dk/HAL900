@@ -256,7 +256,7 @@ sub consolidatePage {
 		    my ($name, $email) = $dr->fetchrow_array or die "Invalid member id: $dude_id";
 		    $dr->finish;
 
-		    db->sql('insert into account (owner_id, type_id, accountName) values (?,?,?,?)',
+		    db->sql('insert into account (owner_id, type_id, accountName) values (?,?,?)',
 			    $dude_id, $type_id, $name) or die "Failed to store the new account";
 		    $account_id = db->getID('account') or die "Failed to get new account id";
 		    l "Created account $account_id for $dude_id type: $type_id";

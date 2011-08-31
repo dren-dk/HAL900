@@ -52,7 +52,7 @@ sub dbh($) {
 				     'hal', 'hal900', {
 					 AutoCommit => $self->{autocommit},
 					 pg_enable_utf8=>1,
-					 autotest=>1,
+					 autotest=>0,
 				     }) or confess "Unable to connect to the database";
 }
 
@@ -68,7 +68,7 @@ sub sql {
     my $sql = shift;
     
     my $sth = $self->dbh->prepare_cached($sql);
-    my $rv = $sth->execute(@_);
+    my $rv = $sth->execute(@_) or confess "Failed to run SQL statement:\n$sql\nParams: ".join(', ', map {"'$_'"} @_)."\n$DBI::errstr";
     
     return ($sth, $rv) if wantarray;
     

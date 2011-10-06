@@ -96,7 +96,7 @@ sub indexPage {
     # TODO: Cash state.
     my ($saldot) = (0,0,0);
     $html .= "<h2>Quick economic status</h2><table><tr><th>Account Type</th><th>Total In</th><th>Total Out</th><th>Total Saldo</th></tr>\n";
-    for my $accountTypeId (1,2,3) {	
+    for my $accountTypeId (1,2,3,5) {	
 	my $ans = db->sql("select typeName from accountType where id=?", $accountTypeId);
 	my ($accountType) = $ans->fetchrow_array;
 	$ans->finish;
@@ -118,7 +118,7 @@ sub indexPage {
 
 	$saldot += $saldo;
     }
-    $html .= qq'<tr><td>Grand total</td><td></td><td></td><td>$saldot</td></tr>\n';
+    $html .= qq'<tr><td>Net worth</td><td></td><td></td><td>$saldot</td></tr>\n';
     $html .= "</table>\n";
 
     $html .= '<h2>Diverse</h2>';

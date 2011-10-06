@@ -9,6 +9,9 @@ use HTML::Entities;
 use Email::Valid;
 use Digest::SHA qw(sha1_hex);
 use POSIX;
+use Text::vCard;
+use Text::vCard::Addressbook;
+#use GD::Barcode::QRcode;
 
 use HAL;
 use HAL::Pages;
@@ -256,7 +259,7 @@ sub consolidatePage {
 		    my ($name, $email) = $dr->fetchrow_array or die "Invalid member id: $dude_id";
 		    $dr->finish;
 
-		    db->sql('insert into account (owner_id, type_id, accountName) values (?,?,?,?)',
+		    db->sql('insert into account (owner_id, type_id, accountName) values (?,?,?)',
 			    $dude_id, $type_id, $name) or die "Failed to store the new account";
 		    $account_id = db->getID('account') or die "Failed to get new account id";
 		    l "Created account $account_id for $dude_id type: $type_id";
@@ -703,9 +706,10 @@ sub membersPage {
 
 	my $class = ($count++ & 1) ? 'class="odd"' : 'class="even"';
 	$html .= qq'<tr $class><td><a href="/hal/admin/members/$id">$id</a></td>'.
+	         qq'<td><a href="/hal/admin/members/$id?f=vcard">'.encode_entities($username)."</a></td>".
 	    join('', map {
 		"<td>".encode_entities($_||'')."</td>"
-		 } ($username,$realname,$email,$phone,$memberType)).'</tr>';
+		 } ($realname,$email,$phone,$memberType)).'</tr>';
     }
     $mr->finish;
 
@@ -736,6 +740,40 @@ sub memberPage {
     my ($username, $realname, $email, $phone, $smail, $membertype_id, $doorAccess, $adminAccess)
 	= $mr->fetchrow_array;
     $mr->finish;
+
+    $p->{f} ||= '';
+    if ($p->{f} eq 'vcard') {
+
+
+	my $ab = Text::vCard::Addressbook->new();	
+	my $vc = $ab->add_vcard();
+
+	$vc->fullname($realname);
+	$vc->EMAIL($email);
+	$vc->NICKNAME($username);
+	my $a = $vc->add_node({ 'node_type' => 'ADR' });
+	$smail =~ s/^\s*$realname\s*//;
+	my ($street, $pb) = split /\n/, $smail, 2;
+	$street =~ s/^\s+//;
+	$street =~ s/\s+$//;
+	$a->street($street);
+
+	my ($zip, $city) = $pb =~ /^\s*(\d+)\s*(.+?)\s*$/;
+	if ($zip) {
+	    $a->city($city);
+	    $a->post_code($zip);
+	} else {
+	    $pb =~ s/\n/ /;
+	    $a->city($pb);
+	}
+
+	my $t = $vc->add_node({ 'node_type' => 'TEL' });
+#	$t->add_types("home");
+	$phone = "+45 $phone" unless $phone =~ /^\s*\+/;
+	$t->value($phone);
+	
+	return outputRaw('text/directory', $ab->export(), "hal-$username.vcf");
+    }
 
     $realname //= '';
     $username //= '';

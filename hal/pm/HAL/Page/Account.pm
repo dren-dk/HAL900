@@ -482,38 +482,11 @@ sub detailsPage {
 
     my $form = '<form method="POST" action="/hal/account/details">';
 
-    my $uRes = (db->sql('select username,realname, smail, phone from member where id=?', getSession->{member_id}));
-    my ($username, $realname, $smail, $phone) = $uRes->fetchrow_array;
+    my $uRes = (db->sql('select realname, smail, phone from member where id=?', getSession->{member_id}));
+    my ($realname, $smail, $phone) = $uRes->fetchrow_array;
     $uRes->finish;
     
     my $errors = 0;
-
-    $p->{username} ||= $username;
-    $form .= textInput("Bruger navn",
-		       "Dit bruger navn i dette system, vælg gerne det samme som i andre systemer (F.eks. Wiki og Wordpress)",
-		       'username', $p, sub {
-	my ($v,$p,$name) = @_;
-	if (length($v)<2) {
-	    $errors++;
-	    return "Dit brugernavn skal være mindst 2 tegn langt";
-	}
-	if ($v !~ /^[A-Za-z0-9\.-]+$/) {
-	    $errors++;
-	    return "Dit brugernavn må kun bestå af: A-Z, a-z, 0-9 samt tegnene . og -";
-	}
-
-	if (lc($v) ne lc($username)) {
-	    my $res = db->sql("select count(*) from member where lower(username)=?", lc($v));
-	    my ($inuse) = $res->fetchrow_array;
-	    $res->finish;
-	    
-	    if ($inuse) {
-		$errors++;
-		return "Det valgte brugernavn er allerede i brug, vælg et andet.";
-	    }
-	}
-	return "";
-    });
     
     $p->{name} ||= $realname;
     $form .= textInput("Fuldt navn", "Dit rigtige navn, incl. efternavn", 'name', $p, sub {
@@ -572,9 +545,9 @@ sub detailsPage {
 	    $errors = "en" if $errors == 1;
 	    $form .= "<p>Hovsa, der er $errors fejl!</p>";
 	} else {
-	    if (db->sql('update member set username=?, realname=?, smail=?, phone=? where id=?',
-			               $p->{username}, $p->{name}, $p->{snailmail}, $p->{phone}, getSession->{member_id})) {
-		l "Updated: username=$p->{username}, name=$p->{name}, snailmail=$p->{snailmail}, phone=$p->{phone}";
+	    if (db->sql('update member set realname=?, smail=?, phone=? where id=?',
+			               $p->{name}, $p->{snailmail}, $p->{phone}, getSession->{member_id})) {
+		l "Updated: name=$p->{name}, snailmail=$p->{snailmail}, phone=$p->{phone}";
 		return outputGoto('/hal/account');
 	    } else {
 		$form .= "<p>Hovsa, noget gik galt, prøv igen.</p>";		

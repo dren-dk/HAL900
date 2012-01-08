@@ -433,7 +433,7 @@ sub typePage {
     $uRes->finish;
     
     my @types;
-    my $typesRes = db->sql('select id, memberType, monthlyFee, doorAccess from memberType order by id');
+    my $typesRes = db->sql('select id, memberType, monthlyFee, doorAccess from memberType where userpick order by id');
     while (my ($id, $memberType, $monthlyFee, $doorAccess) = $typesRes->fetchrow_array) {
 	push @types, {
 	    key=>$id,

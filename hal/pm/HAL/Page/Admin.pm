@@ -82,7 +82,7 @@ sub indexPage {
     $html = "<h2>Medlems antal efter type</h2><table><tr><th>Medlems type</th><th>Dør-bit</th><th>Antal</th></tr>\n";
     my $i = 0;
     while (my ($count, $type, $access) = $sr->fetchrow_array) {
-
+	next if $type eq 'Deleted';
 	my $class = ($i++ & 1) ? 'class="odd"' : 'class="even"';
 	$html .= "<tr $class><td>$type</td><td>$access</td><td>$count</td></tr>";
     }

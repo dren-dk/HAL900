@@ -328,12 +328,13 @@ sub consolidatePage {
     my $atres = db->sql("select owner_id, id, type_id, accountName from account order by accountName")
 	or die "Failed to get unconsolidated transactions";
     while (my ($owner_id, $id, $type_id, $accountName) = $atres->fetchrow_array) {
+	next if $accountName =~ /^Deleted/;
 	$load .= qq' account($id, $type_id, "$accountName");\n';
 	$seen{$owner_id}{$type_id} = $id if $owner_id;
     }
     $atres->finish;
 
-    my $mres = db->sql("select id, email, realname from member order by realname")
+    my $mres = db->sql("select id, email, realname from member where email is not null order by realname")
 	or die "Failed to get unconsolidated transactions";
     while (my ($id, $email, $name) = $mres->fetchrow_array) {
 	for my $type (2,3) {
@@ -857,6 +858,8 @@ $rfids
 	db->sql("update member set dooraccess=?, adminaccess=?, membertype_id=? where id=?",
 		$p->{dooraccess}, $p->{adminaccess}, $p->{membertype}, $member_id)
 	    or die "Failed to update member: $p->{dooraccess}, $p->{adminaccess}, $p->{membertype}, $member_id";
+
+	#update member set email=null, username=null, realname=null, smail=null, phone=null,passwd=null where id=113;
     }
 
     my $ar = db->sql("select account.id, accountName, typeName, type_id ".

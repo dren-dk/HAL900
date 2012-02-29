@@ -16,12 +16,20 @@ use HAL::Util;
 use HAL::Email;
 
 my $db = new HAL::DB;
-
 my $now = DateTime->now;
-my ($year,$month,$day) = ($now->year, $now->month, $now->day);
-my $duesSoon = $day < 3;
-my $lastDay = DateTime->last_day_of_month(year=>$year, month=>$month)->day;
-my $daysLeft = $lastDay-$day+2;
+my $duesDay; # The next day for paying dues
+my $daysLeft;
+for my $nextMonth (0..1) {
+	$duesDay = $now->clone;
+	$duesDay->add(months=>1) if $nextMonth;
+	$duesDay->set(day=>1);
+	$duesDay->set(day => ((9-$duesDay->day_of_week)%7+3)); # Thursday after the first Tuesday.
+	$daysLeft = int(($duesDay->epoch - $now->epoch) / (24*60*60));
+	last if $daysLeft >= 0;
+}
+
+my $duesSoon = ($now->day >= 1 && $now->month == $duesDay->month) ? 1 : 0;
+#print "Dues-day is: ".$duesDay->dmy." ($daysLeft days away soon=$duesSoon)\n";
 
 my $SIG = "\n-- \nMed venlig hilsen HAL-900, OSAAs elektronhjerne.\n";
 my $FROM = 'HAL på vegne af OSAA <hal@osaa.dk>';

@@ -46,5 +46,6 @@ function addAccounts(type, ctrl) {
 function init_rain() {
     addAccounts(2, "source_account");
     addAccounts(4, "target_account");
+    addAccounts(5, "target_account");
 }
 

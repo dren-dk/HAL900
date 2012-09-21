@@ -51,6 +51,11 @@ sub configureHAL {
 	    test=>1,
 	    db=>'dbi:Pg:dbname=hal;port=5432',
 	},
+	flfr=>{
+	    root=>"/home/ff/projects/osaa/HAL900/hal",
+	    test=>1,
+	    db=>'dbi:Pg:dbname=hal;port=5433',
+	},
 
     );
     

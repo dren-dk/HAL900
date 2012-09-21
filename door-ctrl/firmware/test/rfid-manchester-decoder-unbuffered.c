@@ -42,7 +42,7 @@ void resetRfidState() {
   * +1: A short high-period, ending in a falling edge.
   * +2: A long high-period, ending in a falling edge.
 */
-void addEdge(char edge) {
+void _addEdge(char edge) {
   if (headerLength == 0) {
     if (edge < -1) {
       headerLength = 1;
@@ -161,7 +161,7 @@ void addEdge(char edge) {
   * +1: A short high-period, ending in a falling edge.
   * +2: A long high-period, ending in a falling edge.
 */
-void _addEdge(char edge) {
+void addEdge(char edge) {
 
   fprintf(stdout, " %d", edge);
 
@@ -169,6 +169,7 @@ void _addEdge(char edge) {
     fprintf(stdout, "i");
     return; 
   }
+
 
   if (headerLength == 0) {
     if (edge < -1) {
@@ -306,8 +307,8 @@ void _addEdge(char edge) {
 }
 
 int main(int argc, char **argv) {
-  FILE *f = fopen("hmm.txt", "r");
-  //  FILE *f = fopen("captured-timings.txt", "r");
+  //FILE *f = fopen("hmm.txt", "r");
+  FILE *f = fopen("captured-timings.txt", "r");
   
   char buffy[10];
   memset(buffy, 0, 10);
@@ -322,13 +323,14 @@ int main(int argc, char **argv) {
       int length = atoi(buffy);
       memset(buffy, 0, 10);
 
-      char edge = length;
-      /*
+	  
+      //char edge = length;
+      char edge = 0;
       if (length < -60) edge--;
       if (length < -10) edge--;
       if (length > 60) edge++;
       if (length > 10) edge++;
-      */
+      
       addEdge(edge);
     }
   }

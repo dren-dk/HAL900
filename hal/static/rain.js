@@ -29,7 +29,7 @@ function account(id,type,name) {
 function addAccounts(type, ctrl) {
     // Get the current account type to look for:
     var accountinput = document.getElementById(ctrl);
-    accountinput.options.length=0;   
+//    accountinput.options.length=0;   
     accountinput.options[accountinput.options.length] = new Option('Unknown', 0, false, false);
 
     var acc = accounts[type];
@@ -46,5 +46,6 @@ function addAccounts(type, ctrl) {
 function init_rain() {
     addAccounts(2, "source_account");
     addAccounts(4, "target_account");
+    addAccounts(5, "target_account");
 }
 

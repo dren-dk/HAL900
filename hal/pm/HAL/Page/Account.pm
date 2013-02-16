@@ -268,28 +268,17 @@ sub emailPage {
 	    my $ue = escape_url($p->{email});
 	    my $uu = escape_url($userName);
     
-	    my $email = sendmail('changeemail@hal.osaa.dk', $p->{username},
+	    my $email = sendmail('changeemail@hal.osaa.dk', $p->{email},
 				 'Skift af email for dit Open Space Aarhus medlemsskab',
 "En eller anden, måske dig, har bedt om at skifte din email adresse fra $oldMail til $p->{email}.
 Hvis du ønsker at skifte til den nye adresse klik her:
 https://hal.osaa.dk/hal/account/confirmemail?user=$uu&email=$ue&key=$key&ex=44
 
-Hvis det ikke er dig der har bedt om at få denne mail kan du roligt ignorere denne mail,
-hvis du er medlem af OSAA er din konto er ikke blevet ændret.
+Hvis det ikke er dig der har bedt om at skifte mail adresse, så har nogen fået adgang til din
+konto og du bør logge ind og skifte dit password, lige nu og kontakte bestyrelsen\@osaa.dk.
 "
 		);
 	    l "Email-change: $oldMail -> $p->{email}: https://hal.osaa.dk/hal/account/confirmemail?user=$uu&email=$ue&key=$key&ex=44";
-
-	    sendmail('changeemail@hal.osaa.dk', $p->{email}, 
-			 'Skift af email for dit Open Space Aarhus medlemsskab',
-"En eller anden, måske dig, har bedt om at skifte din email adresse fra $oldMail til $p->{email}.
-
-Hvis det ikke er dig der har bedt om at skifte mail adresse, så har nogen fået adgang til din
-konto og du bør logge ind og skifte dit password, lige nu.
-
-Når du har skiftet dit password så kontakt bestyrelsen\@osaa.dk for at få undersøgt problemet.
-"
-		);
 	    
 	    $html .= "<p>Nu er der blevet sent en mail til dig med et link i, klik på linket for at skifte email adresse.</p>";	    
 	}

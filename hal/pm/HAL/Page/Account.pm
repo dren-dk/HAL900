@@ -280,7 +280,7 @@ hvis du er medlem af OSAA er din konto er ikke blevet ændret.
 		);
 	    l "Email-change: $oldMail -> $p->{email}: https://hal.osaa.dk/hal/account/confirmemail?user=$uu&email=$ue&key=$key&ex=44";
 
-	    sendmail('changeemail@hal.osaa.dk', $p->{username},
+	    sendmail('changeemail@hal.osaa.dk', $p->{email}, $p->{username},
 				 'Skift af email for dit Open Space Aarhus medlemsskab',
 "En eller anden, måske dig, har bedt om at skifte din email adresse fra $oldMail til $p->{email}.
 

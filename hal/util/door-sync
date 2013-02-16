@@ -43,7 +43,7 @@ order by r.id
 ") or die "Urgh";
 
 while (my ($rfid, $pin, $rfid_id) = $ns->fetchrow_array) {
-    my $hash = keyHash($rfid, $pin);
+    my $hash = keyHash($rfid & ((1<<25)-1), $pin);
     $new{$hash}++;
     $hash2rfid{$hash} = $rfid_id;
 }

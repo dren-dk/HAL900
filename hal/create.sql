@@ -18,6 +18,7 @@ create table memberType (
 
        memberType varchar(50),
        monthlyFee numeric(10,2),
+       userPick boolean,
 
        doorAccess boolean
 );
@@ -179,5 +180,12 @@ create table doorTransaction (
        hash bigint not null, 
        kind char(1) not null
 );
+
+commit;
+
+
+begin;
+
+alter table membertype add column userPick boolean default true not null;
 
 commit;

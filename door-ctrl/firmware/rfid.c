@@ -53,22 +53,29 @@ void resetRfidState() {
 */
 void addEdge(char edge) {
 
-  if (headerLength == 0) {
+  if (headerLength == 0) { // Start detection of the header on rising edge after a short low period
   	if (edge < -1) {
       headerLength = 1;
     }
 
-  } else if (headerLength < 18-1) {
+  } else if (headerLength < 18-1) { // Detect the train of 18 short periods, meaning 9 ones
     if (edge == ((headerLength & 1)?1:-1)) {
       headerLength++;
 
     } else {
-      headerLength = 0;      
+      headerLength = 0; // Go back to looking for the start of the header      
     }
 
   } else {
 
-    if (edge > 1) {
+	/*
+	  We've successfully detected the header pattern, so now we gobble up all the bits of the datagram
+	  and store them away for verification later.
+
+	  The only thing that can stop the accumulation of data is a violation of the Manchester encoding.
+	*/ 
+
+    if (edge > 1) { // A long high-period, ending in a falling edge.
       
       if (halfBit) {
     	  resetRfidState();
@@ -78,7 +85,7 @@ void addEdge(char edge) {
     	  halfBit = 0;
       }
 
-    } else if (edge < -1) {
+    } else if (edge < -1) { // A long low-period, ending in a rising edge.
 
       if (halfBit) {
     	  resetRfidState();
@@ -88,7 +95,7 @@ void addEdge(char edge) {
     	  halfBit = 0;
       }
 
-    } else if (edge > 0) {
+    } else if (edge > 0) { // A short low-period, ending in a rising edge.
 
       if (halfBit) {
     	  halfBit = 0;
@@ -97,7 +104,7 @@ void addEdge(char edge) {
     	  halfBit = edge;
       }
 
-    } else {
+    } else { // A short low-period, ending in a rising edge.
       if (halfBit) {
     	  halfBit = 0;
     	  pushOne();
@@ -116,7 +123,6 @@ void addEdge(char edge) {
       char bit = 0; // row*5+col;
       for (unsigned char row=0;row<11;row++) {
       	char rowParity = 0;
-      	//	PORTC |= _BV(PC2);
       	for (unsigned char col=0;col<5;col++) {
       		if (getBit(bit++)) {
       			rowParity ^= 1;
@@ -124,23 +130,24 @@ void addEdge(char edge) {
       		}
       	}
 	
-      	if (row < 10 && rowParity) {
+      	if (row < 10 && rowParity) { // Check the row parity bit for the first 10 rows, but not the column parity row
       		resetRfidState();
       		return;
       	}
       }    
     }
 
-    if (colParity >> 1) {
+    if (colParity >> 1) { // Check that the column parity is correct (but ignore the last bit)
       resetRfidState();
       return;
     }
 
-    if (getBit(5*8+14)) {
+    if (getBit(5*8+14)) { // ... because the last bit must always be zero.
       resetRfidState();
       return;
     }
 
+	// Parse out the data we're interested in, note that this skips the first 8 bits:
     unsigned long output = 0;
     char bit = 10;
     for (unsigned char row=2;row<10;row++) {
@@ -152,10 +159,6 @@ void addEdge(char edge) {
       }
       bit++; // Skip row parity.
     }
-    /*
-    PORTC |= _BV(PC2);
-    PORTC &=~ _BV(PC2);
-    */
     newRfid = output;
 
     // Ready to go again...

@@ -5,8 +5,8 @@ use utf8;
 
 use Apache2::RequestRec ();
 use Apache2::RequestIO ();
-use Apache2::Const -compile => qw(OK NOT_FOUND REDIRECT);
-use Apache2::SizeLimit;
+use Apache2::Const -compile => qw(OK NOT_FOUND REDIRECT DECLINED);
+#use Apache2::SizeLimit;
 use Apache2::Connection;
 
 use APR::Table ();
@@ -54,7 +54,7 @@ sub dispatchRequest($) {
 
     setCurrentIP($r->connection->remote_ip());
 
-    Apache2::SizeLimit::setmax(300000, $r);
+#    Apache2::SizeLimit::setmax(300000, $r);
     
     my $q = CGI->new($r);
     

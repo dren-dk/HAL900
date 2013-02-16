@@ -1,5 +1,5 @@
 Run: 
-sudo apt-get install libemail-valid-perl libapache2-request-perl libxml-writer-perl emacs atop ntp subversion postfix apache2-mpm-prefork libdbi-perl libdbd-pg-perl libmime-perl postfix libdatetime-perl git-core libchart-perl libapreq2 postgresql postgresql-client-common
+sudo apt-get install libemail-valid-perl libapache2-request-perl libxml-writer-perl emacs atop ntp subversion postfix apache2-mpm-prefork libdbi-perl libdbd-pg-perl libmime-perl postfix libdatetime-perl git-core libchart-perl libapreq2 postgresql postgresql-client-common libfile-slurp-perl libtext-vcard-perl
 
 
 Link to the config/apache-foo.conf file into /etc/apache2/sites-enabled

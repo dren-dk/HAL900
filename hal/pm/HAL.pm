@@ -34,7 +34,7 @@ sub configureHAL {
 	panther=>{
 	    root=>"/home/ff/projects/osaa/HAL900/hal",
 	    test=>1,
-	    db=>'dbi:Pg:dbname=hal;port=5433',
+	    db=>'dbi:Pg:dbname=hal;port=5432',
 	},
 	bee=>{
 	    root=>"/home/ff/projects/osaa/HAL900/hal",

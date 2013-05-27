@@ -76,6 +76,14 @@ sub outputAdminPage($$$;$) {
 sub indexPage {
     my ($r,$q,$p) = @_;
 
+    my $date = time;
+    if ($p->{date} and $p->{date} =~ /^(\d{4})-(\d{1,2})-(\d{1,2})$/) {
+	my ($y,$m,$d) = ($1,$2,$3);
+	$date = mktime(59, 59, 23, $d, $m-1, $y-1900)
+    }   
+    my $ds = strftime("%e. %b %Y", localtime($date));
+
+
     my $html = '';
     
     my $sr = db->sql('select count(*), membertype, da from (select m.id, membertype, COALESCE(m.dooraccess, false) as da from member m join membertype t on (m.membertype_id=t.id)) as foo group by membertype, da') or die "Fail!";
@@ -96,19 +104,19 @@ sub indexPage {
     }
     $fr->finish;
 
-    # TODO: Cash state.
+    
     my ($saldot) = (0,0,0);
-    $html .= "<h2>Quick economic status</h2><table><tr><th>Account Type</th><th>Total In</th><th>Total Out</th><th>Total Saldo</th></tr>\n";
+    $html .= "<h2>Quick economic status \@ $ds</h2><table><tr><th>Account Type</th><th>Total In</th><th>Total Out</th><th>Total Saldo</th></tr>\n";
     for my $accountTypeId (1,2,3,5) {	
 	my $ans = db->sql("select typeName from accountType where id=?", $accountTypeId);
 	my ($accountType) = $ans->fetchrow_array;
 	$ans->finish;
 
-	my $inr = db->sql("select sum(amount) from accountTransaction t, account a where a.type_id=? and a.id=t.target_account_id", $accountTypeId);		
+	my $inr = db->sql("select sum(amount) from accountTransaction t, account a where a.type_id=? and a.id=t.target_account_id and date_part('epoch', t.created)<?", $accountTypeId, $date);		
 	my ($in) = $inr->fetchrow_array;
 	$inr->finish;
 	
-	my $outr = db->sql("select sum(amount) from accountTransaction t, account a where a.type_id=? and a.id=t.source_account_id", $accountTypeId);		
+	my $outr = db->sql("select sum(amount) from accountTransaction t, account a where a.type_id=? and a.id=t.source_account_id and date_part('epoch', t.created)<?", $accountTypeId, $date);		
 	my ($out) = $outr->fetchrow_array;
 	$outr->finish;
 
@@ -116,6 +124,9 @@ sub indexPage {
 	$out =~ s/\.00$//;
 	
 	my $saldo = ($in//0)-($out//0);
+	$saldo *= 100;
+	$saldo = int($saldo);
+	$saldo /= 100;
 	
 	$html .= qq'<tr><td>$accountType</td><td>$in</td><td>$out</td><td>$saldo</td></tr>\n';
 

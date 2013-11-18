@@ -41,7 +41,7 @@ volatile unsigned char kbdReady;
 volatile unsigned char timeout;
 
 void initWiegand() {
-#ifdef HAS_WIEGAND
+#if (HAS_WIEGAND)
   timeout = 0;
 
   // Enable pin change interrupt for the wiegand inputs, switch the led/beeper pins to output and off:
@@ -131,7 +131,7 @@ ISR(PCINT0_vect) {
 }
 
 void pollWiegandTimeout() {
-#ifdef HAS_WIEGAND
+#if (HAS_WIEGAND)
 	if (timeout++ > 10) {
 
   #ifdef WIEGAND_RFID

@@ -91,6 +91,7 @@ my %features;
 my $code;
 my %used;
 my $hasWiegand = 0;
+my $hasEthernet = 0;
 
 sub claim {
 	my $user = shift;
@@ -128,6 +129,16 @@ for my $k (sort keys %cfg) {
 			$hasWiegand = 1;
 		}	
 		
+	} elsif ($k eq 'wiegand.combo') {
+		claim("Wiegand RFID+Keyboard on port 1", $PORT{1}{1}, $PORT{1}{2}, $PORT{1}{3}, $PORT{1}{6}, $PORT{1}{g}, $PORT{1}{o});
+		die "Invalid wiegand combo port" unless $v =~ /^(yes|no)$/;
+
+		if ($v ne 'no') {
+			$code .= "#define WIEGAND_COMBO\n";
+			$code .= "#define WIEGAND_RFID\n";
+			$hasWiegand = 1;
+		}	
+		
 	} elsif ($k eq 'wiegand.kbd') {
 		claim("Wiegand Keypad on port 2", $PORT{2}{1}, $PORT{2}{2}, $PORT{2}{3}, $PORT{2}{6}, $PORT{2}{g}, $PORT{2}{o});
 		die "Invalid wiegand keyboard port" unless $v =~ /^(yes|no)$/;
@@ -160,11 +171,12 @@ for my $k (sort keys %cfg) {
 
 		my $mac = join(',', 0xaa, 0x05, @ip); # We use 05AA as the prefix, because we're OSAA...
 
-		$code .= "#define USE_ETHERNET\n";
 		$code .= "#define ETHERNET_IP {$ip}\n";
 		$code .= "#define ETHERNET_MAC {$mac}\n";
 		$code .= "#define UDP_PORT $port\n";
 		claim("ENC28J60", 'PB6', 'PB7', 'PB5', 'PB4');
+
+		$hasEthernet++;
 				
 	} elsif ($k eq 'ethernet.port') {
 		# Ignore.
@@ -175,7 +187,9 @@ for my $k (sort keys %cfg) {
 	print "\n";
 }
 
-$code .= "#define HAS_WIEGAND\n" if $hasWiegand;
+$code .= "#define HAS_WIEGAND $hasWiegand\n";
+$code .= "#define USE_ETHERNET $hasEthernet\n";
+
 
 $code .= "\n/* Port allocation\n\n";
 for my $f (sort keys %features) {

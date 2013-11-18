@@ -17,10 +17,10 @@ OBJ2HEX=avr-objcopy
 AVRDUDE = avrdude -c ${PROGRAMMER} -p ${PART}
 
 default:
-	echo Please use one of the following targets:
-	echo make p1: Build and program for node 1
-	echo make p2: Build and program for node 2
-	echo make p3: Build and program for node 3
+	@echo Please use one of the following targets:
+	@echo make p1: Build and program for node 1
+	@echo make p2: Build and program for node 2
+	@echo make p3: Build and program for node 3
 
 p1:
 	NODE=1 make clean program

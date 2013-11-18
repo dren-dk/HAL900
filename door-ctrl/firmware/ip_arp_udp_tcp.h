@@ -14,6 +14,8 @@
 #include "ip_config.h"
 #include <avr/pgmspace.h>
 
+#define prog_char char
+
 // -- web server functions --
 // you must call this function once before you use any of the other server functions:
 extern void init_ip_arp_udp_tcp(const uint8_t *mymac, const uint8_t *myip,uint16_t port);

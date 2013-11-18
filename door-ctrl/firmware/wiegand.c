@@ -57,8 +57,6 @@ void initWiegand() {
   PORTA |= _BV(PA6) | _BV(PA7);
 #endif
 
-  DDRB |= _BV(PB2); // TODO: Debug
-
   PCICR |= _BV(PCIE0);
   sei();
 #endif
@@ -114,8 +112,6 @@ ISR(PCINT0_vect) {
     kbdFrame <<= 1;
     kbdFrame |= kbdBit1;
     kbdBits++;
-
-  	PORTB |= _BV(PB2); // TODO: Debug
   }
 	#endif
 
@@ -138,25 +134,23 @@ void pollWiegandTimeout() {
 #ifdef HAS_WIEGAND
 	if (timeout++ > 10) {
 
-		#ifdef WIEGAND_RFID
-    if (rfidBits == 26) {
+  #ifdef WIEGAND_RFID
+    if (rfidBits == 26 || rfidBits == 4) {
       newRfidValue = (rfidFrame>>1) & ~((unsigned long)1<<24); 
       rfidReady = rfidBits;
     }
     rfidBits = 0;
     rfidFrame = 0;
-		#endif
+  #endif
 
-		#ifdef WIEGAND_KBD
-  	PORTB &=~ _BV(PB2); // TODO: Debug
-
+  #ifdef WIEGAND_KBD
     if (kbdBits == 4) {
       kbdValue = kbdFrame;
       kbdReady = kbdBits;
     }
     kbdFrame = 0;
     kbdBits = 0;
-		#endif
+  #endif
 	}
 #endif
 }

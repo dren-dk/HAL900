@@ -26,6 +26,8 @@
 #include "enc28j60.h"
 #include "ip_config.h"
 
+#include "ip_arp_udp_tcp.h"
+
 // I use them to debug stuff:
 #define LEDOFF PORTB|=(1<<PORTB1)
 #define LEDON PORTB&=~(1<<PORTB1)
@@ -57,7 +59,7 @@ static uint16_t (*client_tcp_datafill_callback)(uint8_t);
 static uint8_t www_fd=0;
 static uint8_t browsertype=0; // 0 = get, 1 = post
 static void (*client_browser_callback)(uint8_t,uint16_t,uint16_t);
-static prog_char *client_additionalheaderline;
+//static prog_char *client_additionalheaderline;
 static char *client_postval;
 static prog_char *client_urlbuf;
 static char *client_urlbuf_var;

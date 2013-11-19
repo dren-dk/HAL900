@@ -132,25 +132,32 @@ ISR(PCINT0_vect) {
 
 void pollWiegandTimeout() {
 #if (HAS_WIEGAND)
-	if (timeout++ > 10) {
-
-  #ifdef WIEGAND_RFID
-    if (rfidBits == 26 || rfidBits == 4) {
+  if (timeout++ > 10) {
+    
+#ifdef WIEGAND_RFID
+    
+#ifdef WIEGAND_COMBO
+    if (rfidBits == 4) {
+      kbdValue=rfidFrame;
+      kbdReady=rfidBits;
+    } else
+#endif
+    if (rfidBits == 26) {
       newRfidValue = (rfidFrame>>1) & ~((unsigned long)1<<24); 
       rfidReady = rfidBits;
     }
     rfidBits = 0;
     rfidFrame = 0;
-  #endif
+#endif
 
-  #ifdef WIEGAND_KBD
+#ifdef WIEGAND_KBD
     if (kbdBits == 4) {
       kbdValue = kbdFrame;
       kbdReady = kbdBits;
     }
     kbdFrame = 0;
     kbdBits = 0;
-  #endif
+#endif
 	}
 #endif
 }

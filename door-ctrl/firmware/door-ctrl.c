@@ -83,27 +83,27 @@ void handleKey(unsigned char key) {
       	pin += key;
 
       	if (pinCount >= 4) {
-      		unsigned long hash = keyHash(currentRfid, pin);
-	
-					for (int i=0;i<250;i++) {
-						unsigned long v = eeprom_read_dword((uint32_t *)(EEPROM_KEYS + (i << 2)));
-						/*
-						if (v != 0xffffffff) {
-							fprintf(stdout, "Comparing with %d = %ld\n", i, v);
-						}
-						*/
-
-						if (hash == v) {
-							logUnlock(hash);
-
-							//fprintf(stdout, "Found hit at %d\n", i);
-
-							idleCount = 0;
-							userState = OPEN;
-							return;
-						}
-					}
-				}
+	  unsigned long hash = keyHash(currentRfid, pin);
+	  
+	  for (int i=0;i<250;i++) {
+	    unsigned long v = eeprom_read_dword((uint32_t *)(EEPROM_KEYS + (i << 2)));
+	    /*
+	      if (v != 0xffffffff) {
+	      fprintf(stdout, "Comparing with %d = %ld\n", i, v);
+	      }
+	    */
+	    
+	    if (hash == v) {
+	      logUnlock(hash);
+	      
+	      //fprintf(stdout, "Found hit at %d\n", i);
+	      
+	      idleCount = 0;
+	      userState = OPEN;
+	      return;
+	    }
+	  }
+	}
       }
     } 
   }
@@ -223,12 +223,6 @@ int main(void) {
       handleRFID(getRfidValue());
     }
     
-    unsigned long rfid = rfidValue();
-    if (rfid) {
-      fprintf(stdout, "Got rfid: %ld\n", rfid);
-      setRelays(relayToggle++ >> 2);
-    }
-
     handleTick();
     
     _delay_ms(10);

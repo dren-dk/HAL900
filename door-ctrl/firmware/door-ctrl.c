@@ -62,6 +62,13 @@ void handleKey(unsigned char key) {
   logKey(key);
   fprintf(stdout, "Key: %d\n", key);
 
+  if (userState == OPEN || userState == ACTIVE) {
+    // Allow the user to cancel pin entry and lock the door by hitting esc
+    if (key == 10) { // ESC
+      userState = IDLE; 
+    }
+  }
+
   if (userState == ACTIVE) {
     idleCount = 0;
 

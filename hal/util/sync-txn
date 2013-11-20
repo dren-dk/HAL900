@@ -18,8 +18,15 @@ while (my $line = <T>) {
 }
 close T;
 
+my @doors;
+if (@ARGV) {
+    @doors = @ARGV;
+} else {
+    @doors = (1..2);
+}
 
-for my $door (1..2) {
+for my $door (@doors) {
+    print STDERR "Getting state from $door\n";
     my $ds = getDoorState($door);
     die "Failed to get door state for door $door" unless $ds;
     my $startSeq = $ds->{sequence};

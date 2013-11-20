@@ -63,12 +63,12 @@ void handleKey(unsigned char key) {
   fprintf(stdout, "Key: %d\n", key);
 
   if (userState == ACTIVE) {
-  	idleCount = 0;
+    idleCount = 0;
 
-    if (key == 10) { // *
-      // Door bell?
+    if (key == 10) { // ESC
+      userState = IDLE;
 
-    } else if (key == 11) { // #
+    } else if (key == 11) { // ENT
       // Door bell?
       
     } else { // 0..9
@@ -138,7 +138,7 @@ void handleTick() {
   if (userState == ACTIVE) {
     idleCount++;
 
-    greenKBDLED(idleCount & 64);
+    greenKBDLED(idleCount & 16);
 
     if (idleCount > 500) {
       greenKBDLED(0);
@@ -149,12 +149,13 @@ void handleTick() {
 
   } else if (userState == DENY) {
     idleCount++;
-    beepRFID(idleCount > 100);
-    beepKBD(1);
-    greenRFIDLED(0);
-    greenKBDLED(0);
 
-    if (idleCount > 200) {
+    beepRFID(1);
+    beepKBD(1);
+
+    if (idleCount > 100) {
+      greenRFIDLED(0);
+      greenKBDLED(0);
       beepRFID(0);
       beepKBD(0);
       userState = IDLE;
@@ -199,17 +200,15 @@ int main(void) {
   ee24xx_init();
   initRelays();
 
-  int relayToggle = 0;
   int loop = 0;
   unsigned char oldSensors = 0;
   while(1) {
-    pollComms();
-        
     unsigned char sensors = getSensors();
     if (sensors != oldSensors) {
       oldSensors = sensors;
       logSensors(sensors);
     }
+
 
     if (sensors & 0x80) { // Exit button pressed
       handleExit();
@@ -218,26 +217,17 @@ int main(void) {
     if (isKbdReady()) {
       handleKey(getKbdValue());
     }
-
+    
     if (isRfidReady()) {
       handleRFID(getRfidValue());
     }
-    
-    handleTick();
-    
-    _delay_ms(10);
-    /*
-    greenKBDLED((loop>>5) & 0x1);
-    greenRFIDLED((loop>>5) & 0x2);    
-     */
 
-    /*
-    beepKBD( ((loop>>5) & 0x18) == 0x18);
-    beepRFID(((loop>>5) & 0x28) == 0x28);
-    */
-
-    wdt_reset();
-    loop++;
     setLEDs((loop >> 4) % 0x3f);
+    handleTick();
+    pollComms();        
+
+    loop++;
+    _delay_ms(10);
+    wdt_reset();
   }	
 }

@@ -83,7 +83,6 @@ void initComms() {
   DDRD |= _BV(PD1); // RS485 TXD
   DDRD |= _BV(PD7); // RS485 TX Enable.
   DDRC |= _BV(PC2); // RS485 RX LED
-
 #endif
 }
 
@@ -283,19 +282,24 @@ void handleDeleteKey(unsigned char *request, struct AddDeleteKeyTelegram *payloa
   sendAnswerTelegram(request, (char *)&reply);
 }
 
+//#define LOG_PACKET
+
 void handleTelegram(unsigned char *request, unsigned char *payload) {
   aes256_context ctx;
   aes256_init(&ctx, AES_KEY);
   aes256_decrypt_ecb(&ctx, payload);
 
   char *type = (char *)payload;
-  //  unsigned int *seq = (unsigned int *)(payload+1);
+#ifdef LOG_PACKET
+  unsigned int *seq = (unsigned int *)(payload+1);
+#endif
   unsigned long *crc  = (unsigned long *)(payload+12);
   unsigned long realCRC = crc32((unsigned char *)payload, 12);
 
   if (*crc == realCRC) {
-    //fprintf(stdout, "Got package of type: '%c' seq: %d crc is ok: %lu\n", *type, *seq, realCRC);
-
+#ifdef LOG_PACKET
+    fprintf(stdout, "Got package of type: '%c' seq: %d crc is ok: %lu\n", *type, *seq, realCRC);
+#endif
     if (*type == 'p') {
       handlePing(request, (struct PingPongTelegram *)payload);
 
@@ -309,10 +313,14 @@ void handleTelegram(unsigned char *request, unsigned char *payload) {
       handleDeleteKey(request, (struct AddDeleteKeyTelegram *)payload);
 
     } else {
-      //fprintf(stdout, "Got package of invalid type: '%c'\n", *type);
+#ifdef LOG_PACKET
+      fprintf(stdout, "Got package of invalid type: '%c'\n", *type);
+#endif
     }
   } else {
-    //fprintf(stdout, "Got package of type: '%c' seq: %d crc should be: %lu crc is: %lu\n", *type, *seq, *crc, realCRC);
+#ifdef LOG_PACKET
+    fprintf(stdout, "Got package of type: '%c' seq: %d crc should be: %lu crc is: %lu\n", *type, *seq, *crc, realCRC);
+#endif
   }
 }
 
@@ -323,15 +331,35 @@ void pollComms() {
     uint16_t plen=enc28j60PacketReceive(BUFFER_SIZE, buf);
     buf[BUFFER_SIZE]='\0';
     if (plen){
-    	packetloop_icmp_tcp(buf,plen);
-      
-      if (eth_type_is_ip_and_my_ip(buf,plen) &&
-      		buf[IP_PROTO_P]==IP_PROTO_UDP_V &&
-      		buf[UDP_DST_PORT_H_P]==(UDP_PORT>>8) &&
-      		buf[UDP_DST_PORT_L_P]==(UDP_PORT&0xff)) {
+      packetloop_icmp_tcp(buf,plen);
+
+#ifdef LOG_PACKET
+	fprintf(stdout, "Got packet len: %d\n", plen);
+#endif
+
+	if (!eth_type_is_ip_and_my_ip(buf,plen)) {
+#ifdef LOG_PACKET
+	  fprintf(stdout, "Not my IP\n");
+#endif
+
+	} else if (!buf[IP_PROTO_P]==IP_PROTO_UDP_V) {
+#ifdef LOG_PACKET
+	  fprintf(stdout, "Not UDP, but %d\n", buf[IP_PROTO_P]);
+#endif
+
+	} else if (!buf[UDP_DST_PORT_H_P]==(UDP_PORT>>8) && buf[UDP_DST_PORT_L_P]==(UDP_PORT&0xff)) {
+#ifdef LOG_PACKET
+	  fprintf(stdout, "Wrong UDP port: %x %x\n", buf[UDP_DST_PORT_H_P], buf[UDP_DST_PORT_L_P]);
+#endif
+
+	} else {
 	
       	unsigned char *payload = buf + UDP_DATA_P;
       	unsigned int payloadlen=buf[UDP_LEN_L_P]-UDP_HEADER_LEN;
+
+#ifdef LOG_PACKET
+	fprintf(stdout, "Got packet len: %d payload len:%d\n", plen, payloadlen);
+#endif
 
       	if (payloadlen == 16) {
       		handleTelegram(buf, payload);

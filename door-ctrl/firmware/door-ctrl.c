@@ -58,6 +58,15 @@ unsigned long pin;
 unsigned int idleCount;
 unsigned long currentRfid;
 
+void resetState() {
+  greenRFIDLED(0);
+  greenKBDLED(0);
+  beepRFID(0);
+  beepKBD(0);
+  userState = IDLE;
+  PORTC &=~ _BV(PC6);
+}
+
 void handleKey(unsigned char key) {
   logKey(key);
   fprintf(stdout, "Key: %d\n", key);
@@ -65,7 +74,8 @@ void handleKey(unsigned char key) {
   if (userState == OPEN || userState == ACTIVE) {
     // Allow the user to cancel pin entry and lock the door by hitting esc
     if (key == 10) { // ESC
-      userState = IDLE; 
+      resetState();
+      return;
     }
   }
 
@@ -73,7 +83,6 @@ void handleKey(unsigned char key) {
     idleCount = 0;
 
     if (key == 10) { // ESC
-      userState = IDLE;
 
     } else if (key == 11) { // ENT
       // Door bell?
@@ -161,11 +170,7 @@ void handleTick() {
     beepKBD(1);
 
     if (idleCount > 100) {
-      greenRFIDLED(0);
-      greenKBDLED(0);
-      beepRFID(0);
-      beepKBD(0);
-      userState = IDLE;
+      resetState();
     }
 
   } else if (userState == OPEN) {
@@ -207,6 +212,8 @@ int main(void) {
   ee24xx_init();
   initRelays();
 
+  resetState();
+
   int loop = 0;
   unsigned char oldSensors = 0;
   while(1) {
@@ -215,7 +222,6 @@ int main(void) {
       oldSensors = sensors;
       logSensors(sensors);
     }
-
 
     if (sensors & 0x80) { // Exit button pressed
       handleExit();

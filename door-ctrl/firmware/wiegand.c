@@ -62,6 +62,11 @@ void initWiegand() {
 
   PCICR |= _BV(PCIE0);
   sei();
+
+  rfidBits = 0;
+  rfidFrame = 0;
+  kbdFrame = 0;
+  kbdBits = 0;
 #endif
 }
 

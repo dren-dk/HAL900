@@ -86,8 +86,8 @@ For mere information om din konto se: https://hal.osaa.dk/hal/account/
 Med venlig hilsen HAL-900, OSAAs elektronhjerne.
 
 Open Space Aarhus
-Bryggervej 30
-8240 Risskov
+Katrinebjergvej 105
+8200 Aarhus N
 ';
 
 	sendmail($FROM, 

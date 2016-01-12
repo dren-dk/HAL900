@@ -82,6 +82,51 @@ sub decryptById {
     return decrypt($cipher, $eres);
 }
 
+sub reqUDP {
+    my ($addr, $rsize, $ereq) = @_;
+
+    my $s = IO::Socket::INET->new(Proto => 'udp', PeerPort=>4747, PeerAddr=>$addr) 
+	or return ("socket: $@", undef);     # yes, it uses $@ here
+    
+    $s->send($ereq) == length($ereq)
+	or return ("cannot send: $!", undef);
+    
+    my $eres;
+    my $ok = eval {
+		local $SIG{ALRM} = sub { die "alarm time out" };
+		alarm 10;
+		$s->recv($eres, $rsize)  or die "recv: $!";
+		alarm 0;
+		1;  # return value from eval on normalcy
+    };
+
+    unless ($ok) {
+		print STDERR "Answer to request never arrived; timeout.\n";
+		return ('Timeout', undef);	
+    };
+
+    return ('Ok', $eres);
+}
+
+sub reqTCP {
+    my ($tunnel, $addr, $rsize, $ereq) = @_;
+
+    die "Urgh";
+
+}
+
+my $tunnelServer;
+
+sub req {
+    my ($addr, $rsize, $ereq) = @_;
+    
+    if ($tunnelServer) {
+	return reqTCP($tunnelServer, $addr, $rsize, $ereq);
+    } else {
+	return reqUDP($addr, $rsize, $ereq);
+    }
+}
+
 sub pokeDoor($$$$) {
     my ($id, $type, $sequence, $payload) = @_;
 
@@ -99,26 +144,11 @@ sub pokeDoor($$$$) {
     my $cipher = Crypt::Rijndael->new($key , Crypt::Rijndael::MODE_ECB() );
     my $ereq = $cipher->encrypt($req);
 
-    my $s = IO::Socket::INET->new(Proto => 'udp', PeerPort=>4747,
-				  PeerAddr=>"10.37.37.$id") 
-	or die "socket: $@";     # yes, it uses $@ here
-    
-    $s->send($ereq) == length($ereq)
-	or die "cannot send: $!";
-    
-    my $eres;
-    my $ok = eval {
-		local $SIG{ALRM} = sub { die "alarm time out" };
-		alarm 10;
-		$s->recv($eres, 160)  or die "recv: $!";
-		alarm 0;
-		1;  # return value from eval on normalcy
-    };
+    my ($status, $eres) = req("10.37.37.$id", 160, $ereq);
 
-    unless ($ok) {
-		print STDERR "Answer to $type request never arrived; timeout.\n";
-		return 'Timeout';	
-    };
+    if ($status ne 'Ok') {
+	return $status;
+    }
 
     return decrypt($cipher, $eres);
 
@@ -242,3 +272,4 @@ sub deleteDoorKey {
     return deleteDoorHash($id, $seq, $hash);
 }
 
+36;

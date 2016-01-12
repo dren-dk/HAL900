@@ -1,0 +1,68 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use FindBin qw($Bin $Script);
+use lib "$Bin/../pm";
+use HAL::DoorCtrl;
+use Data::Dumper;
+use utf8;
+
+use HAL;
+use HAL::DB;
+use HAL::Util;
+
+
+my $db = new HAL::DB;
+
+my %dues;
+my $ct = $db->sql("select target_account_id,comment,amount from accounttransaction where source_account_id in (100001, 100004)") or die "Urgh";
+my %sum;
+while (my ($id, $comment, $amount) = $ct->fetchrow_array) {
+    my ($year, $month) = $comment =~ /^Kontingent (20\d+) 1\/(\d+)-/;
+    my $d = sprintf("%4d-%02d", $year, $month);
+    $dues{$d}{$id}++;
+    $sum{$d} += $amount;
+}
+$ct->finish;
+
+my $last = undef;
+my @table = [ qw'Month Count Sum Up Down' ];
+for my $d (sort keys %dues) {
+    my @count = keys %{$dues{$d}};
+    my @row = ($d, scalar(@count), $sum{$d});
+    my ($up, $dn) = (0,0);
+    if ($last) {
+	for my $id (keys %{$dues{$d}}) {
+	    $up++ unless $dues{$last}{$id};
+	}
+	for my $id (keys %{$dues{$last}}) {
+	    $dn++ unless $dues{$d}{$id};
+	}
+    }
+    push @row, $up, $dn;
+
+    push @table, \@row;
+
+    $last = $d;
+}
+
+
+if (0) {
+    for my $row (@table) {
+	print join("\t", @$row)."\n";	
+    }
+} else {
+
+    my $rsep = '{|';
+    my $csep = '!';
+    for my $row (@table) {
+	print "$rsep\n";	
+	for my $col (@$row) {
+	    print "$csep $col\n";;
+	}
+	$csep = '|';
+	$rsep = '|-';	
+    }
+    print "|}\n";
+}
+

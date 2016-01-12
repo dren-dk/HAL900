@@ -22,7 +22,7 @@ my @doors;
 if (@ARGV) {
     @doors = @ARGV;
 } else {
-    @doors = (1..2);
+    @doors = (3);
 }
 
 for my $door (@doors) {

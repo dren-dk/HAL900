@@ -6,7 +6,6 @@ use utf8;
 
 use Data::Dumper;
 use HTML::Entities;
-use Email::Valid;
 use Digest::SHA qw(sha1_hex);
 use File::Slurp qw(slurp);
 
@@ -15,6 +14,7 @@ use HAL::Pages;
 use HAL::Session;
 use HAL::Util;
 use HAL::Email;
+
 
 sub outputAccountPage($$$;$) {
     my ($cur, $title, $body, $feed) = @_;
@@ -237,11 +237,12 @@ sub emailPage {
 	$res->finish;
 	my $ue = escape_url($p->{email});
 
+	#system("/home/ff/test 1>&2"); 
 	if ($inuse) {
 	    $errors++;
 	    return qq'Mail adressen er allerede i brug.';
 
-	} elsif (!eval { Email::Valid->address(-address => $p->{email},-mxcheck => 1) }) {
+	} elsif (validateEmail($p->{email})) {
 	    $errors++;
 	    return qq'Mail adressen er ugyldig, prøv igen.';	    
 	}	

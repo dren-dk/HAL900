@@ -5,7 +5,6 @@ use warnings;
 use utf8;
 
 use HTML::Entities;
-use Email::Valid;
 use Digest::SHA qw(sha1_hex);
 
 use HAL;

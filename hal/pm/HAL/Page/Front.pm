@@ -5,7 +5,6 @@ use warnings;
 use utf8;
 
 use HTML::Entities;
-use Email::Valid;
 use Digest::SHA qw(sha1_hex);
 
 use HAL;
@@ -114,11 +113,11 @@ sub newUser {
 	my ($inuse) = $res->fetchrow_array;
 	$res->finish;
 	my $ue = escape_url($p->{email});
-
+       
 	if ($inuse) {
 	    $error = qq'Mail adressen er allerede i brug, <a href="/hal/login?id=$ue">log ind her</a>.';
 
-	} elsif (eval { Email::Valid->address(-address => $p->{email},-mxcheck => 1) }) {
+	} elsif (validateEmail($p->{email})) {
 
 	    my $key = sha1_hex($p->{email}.emailSalt());	    
 	    my $email = sendmail('register@hal.osaa.dk', $p->{email},

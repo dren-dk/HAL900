@@ -6,7 +6,6 @@ use utf8;
 
 use Data::Dumper;
 use HTML::Entities;
-use Email::Valid;
 use Digest::SHA qw(sha1_hex);
 
 use HAL;

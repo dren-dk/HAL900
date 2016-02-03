@@ -52,7 +52,11 @@ sub loadDir {
 sub dispatchRequest($) {
     my ($r) = @_;
 
-    setCurrentIP($r->connection->remote_ip());
+    if ($r->connection->client_ip() eq '10.0.3.1') {
+	setCurrentIP($r->headers_in->{'X-Real-IP'} || 'Broken');
+    } else {
+	setCurrentIP($r->connection->client_ip());
+    }
 
 #    Apache2::SizeLimit::setmax(300000, $r);
     

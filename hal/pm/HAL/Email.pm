@@ -52,6 +52,9 @@ sub sendmail {
 
 sub validateEmail {
     my $email = shift @_;
+    if (!-f "/home/hal/HAL900/hal/check-email") {
+	return 1;
+    }
     return system("/home/hal/HAL900/hal/check-email", $email);
 }
 

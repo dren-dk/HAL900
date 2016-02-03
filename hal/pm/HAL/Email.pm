@@ -52,6 +52,10 @@ sub sendmail {
 
 sub validateEmail {
     my $email = shift @_;
+
+    if ($email !~ /^[^\@;]+\@[^\@;]+\.[^\@;]+$/) {
+	return 0;
+    }    
     if (!-f "/home/hal/HAL900/hal/check-email") {
 	return 1;
     }

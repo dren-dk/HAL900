@@ -15,6 +15,8 @@ my $target = "$root/local/$fn";
 system("pg_dump", '--format=c', '--username=hal', 'hal', "--file=$target")
         and die "Failed to back up $target";
 
+exit 0; # TODO: Enable remote backup again.
+
 mkdir "$root/remote";
 my $enc = "$root/remote/$fn.gpg";
 

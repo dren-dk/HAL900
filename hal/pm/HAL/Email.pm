@@ -2,7 +2,7 @@
 package HAL::Email;
 require Exporter;
 @ISA = qw(Exporter);
-@EXPORT = qw(sendmail);
+@EXPORT = qw(sendmail validateEmail);
 
 use strict;
 use Net::SMTP;
@@ -34,7 +34,6 @@ sub sendmail {
 				     'X-OSAA-email-id' => Encode::encode("MIME-Header", $id),
 				     );
     my $server = 'localhost';
-
     my $smtp = Net::SMTP->new($server) or return "Unable to connect to: $server";
     $smtp->mail($sender)               or return $smtp->message;
     $smtp->recipient($to)              or return $smtp->message;
@@ -49,6 +48,11 @@ sub sendmail {
     $smtp->quit                            or return $smtp->message;;
 
     return 'Ok';
+}
+
+sub validateEmail {
+    my $email = shift @_;
+    return system("/home/hal/HAL900/hal/check-email", $email);
 }
 
 1;

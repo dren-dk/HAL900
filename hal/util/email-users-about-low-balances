@@ -41,6 +41,7 @@ order by m.id")
     or die "Urgh";
 while (my ($id, $hasAccess, $fee, $getsAccess, $membertype_id, $email, $realname, $userName) = $mr->fetchrow_array) {
 
+    next unless $realname;
     my ($firstname) = split /\s+/, $realname;
 
     my ($pbal, $account_id) = $db->getAccountTypeBalance($id, 2);

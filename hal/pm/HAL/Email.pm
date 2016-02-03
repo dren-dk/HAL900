@@ -59,7 +59,7 @@ sub validateEmail {
     if (!-f "/home/hal/HAL900/hal/check-email") {
 	return 1;
     }
-    return system("/home/hal/HAL900/hal/check-email", $email);
+    return !system("/home/hal/HAL900/hal/check-email", $email);
 }
 
 1;

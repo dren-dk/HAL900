@@ -242,7 +242,7 @@ sub emailPage {
 	    $errors++;
 	    return qq'Mail adressen er allerede i brug.';
 
-	} elsif (validateEmail($p->{email})) {
+	} elsif (!validateEmail($p->{email})) {
 	    $errors++;
 	    return qq'Mail adressen er ugyldig, prøv igen.';	    
 	}	

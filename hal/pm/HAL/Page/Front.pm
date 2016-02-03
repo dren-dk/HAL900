@@ -118,7 +118,7 @@ sub newUser {
 	if ($inuse) {
 	    $error = qq'Mail adressen er allerede i brug, <a href="/hal/login?id=$ue">log ind her</a>.';
 
-	} elsif (eval { Email::Valid->address(-address => $p->{email},-mxcheck => 1) }) {
+	} elsif (eval { Email::Valid->address(-address => $p->{email},-mxcheck => 0) }) {
 
 	    my $key = sha1_hex($p->{email}.emailSalt());	    
 	    my $email = sendmail('register@hal.osaa.dk', $p->{email},

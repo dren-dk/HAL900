@@ -241,7 +241,7 @@ sub emailPage {
 	    $errors++;
 	    return qq'Mail adressen er allerede i brug.';
 
-	} elsif (!eval { Email::Valid->address(-address => $p->{email},-mxcheck => 1) }) {
+	} elsif (!eval { Email::Valid->address(-address => $p->{email},-mxcheck => 0) }) {
 	    $errors++;
 	    return qq'Mail adressen er ugyldig, prøv igen.';	    
 	}	

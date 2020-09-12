@@ -1,11 +1,5 @@
-This is the HAL900 project.
 
-All sources are covered by GPL V3 license, see this page for the details:
-http://www.gnu.org/licenses/gpl.html
 
-Author: Flemming Frandsen <dren.dk@gmail.com>
-
-The system consists of two major parts, the web interface (in the hal subdir)
-and the door controller (in the door-ctrl) subdir.
-
+This project has been moved to gitlab: 
+https://gitlab.com/dren.dk/HAL900
 
